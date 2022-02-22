@@ -6,7 +6,7 @@
 /*   By: ninieddu <ninieddu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 14:42:26 by ninieddu          #+#    #+#             */
-/*   Updated: 2022/02/22 22:29:37 by ninieddu         ###   ########lyon.fr   */
+/*   Updated: 2022/02/22 23:56:42 by ninieddu         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,9 @@ int server::create_tcp_server_socket(int port)
 	if (fd == -1) 
 	{
 		std::cerr << "socket failed [" << strerror(errno) << "]" << std::endl;
-		close(fd);
 		return -1;
 	}
+	
 	/* Initialize the socket address structure */
 	saddr.sin_family = AF_INET;         
 	saddr.sin_port = htons(port); 
@@ -43,7 +43,6 @@ int server::create_tcp_server_socket(int port)
 	if (ret_val != 0) 
 	{
 		std::cerr << "bind failed [" << strerror(errno) << "]" << std::endl;
-		close(fd);
 		return -1;
 	}
 	
@@ -52,7 +51,6 @@ int server::create_tcp_server_socket(int port)
 	if (ret_val != 0) 
 	{
 		std::cerr << "listen failed [" << strerror(errno) << "]" << std::endl;
-		close(fd);
 		return -1;
 	}
 	return fd;
