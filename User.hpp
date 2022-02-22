@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Server.hpp                                         :+:      :+:    :+:   */
+/*   User.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ninieddu <ninieddu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/02/22 14:42:28 by ninieddu          #+#    #+#             */
-/*   Updated: 2022/02/22 22:48:13 by ninieddu         ###   ########lyon.fr   */
+/*   Created: 2022/02/22 22:48:07 by ninieddu          #+#    #+#             */
+/*   Updated: 2022/02/22 23:42:35 by ninieddu         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,22 +24,20 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-class server
+class user
 {
 	private:
-		server();
-		server(const server& x);
-		server& operator=(const server& x);
+		user();
+		user(const user& x);
+		user& operator=(const user& x);
 		
-		int			_port;
+		std::string	_name;
 		std::string	_password;
 		int			_socket;
-		int create_tcp_server_socket(int port);
+		bool		_isOperator;
 	public:
-		server(int port, std::string password);
-		~server();
-
-		std::map<std::string, int>	_users;
+		user(std::string name, std::string password, bool isOperator, int serverSocket);
+		~user();
 		
 		int	getSock()const;
 };

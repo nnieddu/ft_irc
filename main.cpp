@@ -6,7 +6,7 @@
 /*   By: ninieddu <ninieddu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 14:42:03 by ninieddu          #+#    #+#             */
-/*   Updated: 2022/02/22 22:35:51 by ninieddu         ###   ########lyon.fr   */
+/*   Updated: 2022/02/22 23:45:41 by ninieddu         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,9 @@ int	start_server(int port, std::string password)
 		std::cerr << "Creating server failed  [" << strerror(errno) << "]" << std::endl;
 		return -1;
 	}
-	
+	std::cout << "Welcome on the IRC server !" << std::endl \
+				<< "Waiting for connection..." << std::endl;
+
 	/* Accept a new connection */
 	new_fd = accept(irc_server.getSock(), (struct sockaddr*)&new_client_addr, &addrlen);
 	if (new_fd == -1) 
