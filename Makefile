@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: ninieddu <ninieddu@student.42lyon.fr>      +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2022/02/22 17:20:49 by ninieddu          #+#    #+#              #
+#    Updated: 2022/02/22 17:27:27 by ninieddu         ###   ########lyon.fr    #
+#                                                                              #
+# **************************************************************************** #
+
 NAME	=	ft_irc
 
 COMP 	=	c++
@@ -19,10 +31,10 @@ $(NAME) : $(OBJ)
 	$(COMP) $(FLAG) $(OBJ) -o $(NAME)
 
 run : $(NAME)
-	./$(NAME)
+	./$(NAME) 7005 password
 	
 runv : $(NAME)
-	valgrind ./$(NAME)
+	valgrind --track-origins=yes -s ./$(NAME) 7005 password
 
 clean :
 	rm -f $(OBJ)

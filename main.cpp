@@ -6,10 +6,9 @@
 /*   By: ninieddu <ninieddu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 14:42:03 by ninieddu          #+#    #+#             */
-/*   Updated: 2022/02/22 16:47:14 by ninieddu         ###   ########lyon.fr   */
+/*   Updated: 2022/02/22 18:07:25 by ninieddu         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "Server.hpp"
 
@@ -24,70 +23,30 @@
 
 #define DATA_BUFFER 5000
 
-int create_tcp_server_socket(int port) 
+int	start_server(int port, std::string password)
 {
-	struct sockaddr_in saddr;
-	int fd, ret_val;
-
-	/* Step1: create a TCP socket */
-	// int socket(int domain, int type, int protocol);
-	// AF_INET = IPv4 Internet protocols, SOCK_STREAM = Provides sequenced, reliable, two-way, connection-based byte streams.
-	fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-	if (fd == -1) 
-	{
-		fprintf(stderr, "socket failed [%s]\n", strerror(errno));
-		close(fd);
-		return -1;
-	}
-	printf("Created a socket with fd: %d\n", fd);
-
-	/* Initialize the socket address structure */
-	saddr.sin_family = AF_INET;         
-	saddr.sin_port = htons(port); //convert values between host and network byte order 
-	saddr.sin_addr.s_addr = INADDR_ANY; // Address to accept any incoming messages.
-
-	/* Step2: bind the socket to port on the local host */
-	ret_val = bind(fd, (struct sockaddr *)&saddr, sizeof(struct sockaddr_in));
-	if (ret_val != 0) 
-	{
-		fprintf(stderr, "bind failed [%s]\n", strerror(errno));
-		close(fd);
-		return -1;
-	}
-
-	/* Step3: listen for incoming connections */
-	ret_val = listen(fd, 5);
-	if (ret_val != 0) 
-	{
-		fprintf(stderr, "listen failed [%s]\n", strerror(errno));
-		close(fd);
-		return -1;
-	}
-	return fd;
-}
-
-int	start_test(int port)
-{
+	server irc_server(port, password);
+	
 	struct sockaddr_in new_client_addr;
-	int fd, new_fd;
+	int new_fd;
 	int ret_val = 1;
-	socklen_t addrlen;
+	socklen_t addrlen = 0;
 	char buf[DATA_BUFFER];
 
 	/* Create the server socket */
-	fd = create_tcp_server_socket(port); 
-	if (fd == -1) 
+	// fd = create_tcp_server_socket(port); 
+	if (irc_server.getSock() == -1) 
 	{
 		fprintf(stderr, "Creating server failed [%s]\n", strerror(errno));
 		return -1;
 	}
 
 	/* Accept a new connection */
-	new_fd = accept(fd, (struct sockaddr*)&new_client_addr, &addrlen);
+	new_fd = accept(irc_server.getSock(), (struct sockaddr*)&new_client_addr, &addrlen);
 	if (new_fd == -1) 
 	{
 		fprintf(stderr, "accept failed [%s]\n", strerror(errno));
-		close(fd);
+		close(irc_server.getSock());
 		return -1;
 	}
 	printf("Accepted a new connection with fd: %d\n", new_fd);
@@ -97,7 +56,6 @@ int	start_test(int port)
 	while (ret_val > 0)
 	{
 		ret_val = recv(new_fd, buf, DATA_BUFFER, 0);
-		printf("Received data (len %d bytes)\n", ret_val);
 		if (ret_val > 0) 
 			std::cout << "Received data: " << buf << std::endl;
 		if (ret_val == -1) 
@@ -106,24 +64,20 @@ int	start_test(int port)
 			break;
 		}
 	}
-	/* Close the sockets */
-	close(fd);
 	close(new_fd);
 	return(ret_val);
 }
-//----------------------------------------------------end of code bison part
-
 
 int	basic_check(int port, std::string pass)
 {
 	if (port <= 0 || port > 65535)
 	{
-		std::cout << "[Error] : port need to be in 1-65535 range (prefer a port higher than 1023)." << std::endl;
+		std::cout << "[Error] port need to be in 1-65535 range (prefer a port higher than 1023)." << std::endl;
 		return(1);
 	}
 	if (pass.size() < 5) //maybe check for a max sized pass
 	{
-		std::cout << "[Error] : you need no empty password or more robust (more than 5 characters)" << std::endl;
+		std::cout << "[Error] you need no-empty or more robust password (more than 5 characters)" << std::endl;
 		return(1);
 	}
 	return (0);
@@ -133,7 +87,7 @@ int main(int ac, char **av)
 {
 	if (ac != 3)
 	{
-		std::cout << "[Error] : need 2 args <PORT> and <PASSWORD>" << std::endl;
+		std::cout << "[Error] need 2 args <PORT> and <PASSWORD>" << std::endl;
 		return(1);
 	}
 
@@ -142,8 +96,6 @@ int main(int ac, char **av)
 
 	if (basic_check(port, password))
 		return(1);
-
-	server irc_server(port, password);
 	
-	return(start_test(port));
+	return(start_server(port, password));
 }
