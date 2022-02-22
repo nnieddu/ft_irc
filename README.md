@@ -1,34 +1,31 @@
 # ft_irc
 L’objectif de ce projet est de reproduire le fonctionnement d’un serveur IRC.  
 
-First : RFC 1459  
-
+First irc rfc : RFC 1459  
 RFC 2810 Internet Relay Chat: Architecture  
 RFC 2811 Internet Relay Chat: Channel Management  
 RFC 2812 Internet Relay Chat: Client Protocol  
 RFC 2813 Internet Relay Chat: Server Protocol   
-
 https://www.rfcreader.com/  
-https://www.rfc-editor.org/  
   
 https://www.tutorialspoint.com/websockets/index.htm  
-  
-https://www.alien.net.au/irc/index.html  
 http://vidalc.chez.com/lf/socket.html  
-https://www.irchelp.org/protocol/rfc/
-
 http://www.codingbison.com/c/c-sockets-introduction.html
 
-Weechat irc client for testing :
-apt-get install weechat-curses weechat-plugins
+https://www.irchelp.org/protocol/rfc/
+
+https://www.alien.net.au/irc/
+https://www.alien.net.au/irc/index.html
+https://www.alien.net.au/irc/irc2numerics.html  
+
+### Usefuls :  
+Weechat irc client for testing :  
+apt-get install weechat-curses weechat-plugins 
 
 netcat testing :
 ```
 nc 127.0.01 <PORT>
 ```
-
-
-### Doc :
-
+### Docs :
 #### Ports :
 1-65535 are available, and ports in range 1-1023 are the privileged ones: an application needs to be run as root in order to listen to these ports.
