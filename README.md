@@ -18,3 +18,12 @@ http://vidalc.chez.com/lf/socket.html
 https://www.irchelp.org/protocol/rfc/
 
 http://www.codingbison.com/c/c-sockets-introduction.html
+
+Weechat irc client for testing :
+apt-get install weechat-curses weechat-plugins
+
+
+### Doc :
+
+#### Ports :
+1-65535 are available, and ports in range 1-1023 are the privileged ones: an application needs to be run as root in order to listen to these ports.
