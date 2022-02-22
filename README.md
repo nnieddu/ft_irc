@@ -22,6 +22,11 @@ http://www.codingbison.com/c/c-sockets-introduction.html
 Weechat irc client for testing :
 apt-get install weechat-curses weechat-plugins
 
+netcat testing :
+```
+nc 127.0.01 <PORT>
+```
+
 
 ### Doc :
 
