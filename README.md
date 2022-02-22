@@ -1,7 +1,7 @@
 # ft_irc
 L’objectif de ce projet est de reproduire le fonctionnement d’un serveur IRC.  
 
-First irc rfc : RFC 1459  
+First : RFC 1459 Updated by RFC 2812
 RFC 2810 Internet Relay Chat: Architecture  
 RFC 2811 Internet Relay Chat: Channel Management  
 RFC 2812 Internet Relay Chat: Client Protocol  
@@ -15,8 +15,6 @@ http://www.codingbison.com/c/c-sockets-introduction.html
 https://www.irchelp.org/protocol/rfc/
 
 https://www.alien.net.au/irc/
-https://www.alien.net.au/irc/index.html
-https://www.alien.net.au/irc/irc2numerics.html  
 
 ### Usefuls :  
 Weechat irc client for testing :  
