@@ -6,7 +6,7 @@
 /*   By: ninieddu <ninieddu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 14:42:03 by ninieddu          #+#    #+#             */
-/*   Updated: 2022/02/22 15:55:04 by ninieddu         ###   ########lyon.fr   */
+/*   Updated: 2022/02/22 16:47:14 by ninieddu         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,17 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-#define DATA_BUFFER 50000
+#define DATA_BUFFER 5000
 
- int create_tcp_server_socket(int port) 
- {
+int create_tcp_server_socket(int port) 
+{
 	struct sockaddr_in saddr;
 	int fd, ret_val;
 
 	/* Step1: create a TCP socket */
-	fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP); 
+	// int socket(int domain, int type, int protocol);
+	// AF_INET = IPv4 Internet protocols, SOCK_STREAM = Provides sequenced, reliable, two-way, connection-based byte streams.
+	fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (fd == -1) 
 	{
 		fprintf(stderr, "socket failed [%s]\n", strerror(errno));
@@ -41,8 +43,8 @@
 
 	/* Initialize the socket address structure */
 	saddr.sin_family = AF_INET;         
-	saddr.sin_port = htons(port);     
-	saddr.sin_addr.s_addr = INADDR_ANY; 
+	saddr.sin_port = htons(port); //convert values between host and network byte order 
+	saddr.sin_addr.s_addr = INADDR_ANY; // Address to accept any incoming messages.
 
 	/* Step2: bind the socket to port on the local host */
 	ret_val = bind(fd, (struct sockaddr *)&saddr, sizeof(struct sockaddr_in));
@@ -67,7 +69,8 @@
 int	start_test(int port)
 {
 	struct sockaddr_in new_client_addr;
-	int fd, new_fd, ret_val;
+	int fd, new_fd;
+	int ret_val = 1;
 	socklen_t addrlen;
 	char buf[DATA_BUFFER];
 
@@ -91,19 +94,18 @@ int	start_test(int port)
 
 	/* Receive data */
 	std::cout << "Let us wait for the client to send some data" << std::endl;
-	do 
+	while (ret_val > 0)
 	{
 		ret_val = recv(new_fd, buf, DATA_BUFFER, 0);
 		printf("Received data (len %d bytes)\n", ret_val);
 		if (ret_val > 0) 
-			printf("Received data: %s\n", buf);
+			std::cout << "Received data: " << buf << std::endl;
 		if (ret_val == -1) 
 		{
-			printf("recv() failed [%s]\n", strerror(errno));
+			std::cerr << "recv() failed" << "[" << strerror(errno) << "]" << std::endl;
 			break;
 		}
-	} while (ret_val != 0);
-
+	}
 	/* Close the sockets */
 	close(fd);
 	close(new_fd);
