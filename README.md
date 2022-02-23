@@ -16,13 +16,13 @@ entre eux afin de créer des réseaux.
     
 https://www.tutorialspoint.com/websockets/index.htm  
 http://vidalc.chez.com/lf/socket.html  
-https://ncona.com/2019/04/building-a-simple-server-with-cpp/
-https://vichargrave.github.io/programming/tcp-ip-network-programming-design-patterns-in-cpp/
+https://ncona.com/2019/04/building-a-simple-server-with-cpp/  
+https://vichargrave.github.io/programming/tcp-ip-network-programming-design-patterns-in-cpp/   
 https://www.youtube.com/watch?v=cNdlrbZSkyQ
 
 https://www.irchelp.org/protocol/rfc/
 
-https://www.alien.net.au/irc/
+https://www.alien.net.au/irc/  
 https://fr.wikipedia.org/wiki/Aide:IRC/commandes
 
 ### Testing :  
@@ -63,6 +63,7 @@ The commands which may only be used by channel operators are:
 - INVITE  - Invite a client to an invite-only channel (mode +i)
 - TOPIC   - Change the channel topic in a mode +t channel
    
+    
 ### implemented commands : ( [4. Message details](https://www.rfcreader.com/#rfc1459_line568) )
 | command | params | description |
 |---|---|---|
