@@ -6,7 +6,7 @@
 /*   By: ninieddu <ninieddu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 14:42:03 by ninieddu          #+#    #+#             */
-/*   Updated: 2022/02/23 00:37:12 by ninieddu         ###   ########lyon.fr   */
+/*   Updated: 2022/02/23 09:27:46 by ninieddu         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,14 +59,15 @@ int	start_server(int port, std::string password)
 
 int	input_check(int port, std::string pass)
 {
-	if (port <= 0 || port > 65535)
+	// if (port <= 0 || port > 65535)
+	if (port <= 1023 || port > 65535)
 	{
-		std::cout << "[Error] port need to be in 1-65535 range (prefer a port higher than 1023)." << std::endl;
+		std::cout << "[Error] port need to be in 1024-65535 range." << std::endl;
 		return(1);
 	}
-	if (pass.size() < 5) //maybe check for a max sized pass
+	if (pass.size() < 8) //maybe check for a max sized pass
 	{
-		std::cout << "[Error] you need no-empty or more robust password (more than 5 characters)" << std::endl;
+		std::cout << "[Error] you need no-empty or more robust password (more than 8 characters)" << std::endl;
 		return(1);
 	}
 	return (0);

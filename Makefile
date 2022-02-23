@@ -6,7 +6,7 @@
 #    By: ninieddu <ninieddu@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/22 17:20:49 by ninieddu          #+#    #+#              #
-#    Updated: 2022/02/23 09:19:31 by ninieddu         ###   ########lyon.fr    #
+#    Updated: 2022/02/23 09:28:56 by ninieddu         ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ COMP 	=	c++
 
 FLAG	=	-Wall -Wextra -Werror -std=c++98
 
-SRC		=	main.cpp Server.cpp
+SRC		=	main.cpp Server.cpp User.cpp
 
 INCS	=
 

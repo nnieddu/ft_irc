@@ -1,14 +1,13 @@
 # ft_irc
 L’objectif de ce projet est de reproduire le fonctionnement d’un serveur IRC. 
 
-Internet Relay Chat est un protocole de communication textuel sur Internet. 
-Il sert à la communication instantanée principalement sous la forme de discussions en groupe par l’intermédiaire  
+Internet Relay Chat est un protocole de communication textuel sur Internet.
+Il sert à la communication instantanée principalement sous la forme de discussions en groupe par l’intermédiaire
 de canaux de discussion, mais peut aussi être utilisé pour de la communication directe entre deux personnes.
-Les clients IRC se connectent à des serveurs IRC afin d’accéder à des canaux. Les
-serveurs IRC sont connectés entre eux afin de créer des réseaux.
-
-RFC 1459 Updated by RFC 2812  
+Les clients IRC se connectent à des serveurs IRC afin d’accéder à des canaux. Les serveurs IRC sont connectés 
+entre eux afin de créer des réseaux.
  
+RFC 1459 Internet Relay Chat: Protocol [https://www.rfcreader.com/#rfc1459]
 RFC 2810 Internet Relay Chat: Architecture  
 RFC 2811 Internet Relay Chat: Channel Management  
 RFC 2812 Internet Relay Chat: Client Protocol  
@@ -36,5 +35,16 @@ netcat testing :
 nc 127.0.01 <PORT>
 ```
 ### Docs :
+#### RFC 1459 :
+##### Clients
+A client is anything connecting to a server that is not another server.   
+Each client is distinguished from other clients by a unique nickname having a maximum length of nine (9) characters.  
+
+##### Server
+all servers must have the following information about all clients: 
+- the real name of the host that the client is running on, 
+- the username of the client on that host, 
+- and the server to which the client is connected.
+
 #### Ports :
 1-65535 are available, and ports in range 1-1023 are the privileged ones: an application needs to be run as root in order to listen to these ports.
