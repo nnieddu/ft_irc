@@ -6,7 +6,7 @@
 /*   By: ninieddu <ninieddu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 14:42:28 by ninieddu          #+#    #+#             */
-/*   Updated: 2022/02/22 22:48:13 by ninieddu         ###   ########lyon.fr   */
+/*   Updated: 2022/02/23 10:57:49 by ninieddu         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ class server
 		~server();
 
 		std::map<std::string, int>	_users;
+		std::map<std::string, int>	_channels;
 		
 		int	getSock()const;
 };
