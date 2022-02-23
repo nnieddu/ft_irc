@@ -33,7 +33,7 @@ class server
 		std::string			_password;
 		Socket				_socket;
 
-		std::map<int, user>	_users;
+		std::map<std::string, user>	_users;
 //		std::map<int, channel>	_channels;
 
 	public:
