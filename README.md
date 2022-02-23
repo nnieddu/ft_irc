@@ -63,8 +63,7 @@ The commands which may only be used by channel operators are:
 - INVITE  - Invite a client to an invite-only channel (mode +i)
 - TOPIC   - Change the channel topic in a mode +t channel
    
-###### [4. Message details](https://www.rfcreader.com/#rfc1459_line568)
-### implemented commands
+### implemented commands : ( [4. Message details](https://www.rfcreader.com/#rfc1459_line568) )
 | command | params | description |
 |---|---|---|
 | PASS | `<password>` | used to set up a 'password connection'. a password must be set before any attempt. |
