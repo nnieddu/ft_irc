@@ -22,7 +22,7 @@
 
 server::server(const int & port, const std::string & password):_port(port), _password(password), _socket(port)
 {
-	if (_port <= 0 || _port > 65535)
+	if (_port <= 1023 || _port > 65535)
 		throw(std::invalid_argument(std::string("port number")));
 	if (_password.size() < 5)
 		throw(std::invalid_argument(std::string("password")));
