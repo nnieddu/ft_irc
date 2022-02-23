@@ -32,7 +32,7 @@ apt-get install weechat-curses weechat-plugins
 ```
 ```
 /server add <NAME> 127.0.01/<PORT>
-/connect <NAME>
+/connect <NAME> -password=<PASWORD>
 ```
 
    
