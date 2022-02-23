@@ -25,6 +25,7 @@ class user
 		user& operator=(const user& x);
 		
 		std::string	_name;
+		std::string	_nickname;
 		std::string	_password;
 		Socket		_socket;
 		bool		_isOperator;
@@ -33,8 +34,8 @@ class user
 
 		user(std::string name, std::string password, bool isOperator, int serverSocket);
 		virtual ~user();
-	
-		int						getSock() const;
-		struct sockaddr_in		getsaddr() const;
-		socklen_t				getaddrlen() const;
+
+		std::string	getName() const;
+		std::string	getNickname() const;
+		int			getSock() const;
 };

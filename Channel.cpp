@@ -38,30 +38,30 @@ void	channel::DowngradePermissions(const std::string & username)
 	_operators.erase(username);
 }
 
-void	channel::SendToAll(const std::string & expeditor, const std::string & str) const
+void	channel::SendToAll(const user & expeditor, const std::string & str) const
 {
 	std::map<std::string, const user*>::const_iterator	it(_members.begin());
 	const user*											current_user;
-	const std::string									message(expeditor + ": " + str);
+	const std::string									message(expeditor.getNickname() + ": " + str);
 
 	while (it != _members.end())
 	{
 		current_user = it->second;
-		if (current_user->getName() != expeditor)
+		if (current_user->getName() != expeditor.getName())
 			send(current_user->getSock(), message.c_str(), message.length(), 0);
 		it++;
 	}
 }
 
-void	channel::SendToOne(const std::string & expeditor, const std::string & str, const std::string & username) const
+void	channel::SendToOne(const user & expeditor, const std::string & str, const std::string & username) const
 {
-	const std::string	message(expeditor + ": " + str);
+	const std::string	message(expeditor.getNickname() + ": " + str);
 
-	if (isMember(username) && expeditor != username)
+	if (isMember(username) && expeditor.getName() != username)
 		send(_members.find(username)->second->getSock(), message.c_str(), message.length(), 0);
 }
 
-void	channel::SendToList(const std::string & expeditor, const std::string & str, const std::list<const std::string &> & lst) const
+void	channel::SendToList(const user & expeditor, const std::string & str, const std::list<const std::string &> & lst) const
 {
 	std::list<const std::string &>::const_iterator	it(lst.begin());
 

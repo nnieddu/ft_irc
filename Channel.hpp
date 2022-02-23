@@ -36,9 +36,9 @@ class channel
 		void	UpgradePermissions(const std::string & username);
 		void	DowngradePermissions(const std::string & username);
 
-		void	SendToAll(const std::string & expeditor, const std::string & str) const;
-		void	SendToOne(const std::string & expeditor, const std::string & str, const std::string & username) const;
-		void	SendToList(const std::string & expeditor, const std::string & str, const std::list<const std::string &> & lst) const;
+		void	SendToAll(const user & expeditor, const std::string & str) const;
+		void	SendToOne(const user & expeditor, const std::string & str, const std::string & username) const;
+		void	SendToList(const user & expeditor, const std::string & str, const std::list<const std::string &> & lst) const;
 
 		bool	isMember(const std::string & username) const;
 		bool	isOperator(const std::string & username) const;
