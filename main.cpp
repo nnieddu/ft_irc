@@ -6,7 +6,7 @@
 /*   By: ninieddu <ninieddu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 14:42:03 by ninieddu          #+#    #+#             */
-/*   Updated: 2022/02/23 09:27:46 by ninieddu         ###   ########lyon.fr   */
+/*   Updated: 2022/02/23 11:32:21 by ninieddu         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,11 @@ int	start_server(int port, std::string password)
 		std::cerr << "accept failed [" << strerror(errno) << "]" << std::endl;
 		return -1;
 	}
-	
 	std::cout << "Accepted a new connection with fd : " << new_fd << std::endl;
 
+
+	std::string response = "Good talking to you\n";
+ 	send(new_fd, response.c_str(), response.size(), 0);
 	/* Receive data */
 	std::cout << "Let us wait for the client to send some data" << std::endl;
 	while (ret_val > 0)

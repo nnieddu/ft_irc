@@ -26,9 +26,16 @@ https://www.alien.net.au/irc/
 https://fr.wikipedia.org/wiki/Aide:IRC/commandes
 
 ### Testing :  
-Weechat irc client for testing :  
+[Weechat irc client for testing :](https://weechat.org/files/doc/stable/weechat_quickstart.fr.html#start)
+```
 apt-get install weechat-curses weechat-plugins 
+```
+/server add <NAME> 127.0.01/<PORT>
+/connect <NAME>
+```
 
+   
+  
 netcat testing :
 ```
 nc 127.0.01 <PORT>
