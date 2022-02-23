@@ -1,5 +1,6 @@
 #include <map>
 #include <set>
+#include <list>
 #include <utility>
 #include <string>
 #include "Channel.hpp"
@@ -25,6 +26,9 @@ void	channel::addUser(const user & new_user)
 void	channel::removeUser(const std::string & username)
 {
 	_members.erase(username);
+	_operators.erase(username);
+	if (_members.empty())
+		serv->close_channel(*this);
 }
 
 void	channel::UpgradePermissions(const std::string & username)
