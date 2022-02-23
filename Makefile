@@ -6,11 +6,11 @@
 #    By: ninieddu <ninieddu@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/22 17:20:49 by ninieddu          #+#    #+#              #
-#    Updated: 2022/02/22 17:27:27 by ninieddu         ###   ########lyon.fr    #
+#    Updated: 2022/02/23 09:19:31 by ninieddu         ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
-NAME	=	ft_irc
+NAME	=	ircserv
 
 COMP 	=	c++
 
