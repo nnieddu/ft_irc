@@ -15,32 +15,33 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include "Socket.hpp"
+#include "User.hpp"
+//#include "Channel.hpp"
 
-#include <stdio.h>
-#include <errno.h> 
-#include <netinet/in.h> 
-#include <sys/socket.h>
-#include <string.h>
-#include <unistd.h>
-#include <stdlib.h>
+#define DATA_BUFFER 50000
 
 class server
 {
 	private:
+
 		server();
 		server(const server& x);
 		server& operator=(const server& x);
 		
-		int			_port;
-		std::string	_password;
-		int			_socket;
-		int create_tcp_server_socket(int port);
-	public:
-		server(int port, std::string password);
-		~server();
+		int					_port;
+		std::string			_password;
+		Socket				_socket;
 
-		std::map<std::string, int>	_users;
-		std::map<std::string, int>	_channels;
+		std::map<int, user>	_users;
+//		std::map<int, channel>	_channels;
+
+	public:
+
+		server(const int & port, const std::string & password);
+		~server();
 		
-		int	getSock()const;
+		int	getSock() const;
+
+		int	start();
 };

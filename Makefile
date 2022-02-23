@@ -16,7 +16,7 @@ COMP 	=	c++
 
 FLAG	=	-Wall -Wextra -Werror -std=c++98
 
-SRC		=	main.cpp Server.cpp User.cpp
+SRC		=	main.cpp Server.cpp User.cpp Socket.cpp
 
 INCS	=
 

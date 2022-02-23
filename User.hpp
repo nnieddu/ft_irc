@@ -14,30 +14,27 @@
 
 #include <iostream>
 #include <string>
-#include <map>
-
-#include <stdio.h>
-#include <errno.h> 
-#include <netinet/in.h> 
-#include <sys/socket.h>
-#include <string.h>
-#include <unistd.h>
-#include <stdlib.h>
+#include "Socket.hpp"
 
 class user
 {
 	private:
+
 		user();
 		user(const user& x);
 		user& operator=(const user& x);
 		
 		std::string	_name;
 		std::string	_password;
-		int			_socket;
+		Socket		_socket;
 		bool		_isOperator;
+
 	public:
+
 		user(std::string name, std::string password, bool isOperator, int serverSocket);
-		~user();
-		
-		int	getSock()const;
+		virtual ~user();
+	
+		int						getSock() const;
+		struct sockaddr_in		getsaddr() const;
+		socklen_t				getaddrlen() const;
 };

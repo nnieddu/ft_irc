@@ -10,48 +10,57 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
+#include <iostream>
+#include <errno.h> 
+#include <netinet/in.h> 
+#include <sys/socket.h>
+#include <string>
+#include <stdexcept>
+#include <unistd.h>
 #include "Server.hpp"
+#include "User.hpp"
 
-server::server(int port, std::string password)
-: _port(port), _password(password), _socket(create_tcp_server_socket(port)) {}
-
-server::~server() { close(_socket); }
-
-int server::getSock() const { return _socket; }
-
-int server::create_tcp_server_socket(int port) 
+server::server(const int & port, const std::string & password):_port(port), _password(password), _socket(port)
 {
-	struct sockaddr_in saddr;
-	int fd; 
-	int	ret_val;
+	if (_port <= 0 || _port > 65535)
+		throw(std::invalid_argument(std::string("port number")));
+	if (_password.size() < 5)
+		throw(std::invalid_argument(std::string("password")));
+}
 
-	fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-	if (fd == -1) 
-	{
-		std::cerr << "socket failed [" << strerror(errno) << "]" << std::endl;
-		return -1;
-	}
+
+server::~server() {}
+
+int server::getSock() const { return _socket.fd; }
+
+int		server::start()
+{
+	int		ret_val(1);
+	char	buf[DATA_BUFFER];
+
+	_socket.init();
+
+	std::cout << "Welcome on the IRC server !" << std::endl
+		<< "Waiting for connection..." << std::endl;
+
+	user	new_user("tmp", "tmp", false, getSock());
+
+	std::cout << "Accepted a new connection with fd: " << new_user.getSock() << std::endl;
+
+
+	std::string response = "Good talking to you\n";
+ 	send(new_user.getSock(), response.c_str(), response.size(), 0);
 	
-	/* Initialize the socket address structure */
-	saddr.sin_family = AF_INET;         
-	saddr.sin_port = htons(port); 
-	saddr.sin_addr.s_addr = INADDR_ANY;
-	
-	/* bind the socket to port on the local host */
-	ret_val = bind(fd, (struct sockaddr *)&saddr, sizeof(struct sockaddr_in));
-	if (ret_val != 0) 
+	std::cout << "Let us wait for the client to send some data" << std::endl;
+	while (ret_val != 0)
 	{
-		std::cerr << "bind failed [" << strerror(errno) << "]" << std::endl;
-		return -1;
+		ret_val = recv(new_user.getSock(), buf, DATA_BUFFER, 0);
+		std::cout << "Received data (len " << ret_val << " bytes)" << std::endl;
+		if (ret_val > 0) 
+			std::cout << "Received data: " << std::string(buf) << std::endl;
+		if (ret_val == -1) 
+			throw(std::runtime_error("recv"));
 	}
-	
-	/* listen for incoming connections */
-	ret_val = listen(fd, 5);
-	if (ret_val != 0) 
-	{
-		std::cerr << "listen failed [" << strerror(errno) << "]" << std::endl;
-		return -1;
-	}
-	return fd;
+
+	return(ret_val);
 }
