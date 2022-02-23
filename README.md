@@ -7,11 +7,11 @@ de canaux de discussion, mais peut aussi être utilisé pour de la communication
 Les clients IRC se connectent à des serveurs IRC afin d’accéder à des canaux. Les serveurs IRC sont connectés 
 entre eux afin de créer des réseaux.
  
-RFC 1459 Internet Relay Chat: Protocol [https://www.rfcreader.com/#rfc1459]
-RFC 2810 Internet Relay Chat: Architecture  
-RFC 2811 Internet Relay Chat: Channel Management  
-RFC 2812 Internet Relay Chat: Client Protocol  
-RFC 2813 Internet Relay Chat: Server Protocol   
+[RFC 1459 Internet Relay Chat: (updated by 21812)](https://www.rfcreader.com/#rfc1459)  
+[RFC 2810 Internet Relay Chat: Architecture](https://www.rfcreader.com/#rfc2810)  
+[RFC 2811 Internet Relay Chat: Channel Management](https://www.rfcreader.com/#rfc2811)  
+[RFC 2812 Internet Relay Chat: Client Protocol](https://www.rfcreader.com/#rfc2812)  
+[RFC 2813 Internet Relay Chat: Server Protocol](https://www.rfcreader.com/#rfc2813)  
 https://www.rfcreader.com/  
   
 https://www.tutorialspoint.com/websockets/index.htm  
