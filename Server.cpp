@@ -81,7 +81,7 @@ int	server::start()
 
 				std::stringstream	ss;
 
-				ss << "nickname" << i;
+				ss << "nickname" << new_socket.fd;
 
 				user	new_user(ss.str(), "username", "password", false, new_socket);	//editer quand on saura quoi mettre la
 
@@ -132,5 +132,4 @@ void	server::close_user(size_t i)
 		_fds[j].revents = _fds[j + 1].revents;
 	}
 	_users.erase(_users.begin() + (i - 1));
-
 }
