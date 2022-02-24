@@ -47,5 +47,6 @@ class server
 		int	getSock() const;
 		std::string	getName() const;
 
-		int	start();
+		int		start();
+		void	close_user(size_t i);
 };

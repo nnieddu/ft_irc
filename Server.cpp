@@ -40,10 +40,8 @@ int	server::start()
 	std::cout << "Welcome on the irc server !" << std::endl
 			<< "Waiting for connection..." << std::endl;
 
-	size_t		i;//, j;
-  	int 	end_server = 0;
-//	int		compress_array = 0;
-	int 	close_conn;
+	size_t	i;
+  	int		end_server = 0;
 	
 	while (end_server == 0)
   	{
@@ -93,55 +91,46 @@ int	server::start()
 			}
 			else if ((ret_val = recv(_fds[i].fd, buf, sizeof(buf), 0)) >= 0)
 			{
-				std::cout << "Descriptor " << _fds[i].fd << " send : "<<  ret_val << " bytes :"<< std::endl;
-				_users[i - 1].buf += buf;
-				close_conn = 0;
 				if (ret_val < 0)
 				{
 					if (errno != EWOULDBLOCK)
 					{
 						std::cerr << "recv() failed" << std::endl;
-						close_conn = 1;
+						close_user(i);
 					}
 					break;
 				}
-				if (ret_val == 0)
+				else if (ret_val != 0)
 				{
-					std::cout << "Connection closed" << std::endl;
-					close_conn = 1;
+					std::cout << "Descriptor " << _fds[i].fd << " send : "<<  ret_val << " bytes :"<< std::endl;
+					_users[i - 1].buf += buf;
+
+					//******************************* test exit cmd
+					std::cout << buf << std::endl;
+					if ((strcmp(buf, "/exit\n") == 0))
+						return(0);
+					//*******************************
+
+					memset(&buf, 0, sizeof(buf)); // clear buffer pr pas avoir de la merde
 				}
-				//******************************* test exit cmd
-				std::cout << buf << std::endl;
-				if ((strcmp(buf, "/exit\n") == 0))
-					return(0);
-				//*******************************
-				memset(&buf, 0, sizeof(buf)); // clear buffer pr pas avoir de la merde
-				if (close_conn)
-				{
-					close(_fds[i].fd);
-					for (size_t j = i; j < _users.size(); j++)
-					{
-						_fds[j].fd = _fds[j + 1].fd;
-						_fds[j].events = _fds[j + 1].events;
-						_fds[j].revents = _fds[j + 1].revents;
-					}
-					//compress_array = 1;
-					_users.erase(_users.begin() + (i - 1));
-				}
+				else
+					close_user(i);
 			}
 		}
-	/*	if (compress_array)
-		{
-			compress_array = 0;
-			for (i = 0; i < _nfds; i++)
-				if (_fds[i].fd == -1)
-				{
-					for(j = i; j < _nfds; j++)
-						_fds[j].fd = _fds[j+1].fd;
-					i--;
-					_nfds--;
-				}
-		}*/
 	}
 	return(ret_val);
+}
+
+void	server::close_user(size_t i)
+{
+	std::cout << _users[i - 1].getNickname() << " deconnexion" << std::endl;
+	close(_fds[i].fd);
+	for (size_t j = i; j < _users.size(); j++)
+	{
+		_fds[j].fd = _fds[j + 1].fd;
+		_fds[j].events = _fds[j + 1].events;
+		_fds[j].revents = _fds[j + 1].revents;
+	}
+	_users.erase(_users.begin() + (i - 1));
+
 }
