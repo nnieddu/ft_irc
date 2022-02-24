@@ -19,6 +19,7 @@
 
 #include "Socket.hpp"
 #include "User.hpp"
+#include "Commands.hpp"
 // #include "Channel.hpp"
 
 class server
@@ -35,7 +36,8 @@ class server
 		Socket				_socket;
 		struct pollfd 		_fds[200];
 
-		std::vector<user>				_users;
+		std::vector<user>	_users;
+		Commands			_cmds;
 //		std::map<std::string, channel*>	_channels;
 
 	public:
@@ -46,6 +48,6 @@ class server
 		int	getSock() const;
 		std::string	getName() const;
 
-		int		start();
+		int		run();
 		void	close_user(size_t i);
 };

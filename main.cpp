@@ -22,7 +22,7 @@ int main(int ac, char **av)
 	try
 	{
 		server	serv(atoi(av[1]), std::string(av[2]));
-		return (serv.start());
+		return (serv.run());
 	}
 	catch (std::runtime_error &e)
 	{
