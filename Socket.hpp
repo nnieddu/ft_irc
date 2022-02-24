@@ -3,6 +3,8 @@
 
 #include <netinet/in.h>
 #include <sys/socket.h>
+#include <fcntl.h>
+#include <poll.h>
 
 class Socket
 {
@@ -14,14 +16,12 @@ class Socket
 
 	public:
 
-		int					port;
 		int					fd;
 		struct sockaddr_in	address;
 		socklen_t			len;
 
 		Socket();
-		Socket(const int & port);
 		virtual	~Socket();
 
-		void	init();
+		void	init(int port);
 };
