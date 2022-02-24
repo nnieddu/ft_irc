@@ -56,7 +56,7 @@ int	server::start()
 		{
 			if(_fds[i].revents == 0)
 				continue;
-			if(_fds[i].revents != POLLIN) //POLLIN = There is data to read.
+			if(_fds[i].revents != POLLIN && _fds[i].revents != 25) //POLLIN = There is data to read.
 			{
 				std::cerr << "Error! revents = " << _fds[i].revents << std::endl;
 				end_server = 1;
