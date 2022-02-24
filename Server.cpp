@@ -125,11 +125,16 @@ void	server::close_user(size_t i)
 {
 	std::cout << _users[i - 1].getNickname() << " deconnexion" << std::endl;
 	close(_fds[i].fd);
-	for (size_t j = i; j < _users.size(); j++)
+	for (size_t j = i; j <= _users.size(); j++)
 	{
-		_fds[j].fd = _fds[j + 1].fd;
-		_fds[j].events = _fds[j + 1].events;
-		_fds[j].revents = _fds[j + 1].revents;
+		if (j < _users.size())
+		{
+			_fds[j].fd = _fds[j + 1].fd;
+			_fds[j].events = _fds[j + 1].events;
+			_fds[j].revents = _fds[j + 1].revents;
+		}
+		else
+			_fds[j].fd = -1;
 	}
 	_users.erase(_users.begin() + (i - 1));
 }
