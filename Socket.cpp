@@ -64,4 +64,7 @@ void	Socket::user_socket(const int & server)
 	fd = accept(server, reinterpret_cast<sockaddr*>(&address), &len);
 	if (fd == -1)
 		throw(std::runtime_error("accept"));
+	if (fcntl(fd, F_SETFL, O_NONBLOCK) < 0)
+		throw(std::runtime_error("fcntl()"));
+	
 }
