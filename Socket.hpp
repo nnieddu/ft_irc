@@ -9,11 +9,6 @@
 class Socket
 {
 
-	private:
-
-		Socket(const Socket&);
-		Socket& operator=(const Socket& x);
-
 	public:
 
 		int					fd;
@@ -21,7 +16,10 @@ class Socket
 		socklen_t			len;
 
 		Socket();
+		Socket(const Socket & x);
+		Socket& operator=(const Socket& x);
 		virtual	~Socket();
 
-		void	init(int port);
+		void	server_socket(int port);
+		void	user_socket(const int & server);
 };

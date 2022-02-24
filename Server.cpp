@@ -1,3 +1,5 @@
+#include <string>
+#include <sstream>
 
 #include "Server.hpp"
 #include "User.hpp"
@@ -28,7 +30,7 @@ int	server::start()
 	int		ret_val(1);
 	char	buf[80];
 	
-	_socket.init(_port);
+	_socket.server_socket(_port);
 	
 	memset(_fds, 0 , sizeof(_fds)); // Initialize the pollfd structure 
 	// Set up the initial listening socket :
@@ -38,24 +40,21 @@ int	server::start()
 	std::cout << "Welcome on the irc server !" << std::endl
 			<< "Waiting for connection..." << std::endl;
 
-	int		i, j;
-	int		current_size = 0;
-	int		new_sd = -1;
+	size_t		i;//, j;
   	int 	end_server = 0;
-	int		compress_array = 0;
+//	int		compress_array = 0;
 	int 	close_conn;
 	
 	while (end_server == 0)
   	{
-		ret_val = poll(_fds, _nfds, (1 * 60 * 1000)); 
+		ret_val = poll(_fds, _users.size() + 1, (1 * 60 * 1000)); 
 		// 3 * 60 * 1000 = 1 minutes : timeout si pas de co / data pdt 1 min // _nfds = nombre de fd dans la struct
 		if (ret_val < 0)
 			throw(std::runtime_error("poll() failed"));
 		if (ret_val == 0) // == 0 if timeout
 			throw(std::runtime_error("poll() timed out"));
 
-		current_size = _nfds; 
-		for (i = 0; i < current_size; i++)
+		for (i = 0; i <= _users.size(); i++)
 		{
 			if(_fds[i].revents == 0)
 				continue;
@@ -65,33 +64,37 @@ int	server::start()
 				end_server = 1;
 				break;
 			}
-			if (_fds[i].fd == _socket.fd)
+			if (i == 0)
 			{
 				std::cout << "Listening socket is readable" << std::endl;
-				do
-				{
-					// map insert avec gethostname etc..
-					// user	new_user("tmp", "tmp", false, getSock());
-					new_sd = accept(_socket.fd, NULL, NULL);
+				Socket	new_socket;
 
-					if (new_sd < 0)
-					{
-						if (errno != EWOULDBLOCK)
-						{
-							std::cerr << "accept() failed" << std::endl;
-							end_server = 1;
-						}
-						break;
-					}
-					std::cout << "New incoming connection - " << new_sd << std::endl;
-					_fds[_nfds].fd = new_sd;
-					_fds[_nfds].events = POLLIN;
-					_nfds++;
-				} while (new_sd != -1);
+				try
+				{
+					new_socket.user_socket(_socket.fd);
+				}
+				catch(const std::runtime_error& e)
+				{
+					std::cerr << e.what() << " fail" << std::endl;
+					end_server = 1;
+				}
+
+				std::cout << "New incoming connection - " << new_socket.fd << std::endl;
+
+				std::stringstream	ss;
+
+				ss << "nickname" << i;
+
+				user	new_user(ss.str(), "username", "password", false, new_socket);	//editer quand on saura quoi mettre la
+
+				_users.push_back(new_user);
+				_fds[_users.size()].fd = new_socket.fd;
+				_fds[_users.size()].events = POLLIN;
 			}
 			else if ((ret_val = recv(_fds[i].fd, buf, sizeof(buf), 0)) >= 0)
 			{
 				std::cout << "Descriptor " << _fds[i].fd << " send : "<<  ret_val << " bytes :"<< std::endl;
+				_users[i - 1].buf += buf;
 				close_conn = 0;
 				if (ret_val < 0)
 				{
@@ -116,12 +119,18 @@ int	server::start()
 				if (close_conn)
 				{
 					close(_fds[i].fd);
-					_fds[i].fd = -1;
-					compress_array = 1;
+					for (size_t j = i; j < _users.size(); j++)
+					{
+						_fds[j].fd = _fds[j + 1].fd;
+						_fds[j].events = _fds[j + 1].events;
+						_fds[j].revents = _fds[j + 1].revents;
+					}
+					//compress_array = 1;
+					_users.erase(_users.begin() + (i - 1));
 				}
 			}
 		}
-		if (compress_array)
+	/*	if (compress_array)
 		{
 			compress_array = 0;
 			for (i = 0; i < _nfds; i++)
@@ -132,7 +141,7 @@ int	server::start()
 					i--;
 					_nfds--;
 				}
-		}
+		}*/
 	}
 	return(ret_val);
 }

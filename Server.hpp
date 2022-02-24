@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <vector>
 #include <string>
 #include <stdexcept>
 #include <cstring>
@@ -35,8 +36,8 @@ class server
 		Socket				_socket;
 		struct pollfd 		_fds[200];
 
-		std::map<std::string, user>	_users;
-//		std::map<int, channel>	_channels;
+		std::vector<user>				_users;
+//		std::map<std::string, channel*>	_channels;
 
 	public:
 

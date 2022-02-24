@@ -2,25 +2,53 @@
 #include "User.hpp"
 #include "Socket.hpp"
 
-user::user(std::string name, std::string password, bool isOperator, int serverSocket)
-: _name(name), _nickname(name), _password(password), _isOperator(isOperator) 
+user::user(std::string nickname, std::string username, std::string password, bool isOperator, const Socket & socket)
+: _nickname(nickname), _username(username), _password(password), _isOperator(isOperator), _socket(socket)
+{}
+
+user::user(const user& x)
+:_nickname(x.getNickname()), _username(x.getUsername()), _password(x.getPassword()), _isOperator(x.IsOperator()), _socket(x.getSocket()), buf(x.buf)
+{}
+
+user& user::operator=(const user& x)
 {
-	_socket.len = 0;
-	_socket.fd = accept(serverSocket, reinterpret_cast<sockaddr*>(&_socket.address), &_socket.len);
-	if (_socket.fd == -1)
-		throw(std::runtime_error("accept"));
+	if (this != &x)
+	{
+		_nickname = x.getNickname();
+		_username = x.getUsername();
+		_password = x.getPassword();
+		_isOperator = x.IsOperator();
+		_socket = x.getSocket();
+		buf = x.buf;
+	}
+	return *this;
 }
 
 user::~user() {}
 
-std::string	user::getName() const
-{
-	return _name;
-}
-
 std::string	user::getNickname() const
 {
 	return _nickname;
+}
+
+std::string	user::getUsername() const
+{
+	return _username;
+}
+
+std::string	user::getPassword() const
+{
+	return _password;
+}
+
+bool	user::IsOperator() const
+{
+	return _isOperator;
+}
+
+Socket	user::getSocket() const
+{
+	return _socket;
 }
 
 int user::getSock() const
