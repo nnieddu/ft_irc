@@ -34,3 +34,5 @@ class user
 
 		std::string	buf;
 };
+
+std::ostream& operator<<(std::ostream& os, const user& user);

@@ -55,3 +55,9 @@ int user::getSock() const
 {
 	return _socket.fd;
 }
+
+std::ostream& operator<<(std::ostream& os, const user& user)
+{
+    os << user.getNickname() << " | " << user.getUsername() << " | " << user.getSock() << std::endl;
+    return os;
+}
