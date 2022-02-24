@@ -5,7 +5,7 @@
 #include "User.hpp"
 
 server::server(const int & port, const std::string & password)
-: _name("ft_irc.serv"), _port(port), _password(password), _nfds(1)
+: _name("ft_irc.serv"), _port(port), _password(password)
 {
 	if (_port <= 1023 || _port > 65535)
 		throw(std::invalid_argument(std::string("port number")));
@@ -15,7 +15,7 @@ server::server(const int & port, const std::string & password)
 
 server::~server() 
 {
-	for (int i = 0; i < _nfds; i++)
+	for (size_t i = 0; i < _users.size() + 1; i++)
 	{
 		if(_fds[i].fd >= 0)
 			close(_fds[i].fd);

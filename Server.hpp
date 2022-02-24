@@ -32,7 +32,6 @@ class server
 		std::string			_name;
 		int					_port;
 		std::string			_password;
-		int					_nfds; //nbr de fds
 		Socket				_socket;
 		struct pollfd 		_fds[200];
 
