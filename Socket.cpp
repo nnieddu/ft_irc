@@ -50,7 +50,7 @@ void	Socket::server_socket(int port)
 	address.sin_port = htons(port);
 	address.sin_addr.s_addr = INADDR_ANY;
 
-	if (bind(fd, (struct sockaddr *)&address, sizeof(address)) < 0)
+	if (bind(fd, reinterpret_cast<sockaddr*>(&address), sizeof(address)) < 0)
 		throw(std::runtime_error(std::string("bind")));
 
 	if (listen(fd, 10) < 0)
