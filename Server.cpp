@@ -3,6 +3,7 @@
 
 #include "Server.hpp"
 #include "User.hpp"
+#include "irc_replies.hpp"
 
 server::server(const int & port, const std::string & password)
 : _name("ft_irc.serv"), _port(port), _password(password)
@@ -24,6 +25,16 @@ server::~server()
 
 int 		server::getSock() const { return _socket.fd; }
 std::string server::getName() const { return _name; }
+
+void	server::send_reply(user *usr, const char* code)
+{
+	std::string to_send;
+	std::string prefix = ":" + usr->getUsername();
+	std::string test = "Welcome to the Internet Relay Network " + prefix;
+
+	to_send += (prefix +  " " + code + " " + usr->getNickname() + " " + test + "\r\n");
+	send(usr->getSock(), to_send.c_str(), to_send.length(), 0);
+}
 
 int	server::run()
 {
@@ -104,6 +115,8 @@ int	server::accept_user()
 
 	_users.push_back(user(ss.str(), "username", "password", false, Socket(new_pollfd.fd, address, len)));
 	_fds.push_back(new_pollfd);
+	send_reply(&_users[_users.size() - 1], RPL_WELCOME);
+    // send_reply(&_users[_users.size() - 1], RPL_YOURHOST);
 	return 0;
 }
 

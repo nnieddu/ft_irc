@@ -14,13 +14,13 @@ Commands::~Commands() {}
 void Commands::launch(std::string full_cmd)
 {
 	std::string cmd = parseCmds(full_cmd);
-
 	std::map<std::string, ft_ptr>::iterator it = cmds_list.find(cmd);
+
 	if(it != cmds_list.end())
 	{
-		std::string cmd_arg = parseCmdsArgs(full_cmd);
-		ptr = it->second;
-		(this->*ptr)(cmd_arg);
+			std::string cmd_arg = parseCmdsArgs(full_cmd);
+			ptr = it->second;
+			(this->*ptr)(cmd_arg);
 	}
 }
 

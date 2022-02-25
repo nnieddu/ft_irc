@@ -52,4 +52,5 @@ class server
 		int		accept_user();
 		void	receive_command(ssize_t recv, size_t i, char * buf);
 		void	close_user(size_t i);
+		void	send_reply(user *usr, const char* code);
 };
