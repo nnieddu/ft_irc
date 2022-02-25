@@ -52,7 +52,8 @@ int	server::run()
 		if (ret_val < 0)
 			throw(std::runtime_error("poll() failed"));
 
-		for (size_t i = 0; i < _fds.size(); i++)
+		size_t nfd = _fds.size();
+		for (size_t i = 0; i < nfd; i++)
 		{
 			if(_fds[i].revents == 0)
 				continue;
