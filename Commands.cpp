@@ -2,6 +2,7 @@
 #include "Commands.hpp"
 #include "Socket.hpp"
 #include <stdlib.h>
+#include "Server.hpp"
 
 Commands::Commands(server * serv): _serv(serv)
 {

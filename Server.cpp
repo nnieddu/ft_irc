@@ -1,5 +1,6 @@
 #include <string>
 #include <sstream>
+#include <utility>
 
 #include "Server.hpp"
 #include "User.hpp"
@@ -150,4 +151,12 @@ void	server::close_user(size_t i)
 	_fds.erase(_fds.begin() + i);
 	_users.erase(_users.begin() + (i - 1));
 	return ;
+}
+
+void	server::create_channel(user & usr, std::string & name)
+{
+	channel	tmp(name, *this, usr);
+
+	_channels.insert(std::make_pair(name, &tmp));
+	usr.join_channel(name);
 }

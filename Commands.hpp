@@ -6,9 +6,9 @@
 #include <map>
 #include <functional>
 #include "User.hpp"
-#include "Server.hpp"
+//#include "Server.hpp"
 
-//class server;
+class server;
 
 class Commands
 {

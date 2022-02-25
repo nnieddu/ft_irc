@@ -19,7 +19,6 @@ class channel
 		channel& operator=(const channel& x);
 
 		std::string	_name;
-		std::string	_password;
 
 		const server*						_serv;
 		const user*							_owner;
@@ -29,7 +28,7 @@ class channel
 
 	public:
 
-		channel(const std::string & name, const std::string & password, const server & serv, const user & creator);
+		channel(const std::string & name, const server & serv, const user & creator);
 		virtual ~channel();
 
 		void	addUser(const user & new_user);

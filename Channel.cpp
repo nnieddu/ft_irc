@@ -8,9 +8,9 @@
 #include "Socket.hpp"
 
 channel::channel
-	(const std::string & name, const std::string & password,
+	(const std::string & name,
 	 const server & serv, const user & owner)
-	:_name(name), _password(password), _serv(&serv), _owner(&owner)
+	:_name(name), _serv(&serv), _owner(&owner)
 {
 	_members.insert(std::make_pair(_owner->getNickname(), _owner));
 	_operators.insert(_owner->getNickname());
