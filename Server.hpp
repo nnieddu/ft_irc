@@ -38,7 +38,7 @@ class server
 
 		std::vector<user>	_users;
 		Commands			_cmds;
-//		std::map<std::string, channel*>	_channels;
+		// std::map<std::string, channel*>	_channels;
 
 	public:
 

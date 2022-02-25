@@ -98,11 +98,8 @@ int	server::run()
 				else if (ret_val != 0)
 				{
 					std::cout << "Descriptor " << _fds[i].fd << " send : "<<  ret_val << " bytes :"<< std::endl;
+					_cmds.isCommands(buf);
 					_users[i - 1].buf += buf;
-
-					_cmds.listCommands(); //test
-					if (_cmds.IsCommands(buf) == 1)
-						return 0;
 
 					memset(&buf, 0, sizeof(buf));
 				}

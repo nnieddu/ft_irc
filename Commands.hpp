@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <string>
-#include <vector>
 #include <map>
 #include <functional>
 
@@ -15,11 +14,15 @@ class Commands
 	public:
 		Commands();
 		~Commands();
-		
-		std::vector<std::string> cmds_list; // remplacer par map de ptr de ft
 
-		int	IsCommands(std::string cmd);
+		typedef void (Commands::*method)();
+		method p;
+		std::map<std::string, method> cmds_list; // remplacer par map de ptr de ft
+
+		void isCommands(std::string cmd);
 		void listCommands();
 
 		void exit();
+		void join(std::string channel_name);
+
 };

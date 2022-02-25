@@ -5,30 +5,36 @@
 
 Commands::Commands() 
 {
-	cmds_list.push_back("/exit\n");
-	cmds_list.push_back("/join\n");
+	cmds_list["/exit\n"] = (p = &Commands::exit);
+	// cmds_list["/join\n"] = (p = &Commands::join);
 }
 
 Commands::~Commands() {}
 
-int Commands::IsCommands(std::string cmd)
+void Commands::isCommands(std::string cmd)
 {
-	for (std::vector<std::string>::iterator it = cmds_list.begin() ; it != cmds_list.end(); ++it)
+	for (std::map<std::string, method>::iterator it = cmds_list.begin(); it!=cmds_list.end(); ++it)
 	{
-		if (*it == cmd)
-			return 1;
+		if (it->first == cmd)
+		{
+			p = it->second;
+			(this->*p)();
+		}
 	}
-	return (0);
 }
 
 void Commands::listCommands()
 {
-	for (std::vector<std::string>::iterator it = cmds_list.begin() ; it != cmds_list.end(); ++it)
-		std::cout << *it;
+  for (std::map<std::string, method>::iterator it = cmds_list.begin(); it!=cmds_list.end(); ++it)
+    std::cout << it->first << '\n';
 }
 
 void Commands::exit()
 {
-	std::cout << "TEST EXIT\n";
 	throw(std::runtime_error("EXIT"));
+}
+
+void Commands::join(std::string channel_name)
+{
+	std::cout << "Channel : " << channel_name << " created, welcome !";
 }
