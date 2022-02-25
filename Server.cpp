@@ -6,7 +6,7 @@
 #include "irc_replies.hpp"
 
 server::server(const int & port, const std::string & password)
-: _name("ft_irc.serv"), _port(port), _password(password)
+: _name("ft_irc.serv"), _port(port), _password(password), _cmds(this)
 {
 	if (_port <= 1023 || _port > 65535)
 		throw(std::invalid_argument(std::string("port number")));
@@ -133,8 +133,8 @@ void	server::receive_command(ssize_t recv, size_t i, char *buf)
 	else if (recv != 0)
 	{
 		std::cout << "Descriptor " << _fds[i].fd << " send : "<<  recv << " bytes :"<< std::endl;
-		_cmds.launch(buf);
 		_users[i - 1].buf += buf;
+		_cmds.launch(_users[i - 1]);
 
 		memset(&buf, 0, sizeof(buf));
 	}

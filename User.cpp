@@ -56,6 +56,38 @@ int user::getSock() const
 	return _socket.fd;
 }
 
+
+void	user::join_channel(std::string & name)
+{
+	_channels.insert(name);
+	setLocation(name);		// /!\ locations related stuff
+}
+
+void	user::leave_channel(std::string & name)
+{
+	_channels.erase(name);
+}
+
+void	user::setLocation(std::string & name)
+{
+	_location = name;
+}
+
+std::string	user::getLocation() const		// /!\ locations related stuff
+{
+	return _location;
+}
+
+bool	user::isMember(std::string & name) const
+{
+	return (_channels.find(name) != _channels.end());
+}
+
+void	user::clearbuf()
+{
+	buf.clear();
+}
+
 std::ostream& operator<<(std::ostream& os, const user& user)
 {
     os << user.getNickname() << " | " << user.getUsername() << " | " << user.getSock() << std::endl;

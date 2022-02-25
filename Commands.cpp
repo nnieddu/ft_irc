@@ -3,25 +3,29 @@
 #include "Socket.hpp"
 #include <stdlib.h>
 
-Commands::Commands() 
+Commands::Commands(server * serv): _serv(serv)
 {
-	// cmds_list["/exit"] = (ptr = &Commands::exit);
-	cmds_list["/join"] = (ptr = &Commands::join);
+//	cmds_list["EXIT"] = (ptr = &Commands::exit);
+	cmds_list["JOIN"] = (ptr = &Commands::join);
 }
 
 Commands::~Commands() {}
 
-void Commands::launch(std::string full_cmd)
+void Commands::launch(user & usr)
 {
-	std::string cmd = parseCmds(full_cmd);
+	if (!_is_complete(usr.buf))						// /!\	voir si il est possible d avoir n_command > 1 dans usr.buf
+		return;
+
+	std::string cmd = parseCmds(usr.buf);
 	std::map<std::string, ft_ptr>::iterator it = cmds_list.find(cmd);
 
 	if(it != cmds_list.end())
 	{
-			std::string cmd_arg = parseCmdsArgs(full_cmd);
+			std::string cmd_arg = parseCmdsArgs(usr.buf);
 			ptr = it->second;
-			(this->*ptr)(cmd_arg);
+			(this->*ptr)(usr, cmd_arg);
 	}
+	usr.clearbuf();						// /!\	voir si il est possible d avoir n_command > 1 dans usr.buf
 }
 
 void Commands::listCommands()
@@ -48,12 +52,26 @@ std::string Commands::parseCmdsArgs(std::string cmd)
 	return (cmd);
 }
 
-void Commands::exit()
+bool	Commands::_is_complete(std::string & cmd) const
 {
-	// throw(std::runtime_error("EXIT"));
+	std::string::reverse_iterator	rit(cmd.rbegin());
+
+	while (rit != cmd.rend() && *rit != '\n') //&& *rit !=)
+		rit++;
+	return (rit != cmd.rend());
 }
 
-void Commands::join(std::string cmd)
+//void Commands::exit(user & usr, std::string cmd)
+//{
+//
+//}
+
+void Commands::join(user & usr, std::string arg)
 {
-	std::cout << "Channel : " << cmd << " created, welcome !";
+	std::cout << "Channel : " << arg << " created, welcome !";
+	if (!usr.isMember(arg))
+		_serv->create_channel(usr, arg);
+	else
+		usr.setLocation(arg);		// /!\ locations related stuff
+	return;
 }
