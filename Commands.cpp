@@ -17,8 +17,8 @@ void Commands::isCommands(std::string cmd)
 	{
 		if (it->first == cmd)
 		{
-			p = it->second;
-			(this->*p)();
+			ptr = it->second;
+			(this->*ptr)();
 		}
 	}
 }
