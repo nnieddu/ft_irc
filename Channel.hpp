@@ -5,7 +5,7 @@
 #include <string>
 #include <map>
 #include <set>
-#include <list>
+#include <vector>
 #include "User.hpp"
 
 class server;
@@ -39,7 +39,6 @@ class channel
 
 		void	SendToAll(const user & expeditor, const std::string & str) const;
 		void	SendToOne(const user & expeditor, const std::string & str, const std::string & username) const;
-		void	SendToList(const user & expeditor, const std::string & str, const std::list<const std::string &> & lst) const;
 
 		bool	isMember(const std::string & username) const;
 		bool	isOperator(const std::string & username) const;

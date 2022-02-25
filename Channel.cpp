@@ -1,6 +1,6 @@
 #include <map>
 #include <set>
-#include <list>
+#include <vector>
 #include <utility>
 #include <string>
 #include "Channel.hpp"
@@ -63,14 +63,6 @@ void	channel::SendToOne(const user & expeditor, const std::string & str, const s
 
 	if (isMember(username) && expeditor.getNickname() != username)
 		send(_members.find(username)->second->getSock(), message.c_str(), message.length(), 0);
-}
-
-void	channel::SendToList(const user & expeditor, const std::string & str, const std::list<const std::string &> & lst) const
-{
-	std::list<const std::string &>::const_iterator	it(lst.begin());
-
-	while (it != lst.end())
-		SendToOne(expeditor, str, *(it++));
 }
 
 bool	channel::isMember(const std::string & username) const
