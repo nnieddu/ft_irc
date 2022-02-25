@@ -6,8 +6,9 @@
 #include <map>
 #include <set>
 #include <list>
-#include "Server.hpp"
 #include "User.hpp"
+
+class server;
 
 class channel
 {
