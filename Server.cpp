@@ -135,12 +135,10 @@ void	server::receive_command(ssize_t recv, size_t i, char *buf)
 		std::cout << "Descriptor " << _fds[i].fd << " send : "<<  recv << " bytes :"<< std::endl;
 		_users[i - 1].buf += buf;
 		_cmds.launch(_users[i - 1]);
-
 		memset(&buf, 0, sizeof(buf));
 	}
 	else
 		close_user(i);
-	return;
 }
 
 void	server::close_user(size_t i)
@@ -149,7 +147,6 @@ void	server::close_user(size_t i)
 	close(_fds[i].fd);
 	_fds.erase(_fds.begin() + i);
 	_users.erase(_users.begin() + (i - 1));
-	return ;
 }
 
 bool	server::is_channel_member(const user & usr, const channel & chan) const

@@ -1,16 +1,8 @@
-#include <map>
-#include <set>
-#include <vector>
-#include <utility>
-#include <string>
 #include "Channel.hpp"
-#include "User.hpp"
-#include "Socket.hpp"
-#include "Server.hpp"
 
 channel::channel(const channel& x):_name(x.getName())
 {
-	_members.insert(x.getMembers().begin(), x.getMembers().end());
+	_members = x.getMembers();
 }
 
 channel::channel(std::string & name, const user & creator)

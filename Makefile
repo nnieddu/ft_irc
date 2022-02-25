@@ -14,7 +14,7 @@ NAME	=	ircserv
 
 COMP 	=	c++
 
-FLAG	=	-Wall -Wextra -Werror -std=c++98
+FLAG	=	-Wall -Wextra -Werror -std=c++98 -g -O3
 
 SRC		=	main.cpp Server.cpp User.cpp Socket.cpp Commands.cpp Channel.cpp
 

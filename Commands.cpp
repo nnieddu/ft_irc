@@ -1,7 +1,5 @@
 
 #include "Commands.hpp"
-#include "Socket.hpp"
-#include <stdlib.h>
 #include "Server.hpp"
 
 Commands::Commands(server * serv): _serv(serv)
@@ -12,8 +10,7 @@ Commands::Commands(server * serv): _serv(serv)
 
 Commands::~Commands() {}
 
-void Commands::launch(user & usr)
-{
+void Commands::launch(user & usr) {
 	if (!_is_complete(usr.buf))						// /!\	voir si il est possible d avoir n_command > 1 dans usr.buf
 		return;
 
@@ -41,7 +38,7 @@ void Commands::listCommands()
 std::string Commands::parseCmds(std::string cmd)
 {
 	std::string::iterator it = cmd.begin();
-	while (*it != ' ')
+	while (*it != ' ' && it != cmd.end())
 		it++;
 	cmd.erase(it, cmd.end());
 	return (cmd);
@@ -77,5 +74,4 @@ void Commands::join(user & usr, std::string arg)
 	std::cout << "Channel : " << arg << " created, welcome !";
 	if (!_serv->is_channel_member(usr, arg))
 		_serv->create_channel(arg, usr);
-	return;
 }
