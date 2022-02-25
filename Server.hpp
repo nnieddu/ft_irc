@@ -34,10 +34,10 @@ class server
 		int					_port;
 		std::string			_password;
 		Socket				_socket;
-		struct pollfd 		_fds[200];
 
-		std::vector<user>	_users;
-		Commands			_cmds;
+		std::vector<struct pollfd> 		_fds;
+		std::vector<user>				_users;
+		Commands						_cmds;
 		std::map<std::string, channel*>	_channels;
 
 	public:
