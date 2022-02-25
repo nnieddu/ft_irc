@@ -18,8 +18,8 @@ class Socket
 		Socket();
 		Socket(const Socket & x);
 		Socket& operator=(const Socket& x);
+		Socket(const int xfd, const struct sockaddr_in & xaddress, const socklen_t & xlen);
 		virtual	~Socket();
 
 		void	server_socket(int port);
-		void	user_socket(const int & server);
 };

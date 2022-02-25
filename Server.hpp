@@ -49,5 +49,7 @@ class server
 		std::string	getName() const;
 
 		int		run();
+		int		accept_user();
+		void	receive_command(ssize_t recv, size_t i, char * buf);
 		void	close_user(size_t i);
 };

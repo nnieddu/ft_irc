@@ -13,6 +13,10 @@ Socket::Socket(): fd(-1), address(sockaddr_in()), len(socklen_t())
 Socket::Socket(const Socket & x):fd(x.fd), address(x.address), len(x.len)
 {}
 
+Socket::Socket(const int xfd, const struct sockaddr_in & xaddress, const socklen_t & xlen)
+	:fd(xfd), address(xaddress), len(xlen)
+{}
+
 Socket& Socket::operator=(const Socket& x)
 {
 	if (this != &x)
@@ -57,14 +61,4 @@ void	Socket::server_socket(int port)
 		throw(std::runtime_error("listen"));
 
 	return;
-}
-
-void	Socket::user_socket(const int & server)
-{
-	fd = accept(server, reinterpret_cast<sockaddr*>(&address), &len);
-	if (fd == -1)
-		throw(std::runtime_error("accept"));
-	if (fcntl(fd, F_SETFL, O_NONBLOCK) < 0)
-		throw(std::runtime_error("fcntl()"));
-	
 }

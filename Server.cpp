@@ -61,54 +61,67 @@ int	server::run()
 				end_server = 1;
 				break;
 			}
-			if (i == 0)
-			{
-				Socket	new_socket;
-				try
-				{
-					new_socket.user_socket(_socket.fd);
-				}
-				catch(const std::runtime_error& e)
-				{
-					std::cerr << e.what() << " fail" << std::endl;
-					end_server = 1;
-				}
-
-				std::cout << "New incoming connection - " << new_socket.fd << std::endl;
-				std::stringstream	ss;
-
-				ss << "nickname" << new_socket.fd;
-				user	new_user(ss.str(), "username", "password", false, new_socket); //editer quand on saura quoi mettre la
-
-				_users.push_back(new_user);
-				_fds[_users.size()].fd = new_socket.fd;
-				_fds[_users.size()].events = POLLIN;
-			}
-			else if ((ret_val = recv(_fds[i].fd, buf, sizeof(buf), 0)) >= 0)
-			{
-				if (ret_val < 0)
-				{
-					if (errno != EWOULDBLOCK)
-					{
-						std::cerr << "recv() failed" << std::endl;
-						close_user(i);
-					}
-					break;
-				}
-				else if (ret_val != 0)
-				{
-					std::cout << "Descriptor " << _fds[i].fd << " send : "<<  ret_val << " bytes :"<< std::endl;
-					_cmds.isCommands(buf);
-					_users[i - 1].buf += buf;
-
-					memset(&buf, 0, sizeof(buf));
-				}
-				else
-					close_user(i);
-			}
+			else if (i == 0)
+				end_server = accept_user();
+			else
+				receive_command(recv(_fds[i].fd, buf, sizeof(buf), 0), i, buf);
 		}
 	}
 	return(ret_val);
+}
+
+int	server::accept_user()
+{
+	int					nfd;
+	struct sockaddr_in	address;
+	socklen_t			len = 0;
+	std::stringstream	ss;
+
+	try
+	{
+		nfd = accept(_socket.fd, reinterpret_cast<sockaddr*>(&address), &len);
+		if (nfd == -1)
+			throw(std::runtime_error("accept"));
+		if (fcntl(nfd, F_SETFL, O_NONBLOCK) < 0)
+			throw(std::runtime_error("fcntl()"));
+	}
+	catch(const std::runtime_error& e)
+	{
+		std::cerr << e.what() << " error" << std::endl;
+		return 1;
+	}
+
+	ss << "nickname" << nfd;
+	std::cout << "New incoming connection - " << ss.str() << std::endl;
+
+
+	_users.push_back(user(ss.str(), "username", "password", false, Socket(nfd, address, len)));
+	_fds[_users.size()].fd = nfd;
+	_fds[_users.size()].events = POLLIN;
+	return 0;
+}
+
+void	server::receive_command(ssize_t recv, size_t i, char *buf)
+{
+	if (recv < 0)
+	{
+		if (errno != EWOULDBLOCK)
+		{
+			std::cerr << "recv() failed" << std::endl;
+			close_user(i);
+		}
+	}
+	else if (recv != 0)
+	{
+		std::cout << "Descriptor " << _fds[i].fd << " send : "<<  recv << " bytes :"<< std::endl;
+		_cmds.isCommands(buf);
+		_users[i - 1].buf += buf;
+
+		memset(&buf, 0, sizeof(buf));
+	}
+	else
+		close_user(i);
+	return;
 }
 
 void	server::close_user(size_t i)
@@ -127,4 +140,5 @@ void	server::close_user(size_t i)
 			_fds[j].fd = -1;
 	}
 	_users.erase(_users.begin() + (i - 1));
+	return ;
 }
