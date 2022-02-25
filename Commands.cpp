@@ -13,7 +13,7 @@ Commands::~Commands() {}
 
 void Commands::isCommands(std::string cmd)
 {
-	for (std::map<std::string, method>::iterator it = cmds_list.begin(); it!=cmds_list.end(); ++it)
+	for (std::map<std::string, ft_ptr>::iterator it = cmds_list.begin(); it!=cmds_list.end(); ++it)
 	{
 		if (it->first == cmd)
 		{
@@ -25,7 +25,7 @@ void Commands::isCommands(std::string cmd)
 
 void Commands::listCommands()
 {
-  for (std::map<std::string, method>::iterator it = cmds_list.begin(); it!=cmds_list.end(); ++it)
+  for (std::map<std::string, ft_ptr>::iterator it = cmds_list.begin(); it!=cmds_list.end(); ++it)
     std::cout << it->first << '\n';
 }
 
