@@ -5,20 +5,22 @@
 
 Commands::Commands() 
 {
-	cmds_list["/exit\n"] = (ptr = &Commands::exit);
-	// cmds_list["/join\n"] = (ptr = &Commands::join);
+	// cmds_list["/exit"] = (ptr = &Commands::exit);
+	cmds_list["/join"] = (ptr = &Commands::join);
 }
 
 Commands::~Commands() {}
 
-void Commands::isCommands(std::string cmd)
+void Commands::isCommands(std::string full_cmd)
 {
+	std::string cmd = parseCmds(full_cmd);
 	for (std::map<std::string, ft_ptr>::iterator it = cmds_list.begin(); it!=cmds_list.end(); ++it)
 	{
 		if (it->first == cmd)
 		{
+			std::string cmd_arg = parseCmdsArgs(full_cmd);
 			ptr = it->second;
-			(this->*ptr)();
+			(this->*ptr)(cmd_arg);
 		}
 	}
 }
@@ -29,12 +31,30 @@ void Commands::listCommands()
 		std::cout << it->first << std::endl;
 }
 
-void Commands::exit()
+std::string Commands::parseCmds(std::string cmd)
 {
-	throw(std::runtime_error("EXIT"));
+	std::string::iterator it = cmd.begin();
+	while (*it != ' ')
+		it++;
+	cmd.erase(it, cmd.end());
+	return (cmd);
 }
 
-void Commands::join(std::string channel_name)
+std::string Commands::parseCmdsArgs(std::string cmd)
 {
-	std::cout << "Channel : " << channel_name << " created, welcome !";
+	std::string::iterator it = cmd.begin();
+	while (*it != ' ')
+		it++;
+	cmd.erase(cmd.begin(), it);
+	return (cmd);
+}
+
+void Commands::exit()
+{
+	// throw(std::runtime_error("EXIT"));
+}
+
+void Commands::join(std::string cmd)
+{
+	std::cout << "Channel : " << cmd << " created, welcome !";
 }

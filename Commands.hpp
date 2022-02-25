@@ -15,15 +15,16 @@ class Commands
 		Commands();
 		~Commands();
 
-		typedef void (Commands::*ft_ptr)();
+		typedef void (Commands::*ft_ptr)(std::string);
 		ft_ptr ptr;
-
 		std::map<std::string, ft_ptr> cmds_list;
 
-		void isCommands(std::string cmd);
+		void isCommands(std::string full_cmd);
 		void listCommands();
+		std::string parseCmds(std::string cmd);
+		std::string parseCmdsArgs(std::string cmd);
 
 		void exit();
-		void join(std::string channel_name);
+		void join(std::string cmd);
 
 };
