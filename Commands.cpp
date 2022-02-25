@@ -5,8 +5,8 @@
 
 Commands::Commands() 
 {
-	cmds_list["/exit\n"] = (p = &Commands::exit);
-	// cmds_list["/join\n"] = (p = &Commands::join);
+	cmds_list["/exit\n"] = (ptr = &Commands::exit);
+	// cmds_list["/join\n"] = (ptr = &Commands::join);
 }
 
 Commands::~Commands() {}
@@ -26,7 +26,7 @@ void Commands::isCommands(std::string cmd)
 void Commands::listCommands()
 {
   for (std::map<std::string, ft_ptr>::iterator it = cmds_list.begin(); it!=cmds_list.end(); ++it)
-    std::cout << it->first << '\n';
+    std::cout << it->first << std::endl;
 }
 
 void Commands::exit()
