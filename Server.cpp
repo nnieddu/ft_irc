@@ -114,7 +114,7 @@ void	server::receive_command(ssize_t recv, size_t i, char *buf)
 	else if (recv != 0)
 	{
 		std::cout << "Descriptor " << _fds[i].fd << " send : "<<  recv << " bytes :"<< std::endl;
-		_cmds.isCommands(buf);
+		_cmds.launch(buf);
 		_users[i - 1].buf += buf;
 
 		memset(&buf, 0, sizeof(buf));

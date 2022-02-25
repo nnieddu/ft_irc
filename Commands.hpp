@@ -19,7 +19,7 @@ class Commands
 		ft_ptr ptr;
 		std::map<std::string, ft_ptr> cmds_list;
 
-		void isCommands(std::string full_cmd);
+		void launch(std::string full_cmd);
 		void listCommands();
 		std::string parseCmds(std::string cmd);
 		std::string parseCmdsArgs(std::string cmd);
