@@ -25,8 +25,8 @@ void Commands::isCommands(std::string cmd)
 
 void Commands::listCommands()
 {
-  for (std::map<std::string, ft_ptr>::iterator it = cmds_list.begin(); it!=cmds_list.end(); ++it)
-    std::cout << it->first << std::endl;
+	for (std::map<std::string, ft_ptr>::iterator it = cmds_list.begin(); it!=cmds_list.end(); ++it)
+		std::cout << it->first << std::endl;
 }
 
 void Commands::exit()
