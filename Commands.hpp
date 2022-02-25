@@ -34,7 +34,7 @@ class Commands
 		std::string parseCmds(std::string cmd);
 		std::string parseCmdsArgs(std::string cmd);
 
-		//void exit();
+		void exit(user & usr, std::string cmd);
 		void join(user & usr, std::string arg);
 
 };

@@ -6,40 +6,29 @@
 #include "Channel.hpp"
 #include "User.hpp"
 #include "Socket.hpp"
+#include "Server.hpp"
 
-channel::channel
-	(const std::string & name,
-	 const server & serv, const user & owner)
-	:_name(name), _serv(&serv), _owner(&owner)
+channel::channel(const channel& x):_name(x.getName())
 {
-	_members.insert(std::make_pair(_owner->getNickname(), _owner));
-	_operators.insert(_owner->getNickname());
+	_members.insert(x.getMembers().begin(), x.getMembers().end());
+}
+
+channel::channel(std::string & name, const user & creator)
+	:_name(name)
+{
+	_members.insert(std::make_pair(creator.getNickname(), &creator));
 }
 
 channel::~channel() {}
 
-void	channel::addUser(const user & new_user)
+void	channel::addUser(const user & usr)
 {
-	_members.insert(std::make_pair(new_user.getNickname(), &new_user));
+	_members.insert(std::make_pair(usr.getNickname(), &usr));
 }
 
-void	channel::removeUser(const std::string & username)
+void	channel::removeUser(const user & usr)
 {
-	_members.erase(username);
-	_operators.erase(username);
-//	if (_members.empty())
-//		serv->close_channel(*this);
-}
-
-void	channel::UpgradePermissions(const std::string & username)
-{
-	if (isMember(username))
-		_operators.insert(username);
-}
-
-void	channel::DowngradePermissions(const std::string & username)
-{
-	_operators.erase(username);
+	_members.erase(usr.getNickname());
 }
 
 void	channel::SendToAll(const user & expeditor, const std::string & str) const
@@ -57,23 +46,27 @@ void	channel::SendToAll(const user & expeditor, const std::string & str) const
 	}
 }
 
-void	channel::SendToOne(const user & expeditor, const std::string & str, const std::string & username) const
+bool	channel::isMember(const user & usr) const
 {
-	const std::string	message(expeditor.getUsername() + ": " + str);
-
-	if (isMember(username) && expeditor.getNickname() != username)
-		send(_members.find(username)->second->getSock(), message.c_str(), message.length(), 0);
+	return _members.find(usr.getNickname()) != _members.end();
 }
 
-bool	channel::isMember(const std::string & username) const
+std::string	channel::getName() const
 {
-	return _members.find(username) != _members.end();
+	return _name;
 }
 
-
-bool	channel::isOperator(const std::string & username) const
+void	channel::setName(const std::string & new_name)
 {
-	return _operators.find(username) != _operators.end();
+	_name = new_name;
 }
 
-void	setName(const std::string & name);
+std::map<std::string, const user*>	channel::getMembers() const
+{
+	return _members;
+}
+
+bool	channel::empty() const
+{
+	return _members.empty();
+}

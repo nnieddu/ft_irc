@@ -113,7 +113,6 @@ int	server::accept_user()
 	ss << "nickname" << new_pollfd.fd;
 	std::cout << "New incoming connection - " << ss.str() << std::endl;
 
-
 	_users.push_back(user(ss.str(), "username", "password", false, Socket(new_pollfd.fd, address, len)));
 	_fds.push_back(new_pollfd);
 	send_reply(&_users[_users.size() - 1], RPL_WELCOME);
@@ -153,10 +152,28 @@ void	server::close_user(size_t i)
 	return ;
 }
 
-void	server::create_channel(user & usr, std::string & name)
+bool	server::is_channel_member(const user & usr, const channel & chan) const
 {
-	channel	tmp(name, *this, usr);
+	return chan.isMember(usr);
+}
 
-	_channels.insert(std::make_pair(name, &tmp));
-	usr.join_channel(name);
+bool	server::is_channel_member(const user & usr, const std::string & name) const
+{
+	std::map<std::string, channel>::const_iterator	it(_channels.find(name));
+
+	if (it == _channels.end())
+		return false;
+	return is_channel_member(usr, it->second);
+}
+
+void	server::create_channel(std::string & name, const user & usr)
+{
+	_channels.insert(std::make_pair(name, channel(name, usr)));
+	std::cout << std::endl << "got here" << std::endl;
+}
+
+void	server::close_channel(std::string & name)
+{
+	std::cout << name << " channel closed" << std::endl;
+	_channels.erase(name);
 }

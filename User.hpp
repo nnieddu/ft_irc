@@ -18,9 +18,6 @@ class user
 		bool		_isOperator;
 		Socket		_socket;
 
-		std::set<std::string>	_channels;
-		std::string				_location;
-
 	public:
 
 		user(std::string nickname, std::string username, std::string password, bool isOperator, const Socket & socket);
@@ -35,12 +32,6 @@ class user
 		Socket		getSocket() const;
 
 		int			getSock() const;
-
-		void		join_channel(std::string & name);
-		void		leave_channel(std::string & name);
-		void		setLocation(std::string & name);
-		std::string	getLocation() const;		// /!\ locations related stuff
-		bool		isMember(std::string & name) const;
 
 		std::string	buf;
 		void	clearbuf();

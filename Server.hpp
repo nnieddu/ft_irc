@@ -38,7 +38,7 @@ class server
 		std::vector<struct pollfd> 		_fds;
 		std::vector<user>				_users;
 		Commands						_cmds;
-		std::map<std::string, channel*>	_channels;
+		std::map<std::string, channel>	_channels;
 
 	public:
 
@@ -54,5 +54,10 @@ class server
 		void	close_user(size_t i);
 		void	send_reply(user *usr, const char* code);
 
-		void	create_channel(user & usr, std::string & name);
+		void	create_channel(std::string & name, const user & usr);
+	
+		bool	is_channel_member(const user & usr, const channel & chan) const;
+		bool	is_channel_member(const user & usr, const std::string & name) const;
+
+		void	close_channel(std::string & name);
 };

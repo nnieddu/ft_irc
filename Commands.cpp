@@ -6,7 +6,7 @@
 
 Commands::Commands(server * serv): _serv(serv)
 {
-//	cmds_list["EXIT"] = (ptr = &Commands::exit);
+	cmds_list["EXIT"] = (ptr = &Commands::exit);
 	cmds_list["JOIN"] = (ptr = &Commands::join);
 }
 
@@ -20,9 +20,12 @@ void Commands::launch(user & usr)
 	std::string cmd = parseCmds(usr.buf);
 	std::map<std::string, ft_ptr>::iterator it = cmds_list.find(cmd);
 
-	if(it != cmds_list.end())
+	std::cout << cmd << " was found" << std::endl << std::endl;
+
+	if (it != cmds_list.end())
 	{
 			std::string cmd_arg = parseCmdsArgs(usr.buf);
+			std::cout << "arg is :" << cmd_arg << std::endl << std::endl;
 			ptr = it->second;
 			(this->*ptr)(usr, cmd_arg);
 	}
@@ -57,22 +60,22 @@ bool	Commands::_is_complete(std::string & cmd) const
 {
 	std::string::reverse_iterator	rit(cmd.rbegin());
 
-	while (rit != cmd.rend() && *rit != '\n') //&& *rit !=)
+	while (rit != cmd.rend() && *rit != '\n' && *rit != '\r')
 		rit++;
 	return (rit != cmd.rend());
 }
 
-//void Commands::exit(user & usr, std::string cmd)
-//{
-//
-//}
+void Commands::exit(user & usr, std::string cmd)
+{
+	throw(std::runtime_error("lol"));
+	(void)usr;
+	(void)cmd;
+}
 
 void Commands::join(user & usr, std::string arg)
 {
 	std::cout << "Channel : " << arg << " created, welcome !";
-	if (!usr.isMember(arg))
-		_serv->create_channel(usr, arg);
-	else
-		usr.setLocation(arg);		// /!\ locations related stuff
+	if (!_serv->is_channel_member(usr, arg))
+		_serv->create_channel(arg, usr);
 	return;
 }
