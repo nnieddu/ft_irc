@@ -17,8 +17,8 @@ class Commands
 
 		typedef void (Commands::*ft_ptr)();
 		ft_ptr ptr;
-		std::map<std::string, ft_ptr> cmds_list; // remplacer par map de ptr de ft
-
+		std::map<std::string, ft_ptr> cmds_list;
+		
 		void isCommands(std::string cmd);
 		void listCommands();
 
