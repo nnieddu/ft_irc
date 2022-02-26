@@ -36,16 +36,15 @@ class server
 		Commands									_cmds;
 		std::vector<struct pollfd> 					_fds;
 		std::vector<user*>							_users;
-		std::map<std::string, std::vector<user*> > _channels;
 
 	public:
-
 		server(const int & port, const std::string & password);
 		~server();
 		
+		std::map<std::string, std::vector<user*> > _channels;
+
 		int			getSock() const;
 		std::string	getName() const;
-		std::map<std::string, std::vector<user*> > *getChans();
 
 		int		run();
 		int		accept_user();

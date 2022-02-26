@@ -55,7 +55,7 @@ bool	Commands::_is_complete(std::string & cmd) const
 {
 	std::string::reverse_iterator	rit(cmd.rbegin());
 
-	while (rit != cmd.rend() && *rit != '\n') //&& *rit !=)
+	while (rit != cmd.rend() && *rit != '\n')
 		rit++;
 	return (rit != cmd.rend());
 }
@@ -85,8 +85,8 @@ void Commands::list(user * usr, std::string arg)
 {
 	(void)usr;
 	std::cout << "Je passe par list:" << arg << std::endl;
-	for (std::map<std::string, std::vector<user*> >::iterator it = _serv->getChans()->begin(); 
-		it != _serv->getChans()->end(); ++it)
+	for (std::map<std::string, std::vector<user*> >::iterator it = _serv->_channels.begin(); 
+		it != _serv->_channels.end(); ++it)
 	{
 		std::cout << it->first;
 	}
@@ -98,7 +98,7 @@ void Commands::kick(user * usr, std::string arg)
 	std::cout << "Je passe par kick:" << arg << std::endl;
 // 	if (arg.empty() == true)
 // 	{
-// 		_serv->send_reply(usr, ERR_NEEDMOREPARAMS);
+		// _serv->send_replies(usr, ERR_NEEDMOREPARAMS); // a retourner quand ne colle pas avec le nombre d'arg pr la cmd
 // 		return ;
 // 	}
 }

@@ -34,9 +34,6 @@ int 		server::getSock() const { return _socket.fd; }
 
 std::string server::getName() const { return _name; }
 
-std::map<std::string, std::vector<user*> > * server::getChans() { return &_channels; }
-
-
 void	ft_exit(int sign)
 {
 	std::string quit;
