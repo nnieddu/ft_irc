@@ -30,8 +30,17 @@ class Commands
 		std::string parseCmds(std::string cmd);
 		std::string parseCmdsArgs(std::string cmd);
 
-		void exit(user * usr, std::string arg);
+		void pass(user * usr, std::string arg);
+		void nick(user * usr, std::string arg);
+		// void user(user * usr, std::string arg);
+		// void oper(user * usr, std::string arg);
+		// void quit(user * usr, std::string arg);
 		void join(user * usr, std::string arg);
+		// void part(user * usr, std::string arg);
+		// void mode(user * usr, std::string arg);
+		// void topic(user * usr, std::string arg);
+		// void names(user * usr, std::string arg);
 		void list(user * usr, std::string arg);
+		// void invite(user * usr, std::string arg);
 		void kick(user * usr, std::string arg);
 };

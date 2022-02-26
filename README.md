@@ -130,11 +130,8 @@ Descriptor 4 send : 11 bytes :
 - parsing propre (si plusieurs commandes en une ligne et si plusieurs arg pr une meme cmd)
 - implementer les commandes et les replies correspondantes
 - implementer les topics (RFC 4.2.4)
-- implementer et bien comprendre les modes selon la rfc
-- custom except pour exit dans le signal handler
+- implementer et bien comprendre les modes selon la rfc 4.2.3.2 a 4.2.3.1 
 - check tous ce qui peu etre passe en const et private
-- clean Makefile (essayer de mettre les .o dans un /objs)
-
 
 Check prefix etc : RFC 2.3 Messages
 

@@ -40,7 +40,7 @@ static void	ft_exit(int sign)
 		std:: cout << std::endl << "SIGINT" << std::endl;
 	else
 		std:: cout << std::endl << "SIGQUIT" << std::endl;
-	throw(server::quitexcept()); // /!\ //
+	throw(server::quitexcept());
 }
 
 int	server::run()
@@ -65,7 +65,7 @@ int	server::run()
 					accept_user();
 				else
 					receive_data(i);
-			}									// /!\ revent_error ?
+			}								// /!\ revent_error ?
 		}
 	}
 	return(0);
@@ -95,18 +95,16 @@ void server::accept_user()
 		return ;
 	}
 
-	nick << "nickname: " << new_pollfd.fd;
+	nick << "nickname" << new_pollfd.fd;
 	std::cout << "New incoming connection - " << nick.str()<< std::endl;
 	ip = inet_ntoa(reinterpret_cast<sockaddr_in*>(&address)->sin_addr);
- 	// recup arg recu par le client via les cmd NICK, PASS etc pour bien init
-
 	user *new_user = new user(ip, nick.str(), "username", "password", Socket(new_pollfd.fd, address, len), false);
 	_users.push_back(new_user);
 	_fds.push_back(new_pollfd);
 
 	send_replies(_users[_users.size() - 1], "Welcome to the Internet Relay Network ", RPL_WELCOME); 
-	/// a bouger, check mais probably mieu de faire une ft pr regrouper les replies
 }
+
 void	server::receive_data(size_t i)
 {
 	char	buf[512];
@@ -136,12 +134,10 @@ void	server::receive_data(size_t i)
 
 void	server::close_user(size_t i)
 {
-	// remove le user de tt les chans
-	// check dans toutes la map _channel ou via / en comparant avec le set de l'user ?
 	std::vector<user*>::iterator it = (_users.begin() + (i - 1));
 
 	remove_user_from_channels(*it);
-	std::cout << (*it)->getNickname() << " deconnexion" << std::endl; //
+	std::cout << (*it)->getNickname() << " deconnexion" << std::endl; //to remove
 	delete *it;
 	close(_fds[i].fd);
 	_fds.erase(_fds.begin() + i);

@@ -8,19 +8,38 @@
 
 Commands::Commands(server * serv): _serv(serv)
 {
-	cmds_list["EXIT"] = (ptr = &Commands::exit);
+	cmds_list["PASS"] = (ptr = &Commands::pass);
+	cmds_list["NICK"] = (ptr = &Commands::nick);
+	// cmds_list["USER"] = (ptr = &Commands::user);
+	// cmds_list["OPER"] = (ptr = &Commands::oper);
+	// cmds_list["QUIT"] = (ptr = &Commands::quit);
 	cmds_list["JOIN"] = (ptr = &Commands::join);
+	// cmds_list["PART"] = (ptr = &Commands::part);
+	// cmds_list["MODE"] = (ptr = &Commands::mode);
+	// cmds_list["TOPIC"] = (ptr = &Commands::topic);
+	// cmds_list["NAMES"] = (ptr = &Commands::names);
 	cmds_list["LIST"] = (ptr = &Commands::list);
+	// cmds_list["INVITE"] = (ptr = &Commands::invite);
 	cmds_list["KICK"] = (ptr = &Commands::kick);
+	// cmds_list["VERSION"] = (ptr = &Commands::version);
+	// cmds_list["STATS"] = (ptr = &Commands::stats); // a voir
+	// cmds_list["TIME"] = (ptr = &Commands::time);
+	// cmds_list["ADMIN"] = (ptr = &Commands::admin); // maybe useless
+	// cmds_list["INFO"] = (ptr = &Commands::info); 
+	// cmds_list["PRIVMSG"] = (ptr = &Commands::privmsg);
+	// cmds_list["NOTICE"] = (ptr = &Commands::notice);
+	// cmds_list["WHO"] = (ptr = &Commands::who);
+	// cmds_list["WHOIS"] = (ptr = &Commands::whois);
+	// cmds_list["WHOWAS"] = (ptr = &Commands::whowas); // a voir mais relou
+	// cmds_list["KILL"] = (ptr = &Commands::kill);
+	// cmds_list["PING"] = (ptr = &Commands::ping);
+	// cmds_list["PONG"] = (ptr = &Commands::pong);
 }
 
 Commands::~Commands() {}
 
 void Commands::launch(user & usr)
 {
-	// if (!_is_complete(usr.buf))			// /!\	voir si il est possible d avoir n_command > 1 dans usr.buf
-	// 	return;
-
 	std::string cmd = parseCmds(usr.buf);
 	std::map<std::string, ft_ptr>::iterator it = cmds_list.find(cmd);
 
@@ -31,7 +50,6 @@ void Commands::launch(user & usr)
 		(this->*ptr)(&usr, cmd_arg);
 	}
 }
-
 
 std::string Commands::parseCmds(std::string cmd)
 {
@@ -60,13 +78,35 @@ bool	Commands::_is_complete(std::string & cmd) const
 	return (rit != cmd.rend());
 }
 
+/* -- BEGIN OF COMMANDS FUNCTIONS -- */
 
-void Commands::exit(user * usr, std::string cmd)
+void Commands::pass(user * usr, std::string arg)
 {
-	(void)usr;
-	(void)cmd;
-	throw(std::runtime_error("EXIT"));
+	// if (usr->isRegister == true) // voir si on garde un historic pas sur de capter voir 4.1.1
+	// 	 _serv->send_replies(usr, NULL, ERR_ALREADYREGISTERED);
+	if (arg.empty() == true)
+		_serv->send_replies(usr, NULL, ERR_NEEDMOREPARAMS);
+	else
+		usr.setPassword(arg);	
 }
+
+void Commands::nick(user * usr, std::string arg)
+{
+	if (usr->getNickname().empty() == true)
+		usr->setNickname(arg);
+}
+
+// void Commands::user(user * usr, std::string arg)
+// {
+// }
+
+// void Commands::oper(user * usr, std::string arg)
+// {
+// }
+
+// void Commands::quit(user * usr, std::string arg)
+// {
+// }
 
 void Commands::join(user * usr, std::string arg)
 {
@@ -78,8 +118,20 @@ void Commands::join(user * usr, std::string arg)
 		_serv->create_channel(*usr, arg);
 	}
 	else
-		usr->setLocation(arg);		// /!\ locations related stuff
+		usr->setLocation(arg);	// /!\ locations related stuff
 }
+
+// void Commands::mode(user * usr, std::string arg)
+// {
+// }
+
+// void Commands::topic(user * usr, std::string arg)
+// {
+// }
+
+// void Commands::names(user * usr, std::string arg)
+// {
+// }
 
 void Commands::list(user * usr, std::string arg)
 {
@@ -91,6 +143,10 @@ void Commands::list(user * usr, std::string arg)
 		std::cout << it->first;
 	}
 }
+
+// void Commands::invite(user * usr, std::string cmd)
+// {
+// }
 
 void Commands::kick(user * usr, std::string arg)
 {
