@@ -179,5 +179,4 @@ Descriptor 4 send : 11 bytes :
            k - set a channel key (password).
 
    When using the 'o' and 'b' options, a restriction on a total of three
-   per mode command has been imposed.  That is, any combination of 'o'
-   and
+   per mode command has been imposed.  That is, any combination of 'o' and

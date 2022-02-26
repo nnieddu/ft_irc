@@ -37,7 +37,7 @@ void	Socket::server_socket(int port)
 	if (fcntl(fd, F_SETFL, O_NONBLOCK) < 0)
 		throw(std::runtime_error(std::string("fcntl() failed")));
 
-	ft_bzero(&address, sizeof(address));
+	memset(&address, 0, sizeof(address));
 	address.sin_family = AF_INET;
 	address.sin_port = htons(port);
 	address.sin_addr.s_addr = INADDR_ANY;

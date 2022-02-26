@@ -12,7 +12,7 @@ server::server(const int & port, const std::string & password)
 	_socket.server_socket(_port);
 
 	struct pollfd	serv_fd;
-	ft_bzero(&serv_fd, sizeof(serv_fd));
+	memset(&serv_fd, 0, sizeof(serv_fd));
 	serv_fd.fd = _socket.fd;
 	serv_fd.events = POLLIN;
 
@@ -70,7 +70,7 @@ int	server::accept_user()
 	std::string			ip;
 	std::stringstream	nick;
 
-	ft_bzero(&new_pollfd, sizeof(new_pollfd));
+	memset(&new_pollfd, 0, sizeof(new_pollfd));
 	new_pollfd.fd = -1;
 	new_pollfd.events = POLLIN;
 	try
@@ -105,7 +105,7 @@ void	server::receive_data(size_t i)
 	std::string tmp;
 	int ret = 0;
 
-	ft_bzero(&buf, sizeof(buf));
+	memset(&buf, 0, sizeof(buf));
 	if((ret = recv(_fds[i].fd, buf, sizeof(buf), 0)) <= 0)
 	{
 		if (ret < 0)

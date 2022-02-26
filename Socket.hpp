@@ -26,5 +26,3 @@ class Socket
 
 		void	server_socket(int port);
 };
-
-void	ft_bzero(void *s, size_t n);

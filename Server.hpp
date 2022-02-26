@@ -55,5 +55,3 @@ class server
 
 		void	create_channel(user & usr, std::string & name);
 };
-
-void	ft_bzero(void *s, size_t n);
