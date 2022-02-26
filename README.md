@@ -124,18 +124,16 @@ Descriptor 4 send : 11 bytes :
 
 
 [TODO]
-- remplacer les memeset
-- virer le check errno
 - trouver comment recup une commande nc
 - recuperer correctement les args pr creation des users
 - gerer, checker quand user ce deco quil soit sortie de tt ses chans
 - parsing propre (si plusieurs commandes en une ligne et si plusieurs arg pr une meme cmd)
 - implementer les commandes et les replies correspondantes
 - implementer les topics (RFC 4.2.4)
-- a voir mais si oui implementer et bien comprendre les modes selon la rfc
-- faire un signal handler (signal autorise dans le sujet) pour quitter proprement
-- check tous ce qui peu etre pass en const et private
-- clean Makefile et orga les fichiers/sources
+- implementer et bien comprendre les modes selon la rfc
+- custom except pour exit dans le signal handler
+- check tous ce qui peu etre passe en const et private
+- clean Makefile (essayer de mettre les .o dans un /objs)
 
 
 Check prefix etc : RFC 2.3 Messages
