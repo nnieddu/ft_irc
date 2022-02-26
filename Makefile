@@ -16,35 +16,41 @@ COMP 	=	c++
 
 FLAG	=	-Wall -Wextra -Werror -std=c++98
 
-SRCS	=	srcs/main.cpp  \
-			srcs/Server.cpp \
-			srcs/Socket.cpp \
-			srcs/User.cpp \
-			srcs/Commands.cpp
+SRCS	=	main.cpp  \
+			Server.cpp \
+			Socket.cpp \
+			User.cpp \
+			Commands.cpp
 
 INCS	=	incs/Server.hpp \
 			incs/Socket.hpp \
 			incs/User.hpp \
 			incs/Commands.hpp
 
-OBJ		=	$(SRCS:.cpp=.o)
+SRCS_DIR=	./srcs/
+OBJ_DIR	=	./srcs/obj/
+OBJ		=	$(addprefix $(OBJ_DIR),$(SRCS:.cpp=.o))
 
-%.o : %.cpp $(INCS)
-	$(COMP) $(FLAG) -c $< -o $@
+all :
+	mkdir -p $(OBJ_DIR)
+	$(MAKE) $(NAME)
+	$(MAKE) runv
 
-all : $(NAME) runv
+$(OBJ_DIR)%.o:$(SRCS_DIR)%.cpp $(INC)
+	$(COMP) $(CFLAGS) -c $< -o $@
 
-$(NAME) : $(OBJ)
+$(NAME) : $(OBJ) $(INCS)
 	$(COMP) $(FLAG) $(OBJ) -o $(NAME)
-	
+
 runv : $(NAME)
 	valgrind ./$(NAME) 7005 password
 
 clean :
-	rm -f $(OBJ)
+	rm -rf $(OBJ_DIR)
 
 fclean :
-	rm -f $(NAME) $(OBJ)
+	rm -rf $(OBJ_DIR)
+	rm -f $(NAME)
 
 re : fclean all
 
