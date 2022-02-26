@@ -22,6 +22,8 @@
 #include "Commands.hpp"
 #include "NumericReplies.hpp"
 
+# define EOC "\r\n"
+
 class server
 {
 	private:

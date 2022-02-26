@@ -123,8 +123,7 @@ void	server::receive_data(size_t i)
 	tmp = buf;
 	_users[i - 1]->buf += tmp;
 	std::cout << tmp << std::endl;
-	// if (tmp.find("\r") != std::string::npos) // weechat ok
-	if (tmp.empty() == false) // trouver comment detecter fin de commande via nc
+	if (tmp.find(EOC))
 	{
 		std::cout << _users[i - 1]->getNickname() << " send : " << std::endl << tmp; //
 		_cmds.launch(*_users[i - 1]);
