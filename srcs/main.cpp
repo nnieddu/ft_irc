@@ -14,10 +14,12 @@
 
 int main(int ac, char **av)
 {
+	int	ret = 1;
+
 	if (ac != 3)
 	{
 		std::cerr << "[Error] : need 2 args <PORT> and <PASSWORD>" << std::endl;
-		return(1);
+		return(ret);
 	}
 	try
 	{
@@ -35,6 +37,7 @@ int main(int ac, char **av)
 	catch (server::quitexcept &e)
 	{
 		std::cout << e.what() << std::endl;
+		ret = 0;
 	}
-	return(1);
+	return(ret);
 }

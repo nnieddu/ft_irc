@@ -59,14 +59,13 @@ int	server::run()
 		size_t nfd = _fds.size();
 		for (size_t i = 0; i < nfd; i++)
 		{
-			if(_fds[i].revents == 0)
-				continue;
-			if(_fds[i].revents != POLLIN && _fds[i].revents != 25) // /!\remember to try/remove 25 (a l'ecole)
-				throw(std::runtime_error("revent error"));
-			else if (i == 0)
-				accept_user();
-			else
-				receive_data(i);
+			if(_fds[i].revents == POLLIN || _fds[i].revents == 25)
+			{
+				if (i == 0)
+					accept_user();
+				else
+					receive_data(i);
+			}									// /!\ revent_error ?
 		}
 	}
 	return(0);
@@ -101,7 +100,7 @@ void server::accept_user()
 	ip = inet_ntoa(reinterpret_cast<sockaddr_in*>(&address)->sin_addr);
  	// recup arg recu par le client via les cmd NICK, PASS etc pour bien init
 
-	user *new_user = new user(ip, nick.str(), "username", "password", false, Socket(new_pollfd.fd, address, len));
+	user *new_user = new user(ip, nick.str(), "username", "password", Socket(new_pollfd.fd, address, len), false);
 	_users.push_back(new_user);
 	_fds.push_back(new_pollfd);
 
@@ -140,7 +139,9 @@ void	server::close_user(size_t i)
 	// remove le user de tt les chans
 	// check dans toutes la map _channel ou via / en comparant avec le set de l'user ?
 	std::vector<user*>::iterator it = (_users.begin() + (i - 1));
-	std::cout << _users[i - 1]->getNickname() << " deconnexion" << std::endl; //
+
+	remove_user_from_channels(*it);
+	std::cout << (*it)->getNickname() << " deconnexion" << std::endl; //
 	delete *it;
 	close(_fds[i].fd);
 	_fds.erase(_fds.begin() + i);
@@ -148,10 +149,33 @@ void	server::close_user(size_t i)
 	return ;
 }
 
+void	server::remove_user_from(user * usr, const std::string & name)
+{
+	std::vector<user *>::iterator	it(_channels[name].begin());
+
+	while ((*it)->getNickname() != usr->getNickname())
+		it++;
+	_channels[name].erase(it);
+}
+
+void	server::remove_user_from_channels(user * usr)
+{
+	while (!(usr->getChannels().empty()))
+	{
+		std::string name = usr->getChannels().begin()->first;
+
+		std::cout << usr->getNickname() << " leaving channel : " << name << std::endl;
+		remove_user_from(usr, name);
+		usr->leave_channel(name);
+		if (_channels[name].empty())		// <-- remove channel if its users vector is empty
+			_channels.erase(name);
+	}
+}
+
 void	server::create_channel(user & usr, std::string & name)
 {
 	_channels[name].push_back(&usr);
-	usr.join_channel(name);
+	usr.join_channel(name, true);
 	
 	std::string reply = ":" + usr.getNickname() + " JOIN :" + name + "\r\n";
 	send(usr.getSock(), reply.c_str(), reply.length(), 0);

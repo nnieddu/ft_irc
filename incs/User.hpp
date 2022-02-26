@@ -2,23 +2,23 @@
 #pragma once
 
 #include <vector>
-#include <set>
+#include <map>
 
 #include "Socket.hpp"
 
 class user
 {
 	private:
-		std::string				_ip;
-		std::string				_nickname;
-		std::string				_username;
-		std::string				_password;
-		bool					_isOperator;
+		std::string					_ip;
+		std::string					_nickname;
+		std::string					_username;
+		std::string					_password;
 
-		Socket					_socket;
+		bool						_server_operator;
+		Socket						_socket;
 
-		std::set<std::string>	_channels;
-		std::string				_location;
+		std::map<std::string, bool>	_channels;
+		std::string					_location;
 
 		user();
 		user(const user & x);
@@ -26,19 +26,22 @@ class user
 
 	public:
 		user(std::string ip, std::string nickname, std::string username, std::string password, 
-			bool isOperator, const Socket & socket);
+			const Socket & socket, bool server_operator);
 		virtual ~user();
 
 		std::string	getNickname() const;
 		std::string	getUsername() const;
 		std::string	getPassword() const;
-		bool		IsOperator() const;
 		Socket		getSocket() const;
 		int			getSock() const;
 
-		void		setOperator(bool opt);
+		std::map<std::string, bool>	getChannels() const;
 
-		void		join_channel(std::string & name);
+		bool		isOperator(std::string & name) const;
+		void		promote(std::string & name);
+		void		demote(std::string & name);
+
+		void		join_channel(std::string & name, bool op);
 		void		leave_channel(std::string & name);
 		void		setLocation(std::string & name);
 		std::string	getLocation() const;		// /!\ locations related stuff

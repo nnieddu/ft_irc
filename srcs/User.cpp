@@ -2,8 +2,8 @@
 #include "../incs/User.hpp"
 #include "../incs/Socket.hpp"
 
-user::user(std::string ip, std::string nickname, std::string username, std::string password, bool isOperator, const Socket & socket)
-: _ip(ip), _nickname(nickname), _username(username), _password(password), _isOperator(isOperator), _socket(socket)
+user::user(std::string ip, std::string nickname, std::string username, std::string password, const Socket & socket, bool server_operator)
+: _ip(ip), _nickname(nickname), _username(username), _password(password), _socket(socket), _server_operator(server_operator)
 {}
 
 user::~user() {}
@@ -14,25 +14,45 @@ std::string	user::getUsername() const { return _username; }
 
 std::string	user::getPassword() const { return _password; }
 
-bool	user::IsOperator() const { return _isOperator; }
+std::map<std::string, bool>	user::getChannels() const { return _channels; }
+
+bool	user::isOperator(std::string & name) const
+{
+	return _channels.find(name)->second;
+}
+
+void	user::promote(std::string & name)
+{
+	try
+	{
+		_channels.at(name) = true;
+	}
+	catch(std::out_of_range &oor){}			// <-- rentre ici si "name" n existe pas, voir si il y a un send a faire
+}
+
+void	user::demote(std::string & name)
+{
+	try
+	{
+		_channels.at(name) = false;
+	}
+	catch(std::out_of_range &oor){}			// <-- rentre ici si "name" n existe pas, voir si il y a un send a faire
+}
 
 Socket	user::getSocket() const { return _socket; }
 
 int user::getSock() const { return _socket.fd; }
 
-void user::setOperator(bool opt) {  _isOperator = opt; }
 
-
-void	user::join_channel(std::string & name)
+void	user::join_channel(std::string & name, bool op)
 {
-	_channels.insert(name);
+	_channels.insert(std::make_pair(name, op));
 	setLocation(name);		// /!\ locations related stuff
 }
 
 void	user::leave_channel(std::string & name)
 {
 	_channels.erase(name);
-	_isOperator = false;
 }
 
 void	user::setLocation(std::string & name)

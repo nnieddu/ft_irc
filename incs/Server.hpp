@@ -58,6 +58,8 @@ class server
 		void	accept_user();
 		void	receive_data(size_t i);
 		void	close_user(size_t i);
+		void	remove_user_from(user * usr, const std::string & name);
+		void	remove_user_from_channels(user * usr);
 		void	send_replies(user *usr, std::string msg, const char* code);
 
 		void 	exit(user & usr, std::string cmd);

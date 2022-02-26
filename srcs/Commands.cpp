@@ -74,7 +74,7 @@ void Commands::join(user * usr, std::string arg)
 
 	if (!usr->isMember(arg))
 	{
-		usr->setOperator(true);
+		//usr->setOperator(true);
 		_serv->create_channel(*usr, arg);
 	}
 	else
