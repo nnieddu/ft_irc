@@ -45,6 +45,7 @@ class server
 
 		int			getSock() const;
 		std::string	getName() const;
+		std::string	getPassword() const;
 
 		class quitexcept : public std::exception
 		{

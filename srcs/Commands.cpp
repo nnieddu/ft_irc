@@ -86,8 +86,10 @@ void Commands::pass(user * usr, std::string arg)
 	// 	 _serv->send_replies(usr, NULL, ERR_ALREADYREGISTERED);
 	if (arg.empty() == true)
 		_serv->send_replies(usr, NULL, ERR_NEEDMOREPARAMS);
+	else if (arg != _serv->getPassword())
+		_serv->send_replies(usr, NULL, ERR_PASSWDMISMATCH);
 	else
-		usr.setPassword(arg);	
+		usr->setPassword(arg);
 }
 
 void Commands::nick(user * usr, std::string arg)

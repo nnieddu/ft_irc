@@ -35,6 +35,9 @@ class user
 		Socket		getSocket() const;
 		int			getSock() const;
 
+		void		setPassword(std::string psw);
+		void		setNickname(std::string nick);
+
 		std::map<std::string, bool>	getChannels() const;
 
 		bool		isOperator(std::string & name) const;

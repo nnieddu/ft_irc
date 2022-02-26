@@ -31,8 +31,9 @@ server::~server()
 }
 
 int 		server::getSock() const { return _socket.fd; }
-
 std::string server::getName() const { return _name; }
+std::string server::getPassword() const { return _password; }
+
 
 static void	ft_exit(int sign)
 {
@@ -125,8 +126,7 @@ void	server::receive_data(size_t i)
 	// if (tmp.find("\r") != std::string::npos) // weechat ok
 	if (tmp.empty() == false) // trouver comment detecter fin de commande via nc
 	{
-		std::cout << "Descriptor " << _fds[i].fd << " send : " << tmp << std::endl; //
-		// voir ici si plusieurs commandes a la suite, faire une boucle qui lance les cmds a la suite bien parsed
+		std::cout << _users[i - 1]->getNickname() << " send : " << std::endl << tmp; //
 		_cmds.launch(*_users[i - 1]);
 		_users[i - 1]->buf.clear();
 	}

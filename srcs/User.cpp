@@ -9,10 +9,11 @@ user::user(std::string ip, std::string nickname, std::string username, std::stri
 user::~user() {}
 
 std::string	user::getNickname() const { return _nickname; }
-
 std::string	user::getUsername() const { return _username; }
-
 std::string	user::getPassword() const { return _password; }
+
+void		user::setPassword(std::string psw) { _password = psw; }
+void		user::setNickname(std::string nick) { _nickname = nick; }
 
 std::map<std::string, bool>	user::getChannels() const { return _channels; }
 
