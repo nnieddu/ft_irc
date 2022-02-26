@@ -48,15 +48,10 @@ class server
 
 		class quitexcept : public std::exception
 		{
-			private:
-
-				const char *	_what_arg;
-
 			public:
 
-				quitexcept(const std::string & what_arg):_what_arg(what_arg.c_str()){}
 				virtual const char *	what() const throw()
-				{return _what_arg;}
+				{	return "Closing program...";}
 		};
 
 		int		run();
