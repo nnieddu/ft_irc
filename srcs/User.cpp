@@ -1,6 +1,6 @@
 
-#include "User.hpp"
-#include "Socket.hpp"
+#include "../incs/User.hpp"
+#include "../incs/Socket.hpp"
 
 user::user(std::string ip, std::string nickname, std::string username, std::string password, bool isOperator, const Socket & socket)
 : _ip(ip), _nickname(nickname), _username(username), _password(password), _isOperator(isOperator), _socket(socket)

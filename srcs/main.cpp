@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Server.hpp"
+#include "../incs/Server.hpp"
 #include <signal.h>
 
 // void	ft_signal_handler(int flag)

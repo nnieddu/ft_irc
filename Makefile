@@ -16,9 +16,16 @@ COMP 	=	c++
 
 FLAG	=	-Wall -Wextra -Werror -std=c++98
 
-SRCS	=	main.cpp Server.cpp User.cpp Socket.cpp Commands.cpp
+SRCS	=	srcs/main.cpp  \
+			srcs/Server.cpp \
+			srcs/Socket.cpp \
+			srcs/User.cpp \
+			srcs/Commands.cpp
 
-INCS	=
+INCS	=	incs/Server.hpp \
+			incs/Socket.hpp \
+			incs/User.hpp \
+			incs/Commands.hpp
 
 OBJ		=	$(SRCS:.cpp=.o)
 
@@ -29,9 +36,6 @@ all : $(NAME) runv
 
 $(NAME) : $(OBJ)
 	$(COMP) $(FLAG) $(OBJ) -o $(NAME)
-
-run : $(NAME)
-	./$(NAME) 7005 password
 	
 runv : $(NAME)
 	valgrind ./$(NAME) 7005 password
@@ -44,4 +48,4 @@ fclean :
 
 re : fclean all
 
-.PHONY : all clean fclean re run runv
+.PHONY : all clean fclean re runv

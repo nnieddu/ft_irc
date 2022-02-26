@@ -1,5 +1,5 @@
 
-#include "Socket.hpp"
+#include "../incs/Socket.hpp"
 
 Socket::Socket(): fd(-1), address(sockaddr_in()), len(socklen_t())
 {}

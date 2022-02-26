@@ -1,5 +1,5 @@
 
-#include "Server.hpp"
+#include "../incs/Server.hpp"
 
 server::server(const int & port, const std::string & password)
 : _name("ft_irc.serv"), _port(port), _password(password), _cmds(this)

@@ -1,8 +1,8 @@
 
-#include "Commands.hpp"
-#include "Socket.hpp"
-#include "NumericReplies.hpp"
-#include "Server.hpp"
+#include "../incs/Commands.hpp"
+#include "../incs/Socket.hpp"
+#include "../incs/NumericReplies.hpp"
+#include "../incs/Server.hpp"
 
 #include <stdlib.h>
 

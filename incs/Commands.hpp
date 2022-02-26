@@ -2,7 +2,6 @@
 #pragma once
 
 #include <map>
-#include <functional> //
 
 #include "User.hpp"
 
