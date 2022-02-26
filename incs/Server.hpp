@@ -47,10 +47,10 @@ class server
 		std::string	getName() const;
 
 		int		run();
-		int		accept_user();
+		void	accept_user();
 		void	receive_data(size_t i);
 		void	close_user(size_t i);
-		void	send_replies(user *usr, const char* code);
+		void	send_replies(user *usr, std::string msg, const char* code);
 
 		void 	exit(user & usr, std::string cmd);
 		void	create_channel(user & usr, std::string & name);

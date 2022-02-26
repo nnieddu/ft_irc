@@ -42,7 +42,7 @@ void	ft_exit(int sign)
 	if (sign == 3)
 		quit = "SIGQUIT signal received, Exit ";	
 	write(0, "\b\b  \b\b", 7);
-	throw(std::runtime_error(quit)); ///
+	throw(std::runtime_error(quit)); // /!\ //
 }
 
 int	server::run()
@@ -52,7 +52,7 @@ int	server::run()
 
 	std::vector<struct pollfd>::iterator	it;
 
-	for (int end_server = 0; end_server == 0;)
+	for (;;)
 	{
 		it = _fds.begin();
 		if (poll(&(*it), _fds.size(), -1) < 0)
@@ -66,7 +66,7 @@ int	server::run()
 			if(_fds[i].revents != POLLIN && _fds[i].revents != 25) // /!\remember to try/remove 25 (a l'ecole)
 				throw(std::runtime_error("revent error"));
 			else if (i == 0)
-				end_server = accept_user();
+				accept_user();
 			else
 				receive_data(i);
 		}
@@ -74,7 +74,7 @@ int	server::run()
 	return(0);
 }
 
-int	server::accept_user()
+void server::accept_user()
 {
 	struct pollfd		new_pollfd;
 	sockaddr_in			address;
@@ -95,8 +95,8 @@ int	server::accept_user()
 	catch(const std::runtime_error& e)
 	{
 		std::cerr << e.what() << " error" << std::endl;
-		return 1;
-	} // ? Supprimable ?
+		return ;
+	}
 
 	nick << "nickname: " << new_pollfd.fd;
 	std::cout << "New incoming connection - " << nick.str()<< std::endl;
@@ -107,9 +107,8 @@ int	server::accept_user()
 	_users.push_back(new_user);
 	_fds.push_back(new_pollfd);
 
-	send_replies(_users[_users.size() - 1], RPL_WELCOME); 
+	send_replies(_users[_users.size() - 1], "Welcome to the Internet Relay Network ", RPL_WELCOME); 
 	/// a bouger, check mais probably mieu de faire une ft pr regrouper les replies
-	return 0;
 }
 void	server::receive_data(size_t i)
 {
@@ -129,10 +128,10 @@ void	server::receive_data(size_t i)
 	_users[i - 1]->buf += tmp;
 	std::cout << tmp << std::endl;
 	// if (tmp.find("\r") != std::string::npos) // weechat ok
-	if (tmp.empty() == false) // trouver comment detect proprement fin de commande via nc
+	if (tmp.empty() == false) // trouver comment detecter fin de commande via nc
 	{
 		std::cout << "Descriptor " << _fds[i].fd << " send : " << tmp << std::endl; //
-		// faudrais voir ici si plusieurs commandes a la suite, faire une boucle qui lance les cmds a la suite bien parsed
+		// voir ici si plusieurs commandes a la suite, faire une boucle qui lance les cmds a la suite bien parsed
 		_cmds.launch(*_users[i - 1]);
 		_users[i - 1]->buf.clear();
 	}
@@ -160,12 +159,12 @@ void	server::create_channel(user & usr, std::string & name)
 	send(usr.getSock(), reply.c_str(), reply.length(), 0);
 }
 
-void	server::send_replies(user *usr, const char* code)
+void	server::send_replies(user *usr, std::string msg, const char* code)
 {
 	std::string to_send;
 	std::string prefix = ":" + usr->getUsername();
-	std::string test = "Welcome to the Internet Relay Network " + prefix;
+	msg += prefix;
 
-	to_send += (prefix +  " " + code + " " + usr->getNickname() + " " + test + "\r\n");
+	to_send += (prefix +  " " + code + " " + usr->getNickname() + " " + msg + "\r\n");
 	send(usr->getSock(), to_send.c_str(), to_send.length(), 0);
 }

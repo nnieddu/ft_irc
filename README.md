@@ -138,6 +138,8 @@ Descriptor 4 send : 11 bytes :
 - clean Makefile et orga les fichiers/sources
 
 
+Check prefix etc : RFC 2.3 Messages
+
 #### Modes : 
 4.2.3.2 User modes
    Parameters: <nickname> {[+|-]|i|w|s|o}
