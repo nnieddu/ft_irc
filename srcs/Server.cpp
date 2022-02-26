@@ -36,13 +36,12 @@ std::string server::getName() const { return _name; }
 
 void	ft_exit(int sign)
 {
-	std::string quit;
-	if (sign == 2)
-		quit = "SIGINT signal received, Exit ";	
-	if (sign == 3)
-		quit = "SIGQUIT signal received, Exit ";	
-	write(0, "\b\b  \b\b", 7);
-	throw(std::runtime_error(quit)); // /!\ //
+	std::stringstream	ss;
+
+	ss << "received signal with value : " << sign << "." << std::endl
+		<< "Closing program..." << std::endl;
+
+	throw(server::quitexcept(ss.str())); // /!\ //
 }
 
 int	server::run()

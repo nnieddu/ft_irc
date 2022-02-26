@@ -32,5 +32,9 @@ int main(int ac, char **av)
 	{
 		std::cerr << "[error]: invalid argument : " << e.what() << std::endl;
 	}
+	catch (server::quitexcept &e)
+	{
+		std::cout << e.what() << std::endl;
+	}
 	return(1);
 }

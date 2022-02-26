@@ -46,6 +46,19 @@ class server
 		int			getSock() const;
 		std::string	getName() const;
 
+		class quitexcept : public std::exception
+		{
+			private:
+
+				const char *	_what_arg;
+
+			public:
+
+				quitexcept(const std::string & what_arg):_what_arg(what_arg.c_str()){}
+				virtual const char *	what() const throw()
+				{return _what_arg;}
+		};
+
 		int		run();
 		void	accept_user();
 		void	receive_data(size_t i);
