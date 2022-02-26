@@ -15,6 +15,7 @@
 #include <poll.h>
 #include <unistd.h>
 #include <arpa/inet.h>
+#include <signal.h>
 
 #include "Socket.hpp"
 #include "User.hpp"
@@ -51,7 +52,7 @@ class server
 		void	receive_data(size_t i);
 		void	close_user(size_t i);
 		void	send_replies(user *usr, const char* code);
-		void 	exit(user & usr, std::string cmd);
 
+		void 	exit(user & usr, std::string cmd);
 		void	create_channel(user & usr, std::string & name);
 };

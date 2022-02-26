@@ -36,8 +36,23 @@ std::string server::getName() const { return _name; }
 
 std::map<std::string, std::vector<user*> > * server::getChans() { return &_channels; }
 
+
+void	ft_exit(int sign)
+{
+	std::string quit;
+	if (sign == 2)
+		quit = "SIGINT signal received, Exit ";	
+	if (sign == 3)
+		quit = "SIGQUIT signal received, Exit ";	
+	write(0, "\b\b  \b\b", 7);
+	throw(std::runtime_error(quit)); ///
+}
+
 int	server::run()
 {
+	signal(SIGINT, ft_exit);
+	signal(SIGQUIT, ft_exit);
+
 	std::vector<struct pollfd>::iterator	it;
 
 	for (int end_server = 0; end_server == 0;)
