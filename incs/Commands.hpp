@@ -24,15 +24,16 @@ class Commands
 
 		typedef void (Commands::*ft_ptr)(user *, std::string);
 		ft_ptr ptr;
+
 		std::map<std::string, ft_ptr> cmds_list;
 
 		void launch(user & usr);
 		std::string parseCmds(std::string cmd);
-		std::string parseCmdsArgs(std::string cmd);
+		std::string parseCmdsArgs(std::string arg);
 
 		void pass(user * usr, std::string arg);
 		void nick(user * usr, std::string arg);
-		// void user(user * usr, std::string arg);
+		void user_cmd(user * usr, std::string arg);
 		// void oper(user * usr, std::string arg);
 		// void quit(user * usr, std::string arg);
 		void join(user * usr, std::string arg);
@@ -42,5 +43,5 @@ class Commands
 		// void names(user * usr, std::string arg);
 		void list(user * usr, std::string arg);
 		// void invite(user * usr, std::string arg);
-		void kick(user * usr, std::string arg);
+		// void kick(user * usr, std::string arg);
 };

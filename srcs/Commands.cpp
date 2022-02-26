@@ -10,7 +10,7 @@ Commands::Commands(server * serv): _serv(serv)
 {
 	cmds_list["PASS"] = (ptr = &Commands::pass);
 	cmds_list["NICK"] = (ptr = &Commands::nick);
-	// cmds_list["USER"] = (ptr = &Commands::user);
+	cmds_list["USER"] = (ptr = &Commands::user_cmd);
 	// cmds_list["OPER"] = (ptr = &Commands::oper);
 	// cmds_list["QUIT"] = (ptr = &Commands::quit);
 	cmds_list["JOIN"] = (ptr = &Commands::join);
@@ -20,7 +20,7 @@ Commands::Commands(server * serv): _serv(serv)
 	// cmds_list["NAMES"] = (ptr = &Commands::names);
 	cmds_list["LIST"] = (ptr = &Commands::list);
 	// cmds_list["INVITE"] = (ptr = &Commands::invite);
-	cmds_list["KICK"] = (ptr = &Commands::kick);
+	// cmds_list["KICK"] = (ptr = &Commands::kick);
 	// cmds_list["VERSION"] = (ptr = &Commands::version);
 	// cmds_list["STATS"] = (ptr = &Commands::stats); // a voir
 	// cmds_list["TIME"] = (ptr = &Commands::time);
@@ -42,8 +42,7 @@ void Commands::launch(user & usr)
 {
 	std::string cmd = parseCmds(usr.buf);
 	std::map<std::string, ft_ptr>::iterator it = cmds_list.find(cmd);
-
-	if(it != cmds_list.end())
+	if (it != cmds_list.end())
 	{
 		std::string cmd_arg = parseCmdsArgs(usr.buf);
 		ptr = it->second;
@@ -60,13 +59,14 @@ std::string Commands::parseCmds(std::string cmd)
 	return (cmd);
 }
 
-std::string Commands::parseCmdsArgs(std::string cmd)
+std::string Commands::parseCmdsArgs(std::string arg)
 {
-	std::string::iterator it = cmd.begin();
-	while (*it != ' ')
+	std::string::iterator it = arg.begin();
+	while (*it != ' ' && it != arg.end())
 		it++;
-	cmd.erase(cmd.begin(), it);
-	return (cmd);
+	it++; // remove ' '
+	arg.erase(arg.begin(), it);
+	return (arg);
 }
 
 bool	Commands::_is_complete(std::string & cmd) const
@@ -85,22 +85,37 @@ void Commands::pass(user * usr, std::string arg)
 	// if (usr->isRegister == true) // voir si on garde un historic pas sur de capter voir 4.1.1
 	// 	 _serv->send_replies(usr, NULL, ERR_ALREADYREGISTERED);
 	if (arg.empty() == true)
-		_serv->send_replies(usr, NULL, ERR_NEEDMOREPARAMS);
+	{
+		_serv->send_replies(usr, "NULL", ERR_NEEDMOREPARAMS);
+	}
 	else if (arg != _serv->getPassword())
-		_serv->send_replies(usr, NULL, ERR_PASSWDMISMATCH);
-	else
-		usr->setPassword(arg);
+	{
+		_serv->send_replies(usr, "WTF un intrus", ERR_PASSWDMISMATCH);
+	}
+	usr->setPassword(arg);
 }
 
 void Commands::nick(user * usr, std::string arg)
 {
+	if (arg.empty() == true)
+		_serv->send_replies(usr, NULL, ERR_NONICKNAMEGIVEN);
 	if (usr->getNickname().empty() == true)
-		usr->setNickname(arg);
+	{
+		if (!_serv->isIn(arg))
+			usr->setNickname(arg);
+		else
+			_serv->send_replies(usr, NULL, ERR_NICKNAMEINUSE);
+	}
+	// ERR_ERRONEUSNICKNAME if non conforme 'anonymous' ou char spe voir grammar protocol
+	// ERR_NICKCOLLISION osef ?
 }
 
-// void Commands::user(user * usr, std::string arg)
-// {
-// }
+void Commands::user_cmd(user * usr, std::string arg)
+{
+//  Parameters: <username> <hostname> <servername> <realname>
+	if (arg.empty() == true) // todo: si pas asse d'arg, a voir avec parsing
+		_serv->send_replies(usr, NULL, ERR_NEEDMOREPARAMS);
+}
 
 // void Commands::oper(user * usr, std::string arg)
 // {
@@ -150,13 +165,6 @@ void Commands::list(user * usr, std::string arg)
 // {
 // }
 
-void Commands::kick(user * usr, std::string arg)
-{
-	(void)usr;
-	std::cout << "Je passe par kick:" << arg << std::endl;
-// 	if (arg.empty() == true)
-// 	{
-		// _serv->send_replies(usr, ERR_NEEDMOREPARAMS); // a retourner quand ne colle pas avec le nombre d'arg pr la cmd
-// 		return ;
-// 	}
-}
+// void Commands::kick(user * usr, std::string arg)
+// {
+// }

@@ -49,6 +49,8 @@ class server
 		std::string	getName() const;
 		std::string	getPassword() const;
 
+		bool		isIn(std::string nickname) const;
+
 		class quitexcept : public std::exception
 		{
 			public:
@@ -64,6 +66,7 @@ class server
 		void	remove_user_from(user * usr, const std::string & name);
 		void	remove_user_from_channels(user * usr);
 		void	send_replies(user *usr, std::string msg, const char* code);
+		void	first_log(user * usr, size_t i);
 
 		void 	exit(user & usr, std::string cmd);
 		void	create_channel(user & usr, std::string & name);

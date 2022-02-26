@@ -34,6 +34,15 @@ int 		server::getSock() const { return _socket.fd; }
 std::string server::getName() const { return _name; }
 std::string server::getPassword() const { return _password; }
 
+bool		server::isIn(std::string nickname) const
+{ 
+	for (std::vector<user*>::const_iterator it = _users.begin() ; it != _users.end(); ++it)
+	{
+		if ((*it)->getNickname() == nickname)
+			return true; 
+	}
+	return false;
+}
 
 static void	ft_exit(int sign)
 {
@@ -99,11 +108,20 @@ void server::accept_user()
 	nick << "nickname" << new_pollfd.fd;
 	std::cout << "New incoming connection - " << nick.str()<< std::endl;
 	ip = inet_ntoa(reinterpret_cast<sockaddr_in*>(&address)->sin_addr);
-	user *new_user = new user(ip, nick.str(), "username", "password", Socket(new_pollfd.fd, address, len), false);
+	user *new_user = new user(ip, nick.str(), "username", Socket(new_pollfd.fd, address, len), false);
 	_users.push_back(new_user);
 	_fds.push_back(new_pollfd);
 
-	send_replies(_users[_users.size() - 1], "Welcome to the Internet Relay Network ", RPL_WELCOME); 
+}
+
+void	server::first_log(user * usr, size_t i)
+{
+	send_replies(_users[_users.size() - 1], "Welcome to the Internet Relay Network ", RPL_WELCOME);
+	// parse and check : (en 1 block avec weechat)
+	//  PASS , 
+	//  NICK, 
+	//  USER (user_cmd)
+	_users[i - 1]->setLogged(true);
 }
 
 void	server::receive_data(size_t i)
@@ -122,7 +140,10 @@ void	server::receive_data(size_t i)
 	}
 	tmp = buf;
 	_users[i - 1]->buf += tmp;
-	std::cout << tmp << std::endl;
+
+	if (_users[i - 1]->getisLogged() == false)
+		first_log(_users[i - 1], i);
+
 	if (tmp.find(EOC))
 	{
 		std::cout << _users[i - 1]->getNickname() << " send : " << std::endl << tmp; //

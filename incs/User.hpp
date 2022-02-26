@@ -15,17 +15,19 @@ class user
 		std::string					_password;
 
 		bool						_server_operator;
+		bool						_isLogged;
 		Socket						_socket;
 
 		std::map<std::string, bool>	_channels;
 		std::string					_location;
+
 
 		user();
 		user(const user & x);
 		user& operator=(const user& x);
 
 	public:
-		user(std::string ip, std::string nickname, std::string username, std::string password, 
+		user(std::string ip, std::string nickname, std::string username,
 			const Socket & socket, bool server_operator);
 		virtual ~user();
 
@@ -34,9 +36,11 @@ class user
 		std::string	getPassword() const;
 		Socket		getSocket() const;
 		int			getSock() const;
+		bool		getisLogged() const;
 
 		void		setPassword(std::string psw);
 		void		setNickname(std::string nick);
+		void		setLogged(bool log);
 
 		std::map<std::string, bool>	getChannels() const;
 
