@@ -11,6 +11,13 @@
 /* ************************************************************************** */
 
 #include "Server.hpp"
+#include <signal.h>
+
+// void	ft_signal_handler(int flag)
+// {
+	// signal(SIGINT, ft_sign_mini);
+	// signal(SIGQUIT, ft_sign_mini);
+// }
 
 int main(int ac, char **av)
 {

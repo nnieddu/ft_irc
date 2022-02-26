@@ -1,10 +1,5 @@
-#include <string>
-#include <sstream>
-#include <utility>
 
 #include "Server.hpp"
-#include "User.hpp"
-#include "irc_replies.hpp"
 
 server::server(const int & port, const std::string & password)
 : _name("ft_irc.serv"), _port(port), _password(password), _cmds(this)
@@ -13,6 +8,15 @@ server::server(const int & port, const std::string & password)
 		throw(std::invalid_argument(std::string("port number")));
 	if (_password.size() < 5 || _password.size() > 16)
 		throw(std::invalid_argument(std::string("password")));
+
+	_socket.server_socket(_port);
+
+	struct pollfd	serv_fd;
+	ft_bzero(&serv_fd, sizeof(serv_fd));
+	serv_fd.fd = _socket.fd;
+	serv_fd.events = POLLIN;
+
+	_fds.push_back(serv_fd);
 }
 
 server::~server() 
@@ -22,46 +26,24 @@ server::~server()
 		if(_fds[i].fd >= 0)
 			close(_fds[i].fd);
 	}
+	for (std::vector<user*>::iterator it = _users.begin() ; it != _users.end(); ++it)
+		delete *it;
 }
 
 int 		server::getSock() const { return _socket.fd; }
+
 std::string server::getName() const { return _name; }
 
-void	server::send_reply(user *usr, const char* code)
-{
-	std::string to_send;
-	std::string prefix = ":" + usr->getUsername();
-	std::string test = "Welcome to the Internet Relay Network " + prefix;
-
-	to_send += (prefix +  " " + code + " " + usr->getNickname() + " " + test + "\r\n");
-	send(usr->getSock(), to_send.c_str(), to_send.length(), 0);
-}
+std::map<std::string, std::vector<user*> > * server::getChans() { return &_channels; }
 
 int	server::run()
 {
-	int										ret_val(1);
-	struct pollfd							serv_fd;
 	std::vector<struct pollfd>::iterator	it;
-	char									buf[80];
 
-	_socket.server_socket(_port);
-
-	memset(&buf, 0, sizeof(buf));
-
-	// Set up the initial listening socket :
-	serv_fd.fd = _socket.fd;
-	serv_fd.events = POLLIN;
-
-	_fds.push_back(serv_fd);
-	
-	std::cout << "Welcome on the irc server !" << std::endl
-			<< "Waiting for connection..." << std::endl;
-	
 	for (int end_server = 0; end_server == 0;)
-  	{
+	{
 		it = _fds.begin();
-		ret_val = poll(&(*it), _fds.size(), -1); 
-		if (ret_val < 0)
+		if (poll(&(*it), _fds.size(), -1) < 0)
 			throw(std::runtime_error("poll() failed"));
 
 		size_t nfd = _fds.size();
@@ -69,108 +51,109 @@ int	server::run()
 		{
 			if(_fds[i].revents == 0)
 				continue;
-			if(_fds[i].revents != POLLIN && _fds[i].revents != 25)
-			{
-				std::cerr << "Error! revents = " << _fds[i].revents << std::endl;
-				end_server = 1;
-				break;
-			}
+			if(_fds[i].revents != POLLIN && _fds[i].revents != 25) // /!\remember to try/remove 25 (a l'ecole)
+				throw(std::runtime_error("revent error"));
 			else if (i == 0)
 				end_server = accept_user();
 			else
-				receive_command(recv(_fds[i].fd, buf, sizeof(buf), 0), i, buf);
+				receive_data(i);
 		}
 	}
-	return(ret_val);
+	return(0);
 }
 
 int	server::accept_user()
 {
 	struct pollfd		new_pollfd;
-	struct sockaddr_in	address;
-	socklen_t			len = 0;
-	std::stringstream	ss;
+	sockaddr_in			address;
+	socklen_t			len = sizeof(sockaddr);
+	std::string			ip;
+	std::stringstream	nick;
 
+	ft_bzero(&new_pollfd, sizeof(new_pollfd));
 	new_pollfd.fd = -1;
 	new_pollfd.events = POLLIN;
 	try
 	{
-		int	nfd;
-
-		nfd = accept(_socket.fd, reinterpret_cast<sockaddr*>(&address), &len);
-		if (nfd == -1)
+		if ((new_pollfd.fd = accept(_socket.fd, reinterpret_cast<sockaddr*>(&address), &len)) == -1)
 			throw(std::runtime_error("accept"));
-		if (fcntl(nfd, F_SETFL, O_NONBLOCK) < 0)
+		if (fcntl(new_pollfd.fd, F_SETFL, O_NONBLOCK) < 0)
 			throw(std::runtime_error("fcntl()"));
-		new_pollfd.fd = nfd;
 	}
 	catch(const std::runtime_error& e)
 	{
 		std::cerr << e.what() << " error" << std::endl;
 		return 1;
-	}
+	} // ? Supprimable ?
 
-	ss << "nickname" << new_pollfd.fd;
-	std::cout << "New incoming connection - " << ss.str() << std::endl;
+	nick << "nickname: " << new_pollfd.fd;
+	std::cout << "New incoming connection - " << nick.str()<< std::endl;
+	ip = inet_ntoa(reinterpret_cast<sockaddr_in*>(&address)->sin_addr);
+ 	// recup arg recu par le client via les cmd NICK, PASS etc pour bien init
 
-	_users.push_back(user(ss.str(), "username", "password", false, Socket(new_pollfd.fd, address, len)));
+	user *new_user = new user(ip, nick.str(), "username", "password", false, Socket(new_pollfd.fd, address, len));
+	_users.push_back(new_user);
 	_fds.push_back(new_pollfd);
-	send_reply(&_users[_users.size() - 1], RPL_WELCOME);
-    // send_reply(&_users[_users.size() - 1], RPL_YOURHOST);
+
+	send_replies(_users[_users.size() - 1], RPL_WELCOME); 
+	/// a bouger, check mais probably mieu de faire une ft pr regrouper les replies
 	return 0;
 }
-
-void	server::receive_command(ssize_t recv, size_t i, char *buf)
+void	server::receive_data(size_t i)
 {
-	if (recv < 0)
+	char	buf[512];
+	std::string tmp;
+	int ret = 0;
+
+	ft_bzero(&buf, sizeof(buf));
+	if((ret = recv(_fds[i].fd, buf, sizeof(buf), 0)) <= 0)
 	{
-		if (errno != EWOULDBLOCK)
-		{
+		if (ret < 0)
 			std::cerr << "recv() failed" << std::endl;
-			close_user(i);
-		}
-	}
-	else if (recv != 0)
-	{
-		std::cout << "Descriptor " << _fds[i].fd << " send : "<<  recv << " bytes :"<< std::endl;
-		_users[i - 1].buf += buf;
-		_cmds.launch(_users[i - 1]);
-		memset(&buf, 0, sizeof(buf));
-	}
-	else
 		close_user(i);
+		return ;
+	}
+	tmp = buf;
+	_users[i - 1]->buf += tmp;
+	std::cout << tmp << std::endl;
+	// if (tmp.find("\r") != std::string::npos) // weechat ok
+	if (tmp.empty() == false) // trouver comment detect proprement fin de commande via nc
+	{
+		std::cout << "Descriptor " << _fds[i].fd << " send : " << tmp << std::endl; //
+		// faudrais voir ici si plusieurs commandes a la suite, faire une boucle qui lance les cmds a la suite bien parsed
+		_cmds.launch(*_users[i - 1]);
+		_users[i - 1]->buf.clear();
+	}
 }
 
 void	server::close_user(size_t i)
 {
-	std::cout << _users[i - 1].getNickname() << " deconnexion" << std::endl;
+	// remove le user de tt les chans
+	// check dans toutes la map _channel ou via / en comparant avec le set de l'user ?
+	std::vector<user*>::iterator it = (_users.begin() + (i - 1));
+	std::cout << _users[i - 1]->getNickname() << " deconnexion" << std::endl; //
+	delete *it;
 	close(_fds[i].fd);
 	_fds.erase(_fds.begin() + i);
 	_users.erase(_users.begin() + (i - 1));
+	return ;
 }
 
-bool	server::is_channel_member(const user & usr, const channel & chan) const
+void	server::create_channel(user & usr, std::string & name)
 {
-	return chan.isMember(usr);
+	_channels[name].push_back(&usr);
+	usr.join_channel(name);
+	
+	std::string reply = ":" + usr.getNickname() + " JOIN :" + name + "\r\n";
+	send(usr.getSock(), reply.c_str(), reply.length(), 0);
 }
 
-bool	server::is_channel_member(const user & usr, const std::string & name) const
+void	server::send_replies(user *usr, const char* code)
 {
-	std::map<std::string, channel>::const_iterator	it(_channels.find(name));
+	std::string to_send;
+	std::string prefix = ":" + usr->getUsername();
+	std::string test = "Welcome to the Internet Relay Network " + prefix;
 
-	if (it == _channels.end())
-		return false;
-	return is_channel_member(usr, it->second);
-}
-
-void	server::create_channel(std::string & name, const user & usr)
-{
-	_channels.insert(std::make_pair(name, channel(name, usr)));
-	std::cout << std::endl << "got here" << std::endl;
-}
-
-void	server::close_channel(std::string & name)
-{
-	std::cout << name << " channel closed" << std::endl;
-	_channels.erase(name);
+	to_send += (prefix +  " " + code + " " + usr->getNickname() + " " + test + "\r\n");
+	send(usr->getSock(), to_send.c_str(), to_send.length(), 0);
 }

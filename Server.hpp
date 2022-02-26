@@ -10,54 +10,50 @@
 #include <cstring>
 #include <cerrno>
 #include <cstdlib>
+#include <sstream>
 
-#include <netinet/in.h> 
-#include <sys/socket.h>
 #include <poll.h>
-#include <fcntl.h>
 #include <unistd.h>
+#include <arpa/inet.h>
 
 #include "Socket.hpp"
 #include "User.hpp"
 #include "Commands.hpp"
-#include "Channel.hpp"
+#include "NumericReplies.hpp"
 
 class server
 {
 	private:
-
 		server();
 		server(const server& x);
 		server& operator=(const server& x);
 
-		std::string			_name;
-		int					_port;
-		std::string			_password;
-		Socket				_socket;
-
-		std::vector<struct pollfd> 		_fds;
-		std::vector<user>				_users;
-		Commands						_cmds;
-		std::map<std::string, channel>	_channels;
+		std::string									_name;
+		int											_port;
+		std::string									_password;
+		Socket										_socket;
+		Commands									_cmds;
+		std::vector<struct pollfd> 					_fds;
+		std::vector<user*>							_users;
+		std::map<std::string, std::vector<user*> > _channels;
 
 	public:
 
 		server(const int & port, const std::string & password);
 		~server();
 		
-		int	getSock() const;
+		int			getSock() const;
 		std::string	getName() const;
+		std::map<std::string, std::vector<user*> > *getChans();
 
 		int		run();
 		int		accept_user();
-		void	receive_command(ssize_t recv, size_t i, char * buf);
+		void	receive_data(size_t i);
 		void	close_user(size_t i);
-		void	send_reply(user *usr, const char* code);
+		void	send_replies(user *usr, const char* code);
+		void 	exit(user & usr, std::string cmd);
 
-		void	create_channel(std::string & name, const user & usr);
-	
-		bool	is_channel_member(const user & usr, const channel & chan) const;
-		bool	is_channel_member(const user & usr, const std::string & name) const;
-
-		void	close_channel(std::string & name);
+		void	create_channel(user & usr, std::string & name);
 };
+
+void	ft_bzero(void *s, size_t n);

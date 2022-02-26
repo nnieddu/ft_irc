@@ -1,12 +1,10 @@
 
 #pragma once
 
-#include <iostream>
-#include <string>
 #include <map>
-#include <functional>
+#include <functional> //
+
 #include "User.hpp"
-//#include "Server.hpp"
 
 class server;
 
@@ -25,16 +23,16 @@ class Commands
 		Commands(server * serv);
 		~Commands();
 
-		typedef void (Commands::*ft_ptr)(user &, std::string);
+		typedef void (Commands::*ft_ptr)(user *, std::string);
 		ft_ptr ptr;
 		std::map<std::string, ft_ptr> cmds_list;
 
 		void launch(user & usr);
-		void listCommands();
 		std::string parseCmds(std::string cmd);
 		std::string parseCmdsArgs(std::string cmd);
 
-		void exit(user & usr, std::string cmd);
-		void join(user & usr, std::string arg);
-
+		void exit(user * usr, std::string arg);
+		void join(user * usr, std::string arg);
+		void list(user * usr, std::string arg);
+		void kick(user * usr, std::string arg);
 };

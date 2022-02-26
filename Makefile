@@ -14,13 +14,13 @@ NAME	=	ircserv
 
 COMP 	=	c++
 
-FLAG	=	-Wall -Wextra -Werror -std=c++98 -g -O3
+FLAG	=	-Wall -Wextra -Werror -std=c++98
 
-SRC		=	main.cpp Server.cpp User.cpp Socket.cpp Commands.cpp Channel.cpp
+SRCS	=	main.cpp Server.cpp User.cpp Socket.cpp Commands.cpp
 
 INCS	=
 
-OBJ		=	$(SRC:.cpp=.o)
+OBJ		=	$(SRCS:.cpp=.o)
 
 %.o : %.cpp $(INCS)
 	$(COMP) $(FLAG) -c $< -o $@
@@ -34,7 +34,7 @@ run : $(NAME)
 	./$(NAME) 7005 password
 	
 runv : $(NAME)
-	valgrind --track-origins=yes -s ./$(NAME) 7005 password
+	valgrind ./$(NAME) 7005 password
 
 clean :
 	rm -f $(OBJ)

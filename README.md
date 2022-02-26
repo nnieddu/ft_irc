@@ -106,8 +106,78 @@ The commands which may only be used by channel operators are:
 | PING / PONG | `<server1>` `[<server2>]` | used to check for client activity on the other end of the connection. this message is sent at regular intervals unless other activity is noticed from the connection. if the client does not send PONG in response to PING, the connection is closed. |
 | ERROR | X | not implemented (this server don't manage server to server communication) |
 
+Le client irc :
+Envoi :
+ - PASS password
+ - NICK douwi
+ - USER douwi 0 * :douwi
 
-      
+Descriptor 4 send : 11 bytes :
+ - JOIN cool
+ - NICK douwi
+ - USER douwi 0 * :douwi
+
 ### Useful infos :
 ##### Ports :
 1-65535 are available, and ports in range 1-1023 are the privileged ones: an application needs to be run as root in order to listen to these ports.
+
+
+
+[TODO]
+- remplacer les memeset
+- virer le check errno
+- trouver comment recup une commande nc
+- recuperer correctement les args pr creation des users
+- gerer, checker quand user ce deco quil soit sortie de tt ses chans
+- parsing propre (si plusieurs commandes en une ligne et si plusieurs arg pr une meme cmd)
+- implementer les commandes et les replies correspondantes
+- implementer les topics (RFC 4.2.4)
+- a voir mais si oui implementer et bien comprendre les modes selon la rfc
+- faire un signal handler (signal autorise dans le sujet) pour quitter proprement
+- check tous ce qui peu etre pass en const et private
+- clean Makefile et orga les fichiers/sources
+
+
+#### Modes : 
+4.2.3.2 User modes
+   Parameters: <nickname> {[+|-]|i|w|s|o}
+
+   The user MODEs are typically changes which affect either how the
+   client is seen by others or what 'extra' messages the client is sent.
+   A user MODE command may only be accepted if both the sender of the
+   message and the nickname given as a parameter are both the same.
+
+   The available modes are as follows:
+
+           i - marks a users as invisible;
+           s - marks a user for receipt of server notices;
+           w - user receives wallops;
+           o - operator flag.
+
+4.2.3.1 Channel modes
+   Parameters: <channel> {[+|-]|o|p|s|i|t|n|b|v} [<limit>] [<user>]
+               [<ban mask>]
+
+   The MODE command is provided so that channel operators may change the
+   characteristics of `their' channel.  It is also required that servers
+   be able to change channel modes so that channel operators may be
+   created.
+
+   The various modes available for channels are as follows:
+
+           o - give/take channel operator privileges;
+           p - private channel flag;
+           s - secret channel flag;
+           i - invite-only channel flag;
+           t - topic settable by channel operator only flag;
+           n - no messages to channel from clients on the outside;
+           m - moderated channel;
+           l - set the user limit to channel;
+
+           b - set a ban mask to keep users out;
+           v - give/take the ability to speak on a moderated channel;
+           k - set a channel key (password).
+
+   When using the 'o' and 'b' options, a restriction on a total of three
+   per mode command has been imposed.  That is, any combination of 'o'
+   and

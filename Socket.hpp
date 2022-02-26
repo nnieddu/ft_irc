@@ -1,16 +1,19 @@
 
 #pragma once
 
+#include <iostream>
+#include <cstring>
+#include <stdexcept>
+
+#include <unistd.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <fcntl.h>
-#include <poll.h>
 
 class Socket
 {
 
 	public:
-
 		int					fd;
 		struct sockaddr_in	address;
 		socklen_t			len;
@@ -23,3 +26,5 @@ class Socket
 
 		void	server_socket(int port);
 };
+
+void	ft_bzero(void *s, size_t n);
