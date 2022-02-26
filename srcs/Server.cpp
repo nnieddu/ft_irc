@@ -34,7 +34,7 @@ int 		server::getSock() const { return _socket.fd; }
 
 std::string server::getName() const { return _name; }
 
-void	ft_exit(int sign)
+static void	ft_exit(int sign)
 {
 	std::stringstream	ss;
 
