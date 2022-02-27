@@ -147,11 +147,11 @@ void	server::close_user(size_t i)
 
 void	server::remove_user_from(user * usr, const std::string & name)
 {
-	std::vector<user *>::iterator	it(_channels[name].begin());
+	std::vector<user *>::iterator	it(channels[name].begin());
 
 	while ((*it)->getNickname() != usr->getNickname())
 		it++;
-	_channels[name].erase(it);
+	channels[name].erase(it);
 }
 
 void	server::remove_user_from_channels(user * usr)
@@ -163,14 +163,14 @@ void	server::remove_user_from_channels(user * usr)
 		std::cout << usr->getNickname() << " leaving channel : " << name << std::endl;
 		remove_user_from(usr, name);
 		usr->leave_channel(name);
-		if (_channels[name].empty())		// <-- remove channel if its users vector is empty
-			_channels.erase(name);
+		if (channels[name].empty())		// <-- remove channel if its users vector is empty
+			channels.erase(name);
 	}
 }
 
 void	server::create_channel(user & usr, std::string & name)
 {
-	_channels[name].push_back(&usr);
+	channels[name].push_back(&usr);
 	usr.join_channel(name, true);
 	
 	std::string reply = ":" + usr.getNickname() + " JOIN :" + name + "\r\n";

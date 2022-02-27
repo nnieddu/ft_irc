@@ -139,8 +139,8 @@ void Commands::list(user * usr, std::string arg)
 {
 	(void)usr;
 	std::cout << "Je passe par list:" << arg << std::endl;
-	for (std::map<std::string, std::vector<user*> >::iterator it = _serv->_channels.begin(); 
-		it != _serv->_channels.end(); ++it)
+	for (std::map<std::string, std::vector<user*> >::iterator it = _serv->channels.begin();
+		it != _serv->channels.end(); ++it)
 	{
 		std::cout << it->first;
 	}

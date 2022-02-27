@@ -14,17 +14,19 @@ NAME	=	ircserv
 
 COMP 	=	c++
 
-FLAG	=	-Wall -Wextra -Werror -std=c++98
+FLAG	=	-Wall -Wextra -Werror -std=c++98 -g -O3
 
-SRCS	=	main.cpp  \
-			Server.cpp \
-			Socket.cpp \
-			User.cpp \
+SRCS	=	main.cpp 	\
+			Server.cpp	\
+			Channel.cpp	\
+			Socket.cpp	\
+			User.cpp	\
 			Commands.cpp
 
-INCS	=	incs/Server.hpp \
-			incs/Socket.hpp \
-			incs/User.hpp \
+INCS	=	incs/Server.hpp	\
+			incs/Channel.hpp\
+			incs/Socket.hpp	\
+			incs/User.hpp	\
 			incs/Commands.hpp
 
 SRCS_DIR=	./srcs/
@@ -43,7 +45,7 @@ $(NAME) : $(OBJ) $(INCS)
 	$(COMP) $(FLAG) $(OBJ) -o $(NAME)
 
 runv : $(NAME)
-	valgrind ./$(NAME) 7005 password
+	valgrind --track-origins=yes --dsymutil=yes --leak-check=yes --show-leak-kinds=all ./$(NAME) 7005 password
 
 clean :
 	rm -rf $(OBJ_DIR)
