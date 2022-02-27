@@ -64,7 +64,6 @@ int Interpret::launch(user & usr)
 				args.push_back(parseNick(&usr.buf));
 			if (cmd->needArg())
 				args.push_back(parseArg(&usr.buf));
-			std::cout << "[" << args[0] << ']' << std::endl;
 			cmd->setArgs(args);
 			ret = cmd->execute();
 			cmd->reset();
@@ -152,16 +151,18 @@ std::string	Interpret::parseArg(std::string * buf)
 	buf->erase(buf->begin(), first - 1);
 	if (first == buf->end())
 		return "";
-	if (*first == '\r' || *first == '\n')
-	{
-		buf->erase(buf->find("\r"));
-		return "";
-	}
+		// return "";
+	// if (*first == '\r' || *first == '\n')
+	// {
+	// 	buf->erase(buf->find("\r"));
+	// 	return "";
+	// }
+	// std::cout << "\n---- [ARGS] ---\n";
 	last = first;
 	while(last != buf->end() && *last != '\r' && *last != '\n' )
 		last++;
-	if (last != buf->end() && *last == '\r' || *last == '\n')
-		buf->erase(buf->find("\r"));
+	// if (last != buf->end() && *last == '\r' || *last == '\n') // 
+	// 	buf->erase(buf->find("\r"));
 	arg.assign(first, last);
 	buf->erase(first, last);
 	return arg;

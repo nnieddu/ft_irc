@@ -21,7 +21,6 @@ class user
 		std::map<std::string, bool>	_channels;
 		std::string					_location;
 
-
 		user();
 		user(const user & x);
 		user& operator=(const user& x);
@@ -30,6 +29,8 @@ class user
 		user(std::string ip, std::string nickname, std::string username,
 			const Socket & socket, bool server_operator);
 		virtual ~user();
+
+		std::string	buf;
 
 		std::string	getNickname() const;
 		std::string	getUsername() const;
@@ -54,5 +55,4 @@ class user
 		std::string	getLocation() const;		// /!\ locations related stuff
 		bool		isMember(std::string & name) const;
 
-		std::string	buf;
 };

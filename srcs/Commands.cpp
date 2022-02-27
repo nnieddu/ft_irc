@@ -6,7 +6,7 @@
 
 #include <stdlib.h>
 
-Command::Command(){}//: serv(NULL), _channel(NULL), _user(NULL), _arg(NULL), _chan(false), _usr(false), _argument(false){}
+Command::Command() {}//: serv(NULL), _channel(NULL), _user(NULL), _arg(NULL), _chan(false), _usr(false), _argument(false){}
 
 Command &	Command::operator=(const Command & x)
 {
@@ -27,7 +27,7 @@ Command::~Command()
 Command::Command(server * serv): serv(serv), _channel(NULL), _user(NULL), _arg(NULL), _chan(false), _usr(false), _argument(false)
 {}
 
-int	Command::execute(){ return 0; }
+int	Command::execute() { return 0; }
 
 void	Command::setExpeditor(user * expeditor)
 {
@@ -73,7 +73,7 @@ Pass::Pass():Command()
 	_argument = true;
 }
 
-Pass::~Pass(){}
+Pass::~Pass() {}
 
 Pass & Pass::operator=(const Pass & x)
 {
@@ -91,15 +91,15 @@ Pass::Pass(server * serv):Command(serv)
 int Pass::execute()
 {
 	// if (usr->isRegister == true) // voir si on garde un historic pas sur de capter voir 4.1.1
-	// 	 serv->send_replies(usr, NULL, ERR_ALREADYREGISTERED);
-	if (!_arg)
+	// 	 serv->send_replies(usr, NULL, ERR_ALREADYREGISTRED);
+	if (*_arg == "") //
 	{
-		serv->send_replies(_expeditor, "You need a pass to pass bro", ERR_NEEDMOREPARAMS);
+		serv->send_replies(_expeditor, "PASS :Not enough parameters", ERR_NEEDMOREPARAMS);
 		return -1;
 	}
 	else if (_arg->compare(serv->getPassword()) != 0)
 	{
-		serv->send_replies(_expeditor, "WTF un intrus", ERR_PASSWDMISMATCH);
+		serv->send_replies(_expeditor, ":Password incorrect", ERR_PASSWDMISMATCH); // pas dans la rfc au log
 		_expeditor->setLogged(false);
 		return -1;
 	}
@@ -118,7 +118,7 @@ Nick::Nick():Command()
 	_argument = true;
 }
 
-Nick::~Nick(){}
+Nick::~Nick() {}
 
 Nick & Nick::operator=(const Nick & x)
 {
@@ -135,20 +135,18 @@ Nick::Nick(server * serv):Command(serv)
 int Nick::execute()
 {
 	if (!_arg)
-		serv->send_replies(_expeditor, NULL, ERR_NONICKNAMEGIVEN);
-	if (_expeditor->getNickname().empty() == true)
+	serv->send_replies(_expeditor, ":No nickname given", ERR_NONICKNAMEGIVEN);
+	if (serv->isIn(*_arg) == false)
 	{
-		if (serv->isIn(*_arg) == false)
-		{
-			_expeditor->setNickname(*_arg);
-			return 0;
-		}
-		else
-			serv->send_replies(_expeditor, NULL, ERR_NICKNAMEINUSE);
+		std::string str = ":" + _expeditor->getNickname() + " NICK " + ":" + *_arg + "\r\n";
+	    send(_expeditor->getSock(), str.c_str(), strlen(str.c_str()), 0);
+		_expeditor->setNickname(*_arg);
+		return 0;
 	}
-	// ERR_ERRONEUSNICKNAME if non conforme 'anonymous' ou char spe voir grammar protocol d'apres rfc
-	// mais pas de categorie grammar protocol dans la rfc..lul
+	// else
+	// 	serv->send_replies(_expeditor, NULL, ERR_NICKNAMEINUSE); // CAUSE UN SEGFAULT NOW
 
+	// ERR_ERRONEUSNICKNAME if non conforme 'anonymous' ou char spe voir grammar protocol d'apres rfc
 	// ERR_NICKCOLLISION osef ?
 	return 1;
 }
@@ -176,15 +174,14 @@ User::User(server * serv):Command(serv)
 
 int User::execute()
 {
-//  Parameters: <username> <hostname> <servername> <realname>
-	int	ret = 0;
-
-	if (!_arg) // todo: si pas asse d'arg, a voir avec parsing
+	if (!_arg)
 	{
-		serv->send_replies(_expeditor, NULL, ERR_NEEDMOREPARAMS);
-		ret = 1;
+		serv->send_replies(_expeditor, "USER :Not enough parameters", ERR_NEEDMOREPARAMS);
+		return 0;
 	}
-	return ret;
+	if (_expeditor->getisLogged() == true)
+		serv->send_replies(_expeditor, ":You may not reregister", ERR_ALREADYREGISTRED);
+	return 0;
 }
 
 /*	JOIN	*/
@@ -213,10 +210,12 @@ int	Join::execute()
 {
 	if (!_arg)
 	{
-		serv->send_replies(_expeditor, "JOIN need name parameter man", ERR_NEEDMOREPARAMS);
+		serv->send_replies(_expeditor, "JOIN :Not enough parameters", ERR_NEEDMOREPARAMS);
 		return 1;
 	}
-	std::string	name("#" + *_arg);
+	// std::string	name("#" + *_arg);
+// weechat le gere tt seul mais on doit check quand l'user input ya bien '&' or '#' et pas cree le chan si non
+	std::string	name(*_arg);
 
 	if (!_expeditor->isMember(name) && serv->_channels.find(name) == serv->_channels.end() 
 		&& _expeditor->getisLogged() == true)
@@ -229,6 +228,11 @@ int	Join::execute()
 		_expeditor->setLocation(name);	// /!\ locations related stuff
 	return 0;
 }
+        //    ERR_NEEDMOREPARAMS              ERR_BANNEDFROMCHAN
+        //    ERR_INVITEONLYCHAN              ERR_BADCHANNELKEY
+        //    ERR_CHANNELISFULL               ERR_BADCHANMASK
+        //    ERR_NOSUCHCHANNEL               ERR_TOOMANYCHANNELS
+        //    RPL_TOPIC
 
 /*	LIST	*/
 
@@ -261,3 +265,17 @@ int List::execute()
 	std::cout << "EOF List" << std::endl;
 	return 0;
 }
+//    Parameters: [<channel>{,<channel>} [<server>]]
+
+//    The list message is used to list channels and their topics.  If  the
+//    <channel>  parameter  is  used,  only  the  status  of  that  channel
+//    is displayed.  Private  channels  are  listed  (without  their
+//    topics)  as channel "Prv" unless the client generating the query is
+//    actually on that channel.  Likewise, secret channels are not listed
+
+//    at  all  unless  the client is a member of the channel in question.
+
+//    Numeric Replies:
+
+//            ERR_NOSUCHSERVER                RPL_LISTSTART
+//            RPL_LIST                        RPL_LISTEND

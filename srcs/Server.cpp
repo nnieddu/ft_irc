@@ -130,14 +130,23 @@ void	server::receive_data(size_t i)
 	}
 
 	if (ret > 510) 
-		std::cerr << "Too long message" << std::endl; // a test
+	{
+		std::cerr << "Too long message" << std::endl; // a test et voir si une replies vas bien
+		_users[i - 1]->buf.clear();
+		return ;
+	}
 
 	tmp = buf;
 	_users[i - 1]->buf += tmp;
 	if (tmp.find("\n") != std::string::npos)
 	{
-		_users[i - 1]->buf.erase((_users[i - 1]->buf.end()-1)); // remove \n de fin 
-		std::cout << _users[i - 1]->getNickname() << " send : [" << _users[i - 1]->buf << "]" << std::endl;
+
+		// std::cout << _users[i - 1]->getNickname() << " send : [";
+		// for (std::string::iterator it = _users[i - 1]->buf.begin() ; it != (_users[i - 1]->buf.end() - 1); ++it)
+		// 	std::cout << *it; 
+		// std::cout << "]" << std::endl;
+		std::cout << tmp << std::endl;
+
 		ret = _interpret.launch(*_users[i - 1]);
 		_users[i - 1]->buf.clear();
 		if (_users[i - 1]->getisLogged() == false)

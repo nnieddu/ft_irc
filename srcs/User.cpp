@@ -12,6 +12,8 @@ std::string	user::getNickname() const { return _nickname; }
 std::string	user::getUsername() const { return _username; }
 std::string	user::getPassword() const { return _password; }
 bool		user::getisLogged() const { return _isLogged; }
+int 		user::getSock() const { return _socket.fd; }
+Socket		user::getSocket() const { return _socket; }
 
 void		user::setPassword(std::string psw) { _password = psw; }
 void		user::setNickname(std::string nick) { _nickname = nick; }
@@ -56,11 +58,6 @@ void	user::demote(std::string & name)
 	}
 	catch(std::out_of_range &oor){}			// <-- rentre ici si "name" n existe pas, voir si il y a un send a faire
 }
-
-Socket	user::getSocket() const { return _socket; }
-
-int user::getSock() const { return _socket.fd; }
-
 
 void	user::join_channel(std::string & name, bool op)
 {
