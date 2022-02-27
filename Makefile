@@ -20,12 +20,14 @@ SRCS	=	main.cpp  \
 			Server.cpp \
 			Socket.cpp \
 			User.cpp \
-			Commands.cpp
+			Commands.cpp \
+			Interpret.cpp
 
 INCS	=	incs/Server.hpp \
 			incs/Socket.hpp \
 			incs/User.hpp \
-			incs/Commands.hpp
+			incs/Commands.hpp \
+			incs/Interpret.hpp
 
 SRCS_DIR=	./srcs/
 OBJ_DIR	=	./srcs/obj/

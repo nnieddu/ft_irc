@@ -2,7 +2,7 @@
 #include "../incs/Server.hpp"
 
 server::server(const int & port, const std::string & password)
-: _name("ft_irc.serv"), _port(port), _password(password), _cmds(this)
+: _name("ft_irc.serv"), _port(port), _password(password), _interpret(this)
 {
 	if (_port <= 1023 || _port > 65535)
 		throw(std::invalid_argument(std::string("port number")));
@@ -138,7 +138,7 @@ void	server::receive_data(size_t i)
 	{
 		_users[i - 1]->buf.erase((_users[i - 1]->buf.end()-1)); // remove \n de fin 
 		std::cout << _users[i - 1]->getNickname() << " send : [" << _users[i - 1]->buf << "]" << std::endl;
-		ret = _cmds.launch(*_users[i - 1]);
+		ret = _interpret.launch(*_users[i - 1]);
 		_users[i - 1]->buf.clear();
 		if (_users[i - 1]->getisLogged() == false)
 		{

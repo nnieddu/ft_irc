@@ -19,7 +19,7 @@
 
 #include "Socket.hpp"
 #include "User.hpp"
-#include "Commands.hpp"
+#include "Interpret.hpp"
 #include "NumericReplies.hpp"
 
 # define EOC "\r\n"
@@ -35,7 +35,7 @@ class server
 		int											_port;
 		std::string									_password;
 		Socket										_socket;
-		Commands									_cmds;
+		Interpret									_interpret;
 		std::vector<struct pollfd> 					_fds;
 		std::vector<user*>							_users;
 

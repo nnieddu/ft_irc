@@ -7,41 +7,171 @@
 
 class server;
 
-class Commands
+class Command
 {
-	private:
-		Commands();
-		Commands(const Commands& x);
-		Commands& operator=(const Commands& x);
+	protected:
+		Command(const Command& x);
 
-		server *	_serv;
-
-		bool	_is_complete(std::string & cmd) const;
+		user *			_expeditor;
+		std::string *	_channel;
+		std::string *	_user;
+		std::string *	_arg;
+		bool			_chan;
+		bool			_usr;
+		bool			_argument;
+		int				_reply;
 
 	public:
-		Commands(server * serv);
-		~Commands();
 
-		typedef int (Commands::*ft_ptr)(user *, std::string);
-		ft_ptr ptr;
+		server *		serv;
 
-		std::map<std::string, ft_ptr> cmds_list;
+		Command();
+		Command& operator=(const Command& x);
+		Command(server * serv);
+		virtual ~Command();
 
-		int launch(user & usr);
-		std::string parseCmds(std::string cmd);
-		std::string parseCmdArgs(std::string arg);
+		virtual int	execute();
 
-		int pass(user * usr, std::string arg);
-		int nick(user * usr, std::string arg);
-		int user_cmd(user * usr, std::string arg);
-		// void oper(user * usr, std::string arg);
-		// void quit(user * usr, std::string arg);
-		int join(user * usr, std::string arg);
-		// void part(user * usr, std::string arg);
-		// void mode(user * usr, std::string arg);
-		// void topic(user * usr, std::string arg);
-		// void names(user * usr, std::string arg);
-		int list(user * usr, std::string arg);
-		// void invite(user * usr, std::string arg);
-		// void kick(user * usr, std::string arg);
+		void			setExpeditor(user * expeditor);
+		virtual void	setArgs(std::vector<std::string> args);
+
+		int				getReply() const;
+
+		bool			needChannel() const;
+		bool			needUser() const;
+		bool			needArg() const;
+
+		void			reset();
+};
+
+class Pass : public Command
+{
+	public:
+
+	Pass();
+	virtual ~Pass();
+	Pass&	operator=(const Pass & x);
+	Pass(server * serv);
+	virtual int	execute();
+};
+
+class Nick : public Command
+{
+	public:
+
+	Nick();
+	virtual ~Nick();
+	Nick&	operator=(const Nick & x);
+	Nick(server * serv);
+	virtual int	execute();
+};
+
+class User : public Command
+{
+	public:
+
+	User();
+	virtual ~User();
+	User&	operator=(const User & x);
+	User(server * serv);
+	virtual int	execute();
+};
+
+class Join : public Command
+{
+	public:
+
+	Join();
+	virtual ~Join();
+	Join&	operator=(const Join & x);
+	Join(server * serv);
+	virtual int	execute();
+};
+
+class List : public Command
+{
+	public:
+
+	List();
+	virtual ~List();
+	List&	operator=(const List & x);
+	List(server * serv);
+	virtual int	execute();
+};
+
+class Oper : public Command
+{
+	public:
+
+	Oper();
+	virtual ~Oper();
+	Oper&	operator=(const Oper & x);
+	Oper(server * serv);
+	virtual int	execute();
+};
+
+class Quit : public Command
+{
+	public:
+
+	Quit();
+	virtual ~Quit();
+	Quit&	operator=(const Quit & x);
+	Quit(server * serv);
+	virtual int	execute();
+};
+
+class Mode : public Command
+{
+	public:
+
+	Mode();
+	virtual ~Mode();
+	Mode&	operator=(const Mode & x);
+	Mode(server * serv);
+	virtual int	execute();
+};
+
+class Topic : public Command
+{
+	public:
+
+	Topic();
+	virtual ~Topic();
+	Topic&	operator=(const Topic & x);
+	Topic(server * serv);
+	virtual int	execute();
+};
+
+class Names : public Command
+{
+	public:
+
+	Names();
+	virtual ~Names();
+	Names&	operator=(const Names & x);
+	Names(server * serv);
+	virtual int	execute();
+};
+
+class Invite : public Command
+{
+	public:
+
+	Invite();
+	virtual ~Invite();
+	Invite&	operator=(const Invite & x);
+	Invite(server * serv);
+	virtual int	execute();
+};
+
+class Kick : public Command
+{
+	public:
+
+	Kick();
+	virtual ~Kick();
+	Kick&	operator=(const Kick & x);
+	Kick(server * serv);
+	virtual int	execute();
 };
