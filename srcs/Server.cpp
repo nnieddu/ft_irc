@@ -114,16 +114,6 @@ void server::accept_user()
 
 }
 
-void	server::first_log(user * usr, size_t i)
-{
-	send_replies(_users[_users.size() - 1], "Welcome to the Internet Relay Network ", RPL_WELCOME);
-	// parse and check : (en 1 block avec weechat)
-	//  PASS , 
-	//  NICK, 
-	//  USER (user_cmd)
-	_users[i - 1]->setLogged(true);
-}
-
 void	server::receive_data(size_t i)
 {
 	char	buf[512];
@@ -138,17 +128,23 @@ void	server::receive_data(size_t i)
 		close_user(i);
 		return ;
 	}
+
+	if (ret > 510) 
+		std::cerr << "Too long message" << std::endl; // a test
+
 	tmp = buf;
 	_users[i - 1]->buf += tmp;
-
-	if (_users[i - 1]->getisLogged() == false)
-		first_log(_users[i - 1], i);
-
-	if (tmp.find(EOC))
+	if (tmp.find("\n") != std::string::npos)
 	{
-		std::cout << _users[i - 1]->getNickname() << " send : " << std::endl << tmp; //
-		_cmds.launch(*_users[i - 1]);
+		_users[i - 1]->buf.erase((_users[i - 1]->buf.end()-1)); // remove \n de fin 
+		std::cout << _users[i - 1]->getNickname() << " send : [" << _users[i - 1]->buf << "]" << std::endl;
+		ret = _cmds.launch(*_users[i - 1]);
 		_users[i - 1]->buf.clear();
+		if (_users[i - 1]->getisLogged() == false)
+		{
+			//send replie // need to be log
+			close_user(i);
+		}
 	}
 }
 

@@ -38,16 +38,36 @@ Commands::Commands(server * serv): _serv(serv)
 
 Commands::~Commands() {}
 
-void Commands::launch(user & usr)
+int Commands::launch(user & usr)
 {
-	std::string cmd = parseCmds(usr.buf);
-	std::map<std::string, ft_ptr>::iterator it = cmds_list.find(cmd);
-	if (it != cmds_list.end())
+	int ret = 0;
+	std::string cmd_to_launch;
+	std::string args_to_launch;
+	std::string parsed_arg;
+	std::map<std::string, ft_ptr>::iterator it;
+	
+	while ((usr.buf.find('\r') && ret == 0))
 	{
-		std::string cmd_arg = parseCmdsArgs(usr.buf);
-		ptr = it->second;
-		(this->*ptr)(&usr, cmd_arg);
+		cmd_to_launch = parseCmds(usr.buf);
+		if ((it = cmds_list.find(cmd_to_launch)) != cmds_list.end())
+		{
+			usr.buf.erase(usr.buf.find(cmd_to_launch), cmd_to_launch.size());
+			if (usr.buf.empty() == false)
+			{
+				if (*usr.buf.begin() == ' ')
+					usr.buf.erase(usr.buf.begin(), usr.buf.begin()+1);
+				parsed_arg = parseCmdArgs(usr.buf);
+				usr.buf.erase(usr.buf.find(parsed_arg), parsed_arg.size());
+			}
+			ptr = it->second;
+			ret = (this->*ptr)(&usr, parsed_arg);
+		}
+		else
+			break;
 	}
+	// std::cout << "Command not found" << std::endl;
+	 // send replies cmd not found ou envoyer msg dans chan
+	return ret;
 }
 
 std::string Commands::parseCmds(std::string cmd)
@@ -59,13 +79,12 @@ std::string Commands::parseCmds(std::string cmd)
 	return (cmd);
 }
 
-std::string Commands::parseCmdsArgs(std::string arg)
+std::string Commands::parseCmdArgs(std::string arg)
 {
-	std::string::iterator it = arg.begin();
-	while (*it != ' ' && it != arg.end())
-		it++;
-	it++; // remove ' '
-	arg.erase(arg.begin(), it);
+	if (arg.find("\r") != std::string::npos)
+		arg.erase(arg.find("\r"));
+	if (arg.find("\n") != std::string::npos)
+		arg.erase(arg.find("\n"));
 	return (arg);
 }
 
@@ -80,41 +99,59 @@ bool	Commands::_is_complete(std::string & cmd) const
 
 /* -- BEGIN OF COMMANDS FUNCTIONS -- */
 
-void Commands::pass(user * usr, std::string arg)
+int Commands::pass(user * usr, std::string arg)
 {
 	// if (usr->isRegister == true) // voir si on garde un historic pas sur de capter voir 4.1.1
 	// 	 _serv->send_replies(usr, NULL, ERR_ALREADYREGISTERED);
 	if (arg.empty() == true)
 	{
-		_serv->send_replies(usr, "NULL", ERR_NEEDMOREPARAMS);
+		_serv->send_replies(usr, "You need a pass to pass bro", ERR_NEEDMOREPARAMS);
+		return -1;
 	}
 	else if (arg != _serv->getPassword())
 	{
 		_serv->send_replies(usr, "WTF un intrus", ERR_PASSWDMISMATCH);
+		usr->setLogged(false);
+		return -1;
 	}
-	usr->setPassword(arg);
+	if (usr->getisLogged() == false)
+	{
+		usr->setPassword(arg);
+		usr->setLogged(true);
+	}
+	return 0;
 }
 
-void Commands::nick(user * usr, std::string arg)
+int Commands::nick(user * usr, std::string arg)
 {
 	if (arg.empty() == true)
 		_serv->send_replies(usr, NULL, ERR_NONICKNAMEGIVEN);
 	if (usr->getNickname().empty() == true)
 	{
-		if (!_serv->isIn(arg))
+		if (_serv->isIn(arg) == false)
+		{
 			usr->setNickname(arg);
+			return 0;
+		}
 		else
 			_serv->send_replies(usr, NULL, ERR_NICKNAMEINUSE);
 	}
-	// ERR_ERRONEUSNICKNAME if non conforme 'anonymous' ou char spe voir grammar protocol
+	// ERR_ERRONEUSNICKNAME if non conforme 'anonymous' ou char spe voir grammar protocol d'apres rfc
+	// mais pas de categorie grammar protocol dans la rfc..lul
+
 	// ERR_NICKCOLLISION osef ?
+	return 1;
 }
 
-void Commands::user_cmd(user * usr, std::string arg)
+int Commands::user_cmd(user * usr, std::string arg)
 {
 //  Parameters: <username> <hostname> <servername> <realname>
 	if (arg.empty() == true) // todo: si pas asse d'arg, a voir avec parsing
+	{
 		_serv->send_replies(usr, NULL, ERR_NEEDMOREPARAMS);
+		return 1;
+	}
+	return 0;
 }
 
 // void Commands::oper(user * usr, std::string arg)
@@ -125,17 +162,23 @@ void Commands::user_cmd(user * usr, std::string arg)
 // {
 // }
 
-void Commands::join(user * usr, std::string arg)
+int Commands::join(user * usr, std::string arg)
 {
-	std::cout << "Channel : " << arg;
-
-	if (!usr->isMember(arg))
+	if (arg.empty() == true)
 	{
+		_serv->send_replies(usr, "JOIN need name parameter man", ERR_NEEDMOREPARAMS);
+		return 1;
+	}
+	if (!usr->isMember(arg) && _serv->_channels.find(arg) == _serv->_channels.end() 
+		&& usr->getisLogged() == true)
+	{
+		std::cout << "Channel : " << arg << " created" << std::endl;
 		//usr->setOperator(true);
 		_serv->create_channel(*usr, arg);
 	}
 	else
 		usr->setLocation(arg);	// /!\ locations related stuff
+	return 0;
 }
 
 // void Commands::mode(user * usr, std::string arg)
@@ -150,15 +193,16 @@ void Commands::join(user * usr, std::string arg)
 // {
 // }
 
-void Commands::list(user * usr, std::string arg)
+int Commands::list(user * usr, std::string arg)
 {
 	(void)usr;
-	std::cout << "Je passe par list:" << arg << std::endl;
-	for (std::map<std::string, std::vector<user*> >::iterator it = _serv->_channels.begin(); 
+	for (std::map<std::string, std::vector<user*> >::iterator it = _serv->_channels.begin();
 		it != _serv->_channels.end(); ++it)
 	{
-		std::cout << it->first;
+		std::cout << it->first << std::endl;
 	}
+	std::cout << "EOF List" << std::endl;
+	return 0;
 }
 
 // void Commands::invite(user * usr, std::string cmd)

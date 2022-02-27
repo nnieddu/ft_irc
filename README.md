@@ -34,8 +34,6 @@ apt-get install weechat-curses weechat-plugins
 /connect <NAME> -password=<PASWORD>
 ```
 
-   
-  
 netcat testing :
 ```
 nc 127.0.01 <PORT>
@@ -106,31 +104,18 @@ The commands which may only be used by channel operators are:
 | PING / PONG | `<server1>` `[<server2>]` | used to check for client activity on the other end of the connection. this message is sent at regular intervals unless other activity is noticed from the connection. if the client does not send PONG in response to PING, the connection is closed. |
 | ERROR | X | not implemented (this server don't manage server to server communication) |
 
-Le client irc :
-Envoi :
- - PASS password
- - NICK douwi
- - USER douwi 0 * :douwi
-
-Descriptor 4 send : 11 bytes :
- - JOIN cool
- - NICK douwi
- - USER douwi 0 * :douwi
 
 ### Useful infos :
 ##### Ports :
 1-65535 are available, and ports in range 1-1023 are the privileged ones: an application needs to be run as root in order to listen to these ports.
 
 
-
 [TODO]
-- trouver comment recup une commande nc
 - recuperer correctement les args pr creation des users
-- gerer, checker quand user ce deco quil soit sortie de tt ses chans
-- parsing propre (si plusieurs commandes en une ligne et si plusieurs arg pr une meme cmd)
+- parsing propre (si plusieurs commandes en un buffer et si plusieurs arg pr une meme cmd)
 - implementer les commandes et les replies correspondantes
 - implementer les topics (RFC 4.2.4)
-- implementer et bien comprendre les modes selon la rfc 4.2.3.2 a 4.2.3.1 
+- implementer les modes selon la rfc 4.2.3.2 a 4.2.3.1 
 - check tous ce qui peu etre passe en const et private
 
 Check prefix etc : RFC 2.3 Messages

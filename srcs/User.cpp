@@ -16,7 +16,21 @@ bool		user::getisLogged() const { return _isLogged; }
 void		user::setPassword(std::string psw) { _password = psw; }
 void		user::setNickname(std::string nick) { _nickname = nick; }
 
-void		user::setLogged(bool log) { _isLogged = log; }
+void		user::setLogged(bool log) 
+{ 
+	_isLogged = log; 
+	// a modifier en meme temps que send_replies (qui est pas full ok dans le format, la c deg but works)
+	if (log == true) 
+	{
+		std::string to_send;
+		std::string msg = "Welcome to the Internet Relay Network ";
+		const char* code = "001";
+		std::string prefix = ":" + getUsername();
+		msg += prefix;
+		to_send += (prefix +  " " + code + " " + getNickname() + " " + msg + "\r\n");
+		send(getSock(), to_send.c_str(), to_send.length(), 0);		
+	}
+}
 
 std::map<std::string, bool>	user::getChannels() const { return _channels; }
 
