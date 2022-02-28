@@ -20,12 +20,14 @@ SRCS	=	main.cpp  \
 			Server.cpp \
 			Socket.cpp \
 			User.cpp \
+			Command.cpp \
 			Commands.cpp \
 			Interpret.cpp
 
 INCS	=	incs/Server.hpp \
 			incs/Socket.hpp \
 			incs/User.hpp \
+			incs/Command.hpp \
 			incs/Commands.hpp \
 			incs/Interpret.hpp
 

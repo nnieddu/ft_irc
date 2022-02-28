@@ -4,7 +4,7 @@
 #include <map>
 
 #include "User.hpp"
-#include "Commands.hpp"
+#include "Command.hpp"
 
 class server;
 
