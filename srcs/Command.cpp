@@ -14,9 +14,12 @@ Command &	Command::operator=(const Command & x)
 
 Command::~Command()
 {
-	_user = NULL;
+	if (_nick)
+		delete _nick;
 	if (_channel)
 		delete _channel;
+	if (_user)
+		delete _user;
 	if (_arg)
 		delete _arg;
 }
