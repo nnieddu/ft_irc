@@ -6,7 +6,7 @@
 /*   By: ninieddu <ninieddu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 14:42:03 by ninieddu          #+#    #+#             */
-/*   Updated: 2022/02/23 21:29:27 by ninieddu         ###   ########lyon.fr   */
+/*   Updated: 2022/02/28 16:02:12 by mrozniec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,22 +26,22 @@ int main(int ac, char **av)
 		server	serv(atoi(av[1]), std::string(av[2]));
 		return (serv.run());
 	}
-	catch (std::runtime_error &e)
+	catch (std::runtime_error &er)
 	{
-		std::cerr << e.what() << ": " << std::strerror(errno) << std::endl;
+		std::cerr << er.what() << ": " << std::strerror(errno) << std::endl;
 	}
-	catch (std::invalid_argument &e)
+	catch (std::invalid_argument &er)
 	{
-		std::cerr << "[error]: invalid argument : " << e.what() << std::endl;
+		std::cerr << "[error]: invalid argument : " << er.what() << std::endl;
 	}
-	catch (server::quitexcept &e)
+	catch (server::quitexcept &er)
 	{
-		std::cout << e.what() << std::endl;
+		std::cout << er.what() << std::endl;
 		ret = 0;
 	}
-	catch (std::exception &e)
+	catch (std::exception &er)
 	{
-		std::cerr << e.what() << std::endl;
+		std::cerr << er.what() << std::endl;
 	}
 	return(ret);
 }

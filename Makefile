@@ -6,7 +6,7 @@
 #    By: ninieddu <ninieddu@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/22 17:20:49 by ninieddu          #+#    #+#              #
-#   Updated: 2022/02/28 15:34:06 by mrozniec         ###   ########.fr       # #
+#   Updated: 2022/02/28 15:57:53 by mrozniec         ###   ########.fr       # #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,7 +40,7 @@ OBJ		=	$(addprefix $(OBJ_DIR),$(SRCS:.cpp=.o))
 all :
 	mkdir -p $(OBJ_DIR)
 	$(MAKE) $(NAME)
-	$(MAKE) runv
+##	$(MAKE) runv
 
 $(OBJ_DIR)%.o:$(SRCS_DIR)%.cpp $(INC)
 	$(COMP) $(CFLAGS) -c $< -o $@

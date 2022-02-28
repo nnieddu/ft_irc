@@ -6,7 +6,7 @@
 /*   By: mrozniec <mrozniec@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/28 13:56:40 by mrozniec          #+#    #+#             */
-/*   Updated: 2022/02/28 13:57:07 by mrozniec         ###   ########.fr       */
+/*   Updated: 2022/02/28 15:57:53 by mrozniec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,6 @@ void Channel::setTopic(const std::string &newTopic) {
 
 void Channel::setPass(const std::string &newPass) {
 	password = newPass;
-}
-
-void Channel::addOp(user &newOp) {
-	chanOps.push_back(&newOp);
 }
 
 void Channel::addUser(user &newUser) {

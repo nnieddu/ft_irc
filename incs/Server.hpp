@@ -42,7 +42,7 @@ class server
 		server(const int & port, const std::string & password);
 		~server();
 		
-		std::map<std::string, Channel& > channels;
+		std::map<std::string, Channel* > channels;
 
 		int			getSock() const;
 		std::string	getName() const;

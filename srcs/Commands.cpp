@@ -202,7 +202,7 @@ List::List(server * serv):Command(serv)
 
 int List::execute()
 {
-	for (std::map<std::string, Channel&>::iterator it = serv->channels.begin();
+	for (std::map<std::string, Channel*>::iterator it = serv->channels.begin();
 		it != serv->channels.end(); ++it)
 	{
 		std::cout << it->first << std::endl;

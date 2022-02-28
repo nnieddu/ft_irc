@@ -99,9 +99,9 @@ void server::accept_user()
 		if (fcntl(new_pollfd.fd, F_SETFL, O_NONBLOCK) < 0)
 			throw(std::runtime_error("fcntl()"));
 	}
-	catch(const std::runtime_error& e)
+	catch(const std::runtime_error& er)
 	{
-		std::cerr << e.what() << " error" << std::endl;
+		std::cerr << er.what() << " error" << std::endl;
 		return ;
 	}
 
@@ -171,13 +171,13 @@ void	server::close_user(size_t index)
 }
 
 void	server::remove_user_from(user * usr, const std::string & name)
-{
-	std::vector<user *>::iterator	it(_channels[name].begin());
+{/*
+	std::vector<user *>::iterator	it(channels[name]->getUsers().begin());
 
 	while ((*it)->getNickname() != usr->getNickname())
 		it++;
-	_channels[name].erase(it);
-}
+	channels[name]->getUsers().erase(it);
+*/}
 
 void	server::remove_user_from_channels(user * usr)
 {
@@ -188,14 +188,14 @@ void	server::remove_user_from_channels(user * usr)
 		std::cout << usr->getNickname() << " leaving channel : " << name << std::endl;
 		remove_user_from(usr, name);
 		usr->leave_channel(name);
-		if (_channels[name].empty())		// <-- remove channel if its users vector is empty
-			_channels.erase(name);
+		if (channels[name]->getUsers().empty())		// <-- remove channel if its users vector is empty
+			channels.erase(name);
 	}
 }
 
 void	server::create_channel(user & usr, std::string & name)
 {
-	_channels[name] = Channel(usr, name);
+	*channels[name] = Channel(usr, name);
 	usr.join_channel(name, true);
 
 	std::string replies = ":" + usr.getNickname() + " JOIN :" + name + "\r\n";
