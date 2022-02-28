@@ -52,7 +52,7 @@ int Interpret::launch(user & usr)
 
 	int ret = 0;
 	
-	while ((usr.buf.find('\r') && ret == 0))
+	while (usr.buf.empty() == false && (usr.buf.find('\r') && ret == 0))
 	{
 		if ((it = cmds_list.find(parseCmds(&usr.buf))) != cmds_list.end())
 		{
