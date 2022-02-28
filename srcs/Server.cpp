@@ -21,10 +21,10 @@ server::server(const int & port, const std::string & password)
 
 server::~server() 
 {
-	for (size_t i = 0; i < _users.size() + 1; i++)
+	for (size_t index = 0; index < _users.size() + 1; index++)
 	{
-		if(_fds[i].fd >= 0)
-			close(_fds[i].fd);
+		if(_fds[index].fd >= 0)
+			close(_fds[index].fd);
 	}
 	for (std::vector<user*>::iterator it = _users.begin() ; it != _users.end(); ++it)
 		delete *it;
@@ -67,14 +67,14 @@ int	server::run()
 			throw(std::runtime_error("poll() failed"));
 
 		size_t nfd = _fds.size();
-		for (size_t i = 0; i < nfd; i++)
+		for (size_t index = 0; index < nfd; index++)
 		{
-			if(_fds[i].revents == POLLIN || _fds[i].revents == 25)
+			if(_fds[index].revents == POLLIN || _fds[index].revents == 25)
 			{
-				if (i == 0)
+				if (index == 0)
 					accept_user();
 				else
-					receive_data(i);
+					receive_data(index);
 			}								// /!\ revent_error ?
 		}
 	}
@@ -114,59 +114,59 @@ void server::accept_user()
 
 }
 
-void	server::receive_data(size_t i)
+void	server::receive_data(size_t index)
 {
 	char	buf[512];
 	std::string tmp;
 	int ret = 0;
 
 	memset(&buf, 0, sizeof(buf));
-	if((ret = recv(_fds[i].fd, buf, sizeof(buf), 0)) <= 0)
+	if((ret = recv(_fds[index].fd, buf, sizeof(buf), 0)) <= 0)
 	{
 		if (ret < 0)
 			std::cerr << "recv() failed" << std::endl;
-		close_user(i);
+		close_user(index);
 		return ;
 	}
 
 	if (ret > 510) 
 	{
 		std::cerr << "Too long message" << std::endl; // a test et voir si une replies vas bien
-		_users[i - 1]->buf.clear();
+		_users[index - 1]->buf.clear();
 		return ;
 	}
 
 	tmp = buf;
-	_users[i - 1]->buf += tmp;
+	_users[index - 1]->buf += tmp;
 	if (tmp.find("\n") != std::string::npos) // check si sur mac / a lecole netcat renvoi aussi un \r
 	{
 
-		std::cout << _users[i - 1]->getNickname() << " send : [";
-		for (std::string::iterator it = _users[i - 1]->buf.begin() ; it != (_users[i - 1]->buf.end() - 1); ++it)
+		std::cout << _users[index - 1]->getNickname() << " send : [";
+		for (std::string::iterator it = _users[index - 1]->buf.begin() ; it != (_users[index - 1]->buf.end() - 1); ++it)
 			std::cout << *it; 
 		std::cout << "]" << std::endl;
 		// std::cout << tmp << std::endl;
 
-		ret = _interpret.launch(*_users[i - 1]);
-		_users[i - 1]->buf.clear();
-		if (_users[i - 1]->getisLogged() == false)
+		ret = _interpret.launch(*_users[index - 1]);
+		_users[index - 1]->buf.clear();
+		if (_users[index - 1]->getisLogged() == false)
 		{
 			//send replie // need to be log
-			close_user(i);
+			close_user(index);
 		}
 	}
 }
 
-void	server::close_user(size_t i)
+void	server::close_user(size_t index)
 {
-	std::vector<user*>::iterator it = (_users.begin() + (i - 1));
+	std::vector<user*>::iterator it = (_users.begin() + (index - 1));
 
 	remove_user_from_channels(*it);
 	std::cout << (*it)->getNickname() << " deconnexion" << std::endl; //to remove
 	delete *it;
-	close(_fds[i].fd);
-	_fds.erase(_fds.begin() + i);
-	_users.erase(_users.begin() + (i - 1));
+	close(_fds[index].fd);
+	_fds.erase(_fds.begin() + index);
+	_users.erase(_users.begin() + (index - 1));
 	return ;
 }
 
@@ -198,16 +198,16 @@ void	server::create_channel(user & usr, std::string & name)
 	_channels[name].push_back(&usr);
 	usr.join_channel(name, true);
 	
-	std::string reply = ":" + usr.getNickname() + " JOIN :" + name + "\r\n";
-	send(usr.getSock(), reply.c_str(), reply.length(), 0);
+	std::string replies = ":" + usr.getNickname() + " JOIN :" + name + "\r\n";
+	send(usr.getSock(), replies.c_str(), replies.length(), 0);
 }
 
 void	server::send_replies(user *usr, std::string msg, const char* code)
 {
-	std::string to_send;
+	std::string replies;
 	std::string prefix = ":" + usr->getUsername();
 	msg += prefix;
 
-	to_send += (prefix +  " " + code + " " + usr->getNickname() + " " + msg + "\r\n");
-	send(usr->getSock(), to_send.c_str(), to_send.length(), 0);
+	replies += (prefix +  " " + code + " " + usr->getNickname() + " " + msg + "\r\n");
+	send(usr->getSock(), replies.c_str(), replies.length(), 0);
 }

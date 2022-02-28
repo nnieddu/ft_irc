@@ -29,6 +29,8 @@ Pass::Pass(server * serv):Command(serv)
 
 int Pass::execute()
 {
+	_expeditor->setLogged(true);
+	return 0;
 	// if (usr->isRegister == true) // voir si on garde un historic pas sur de capter voir 4.1.1
 	// 	 serv->send_replies(usr, NULL, ERR_ALREADYREGISTRED);
 	if (!_arg) //
@@ -157,14 +159,18 @@ int	Join::execute()
 	std::string	name(*_arg);
 
 	if (!_expeditor->isMember(name) && serv->_channels.find(name) == serv->_channels.end() 
-		&& _expeditor->getisLogged() == true)
+		&& _expeditor->getisLogged() == true) //
 	{
 		std::cout << "Channel : " << name << " created" << std::endl;
 		// _expeditor->setOperator(true);
 		serv->create_channel(*_expeditor, name);
 	}
 	else
+	{
+		std::string replies = ":" + _expeditor->getNickname() + " JOIN :" + name + "\r\n";
+		send(_expeditor->getSock(), replies.c_str(), replies.length(), 0);
 		_expeditor->setLocation(name);	// /!\ locations related stuff
+	}
 	return 0;
 }
         //    ERR_NEEDMOREPARAMS              ERR_BANNEDFROMCHAN

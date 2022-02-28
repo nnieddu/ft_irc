@@ -59,8 +59,8 @@ class server
 
 		int		run();
 		void	accept_user();
-		void	receive_data(size_t i);
-		void	close_user(size_t i);
+		void	receive_data(size_t index);
+		void	close_user(size_t index);
 		void	remove_user_from(user * usr, const std::string & name);
 		void	remove_user_from_channels(user * usr);
 		void	send_replies(user *usr, std::string msg, const char* code);
