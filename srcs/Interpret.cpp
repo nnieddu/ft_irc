@@ -60,13 +60,13 @@ int Interpret::launch(user & usr)
 			cmd->setExpeditor(&usr);
 
 			if (cmd->needNick())
-				args.push_back(parseNick(&usr.buf));
+				args.push_back(parseWord(&usr.buf));
 			if (cmd->needChannel())
-				args.push_back(parseChannel(&usr.buf));
+				args.push_back(parseWord(&usr.buf));
 			if (cmd->needUser())
-				args.push_back(parseNick(&usr.buf));
+				args.push_back(parseWord(&usr.buf));
 			if (cmd->needArg())
-				args.push_back(parseArg(&usr.buf));
+				args.push_back(parseAll(&usr.buf));
 
 			cmd->setArgs(args);
 			ret = cmd->execute();
@@ -102,7 +102,7 @@ int	Interpret::cmd_not_found(user & usr)
 	return 1;
 }
 
-std::string *	Interpret::parseChannel(std::string * buf)	//parseChannel et parseNick identique atm, les channels doivent commencer par '#' donc veridier si on peut improve
+std::string *	Interpret::parseWord(std::string * buf)	//parseChannel et parseNick identique atm, les channels doivent commencer par '#' donc veridier si on peut improve
 {
 	std::string::iterator	first(buf->begin());
 	std::string::iterator	last;
@@ -121,26 +121,7 @@ std::string *	Interpret::parseChannel(std::string * buf)	//parseChannel et parse
 	return new std::string(arg);
 }
 
-std::string *	Interpret::parseNick(std::string * buf)
-{
-	std::string::iterator	first;
-	std::string::iterator	last;
-	std::string				arg;
-
-	if (GetNextWord(buf) == NULL)
-		return NULL;
-	first = buf->begin();
-	last = first;
-	while(last != buf->end() && *last != ' ' && *last != '\r' && *last != '\n' )
-		last++;
-	if (last != buf->end() && *last == '\r' || *last == '\n')
-		buf->erase(last);
-	arg.assign(first, last);
-	buf->erase(first, last);
-	return new std::string(arg);
-}
-
-std::string *	Interpret::parseArg(std::string * buf)
+std::string *	Interpret::parseAll(std::string * buf)
 {
 	std::string::iterator	first;
 	std::string::iterator	last;

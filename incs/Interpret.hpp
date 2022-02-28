@@ -31,9 +31,8 @@ class Interpret
 		std::string parseCmds(std::string * buf);
 		int	cmd_not_found(user & usr);
 
-		std::string *	parseChannel(std::string * buf);
-		std::string *	parseNick(std::string * buf);
-		std::string *	parseArg(std::string * buf);
+		std::string *	parseWord(std::string * buf);
+		std::string *	parseAll(std::string * buf);
 
 		std::string *	GetNextWord(std::string * buf);
 };
