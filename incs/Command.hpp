@@ -34,7 +34,7 @@ class Command
 		virtual int	execute();
 
 		void			setExpeditor(user * expeditor);
-		virtual void	setArgs(std::vector<std::string> args);
+		virtual void	setArgs(std::vector<std::string *> args);
 
 		int				getReply() const;
 

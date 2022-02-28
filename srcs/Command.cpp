@@ -31,13 +31,13 @@ void	Command::setExpeditor(user * expeditor)
 	_expeditor = expeditor;
 }
 
-void	Command::setArgs(std::vector<std::string> args)
+void	Command::setArgs(std::vector<std::string *> args)
 {
 	std::string *	new_ptr;
 
 	while (args.empty() == false)
 	{
-		new_ptr = new std::string(args[0]);
+		new_ptr = args[0];
 
 		if (_nck)
 			_nick = new_ptr;
@@ -47,6 +47,7 @@ void	Command::setArgs(std::vector<std::string> args)
 			_user = new_ptr;
 		else if (_argument)
 			_arg = new_ptr;
+
 		args.erase(args.begin());
 		new_ptr = NULL;
 	}
@@ -64,11 +65,18 @@ bool	Command::needArg() const{ return _argument; }
 
 void	Command::reset()
 {
-	_user = NULL;
+	if (_nick)
+		delete _nick;
 	if (_channel)
 		delete _channel;
-	_channel = NULL;
+	if (_user)
+		delete _user;
 	if (_arg)
 		delete _arg;
-	_arg = NULL;
+
+	_expeditor	= NULL;
+	_nick		= NULL;
+	_channel	= NULL;
+	_arg		= NULL;
+	_channel	= NULL;
 }

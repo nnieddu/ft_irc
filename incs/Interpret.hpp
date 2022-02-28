@@ -29,7 +29,9 @@ class Interpret
 		int launch(user & usr);
 		std::string parseCmds(std::string * buf);
 
-		std::string	parseChannel(std::string * buf);
-		std::string	parseNick(std::string * buf);
-		std::string	parseArg(std::string * buf);
+		std::string *	parseChannel(std::string * buf);
+		std::string *	parseNick(std::string * buf);
+		std::string *	parseArg(std::string * buf);
+
+		std::string *	GetNextWord(std::string * buf);
 };

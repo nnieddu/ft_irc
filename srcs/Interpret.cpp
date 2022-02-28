@@ -47,7 +47,7 @@ Interpret::~Interpret()
 int Interpret::launch(user & usr)
 {
 	Command	*									cmd;
-	std::vector<std::string>					args;
+	std::vector<std::string *>					args;
 	std::map<std::string, Command *>::iterator	it;
 
 	int ret = 0;
@@ -91,84 +91,85 @@ std::string Interpret::parseCmds(std::string * buf)
 	return (cmd);
 }
 
-std::string	Interpret::parseChannel(std::string * buf)	//parseChannel et parseNick identique atm, les channels doivent commencer par '#' donc veridier si on peut improve
+std::string *	Interpret::parseChannel(std::string * buf)	//parseChannel et parseNick identique atm, les channels doivent commencer par '#' donc veridier si on peut improve
 {
 	std::string::iterator	first(buf->begin());
 	std::string::iterator	last;
 	std::string				arg;
 
-	while (*first == ' ')
-		first++;
-	buf->erase(buf->begin(), first - 1);
-	if (*first == '\r' || *first == '\n')
-	{
-		buf->erase(buf->find("\r"));
-		return "";
-	}
-	if (first == buf->end())
-		return "";
+	if (GetNextWord(buf) == NULL)
+		return NULL;
+	first = buf->begin();
 	last = first;
 	while(last != buf->end() && *last != ' ' && *last != '\r' && *last != '\n' )
 		last++;
 	if (last != buf->end() && *last == '\r' || *last == '\n')
-		buf->erase(buf->find("\r"));
+		buf->erase(last);
 	arg.assign(first, last);
 	buf->erase(first, last);
-	return arg;
+	return new std::string(arg);
 }
 
-std::string	Interpret::parseNick(std::string * buf)
+std::string *	Interpret::parseNick(std::string * buf)
 {
-	std::string::iterator	first(buf->begin());
+	std::string::iterator	first;
 	std::string::iterator	last;
 	std::string				arg;
 
-	while (*first == ' ')
-		first++;
-	buf->erase(buf->begin(), first - 1);
-	if (*first == '\r' || *first == '\n')
-	{
-		buf->erase(buf->find("\r"));
-		return "";
-	}
-	if (first == buf->end())
-		return "";
+	if (GetNextWord(buf) == NULL)
+		return NULL;
+	first = buf->begin();
 	last = first;
 	while(last != buf->end() && *last != ' ' && *last != '\r' && *last != '\n' )
 		last++;
 	if (last != buf->end() && *last == '\r' || *last == '\n')
-		buf->erase(buf->find("\r"));
+		buf->erase(last);
 	arg.assign(first, last);
 	buf->erase(first, last);
-	return arg;
+	return new std::string(arg);
 }
 
-std::string	Interpret::parseArg(std::string * buf)
+std::string *	Interpret::parseArg(std::string * buf)
 {
-	std::string::iterator	first(buf->begin());
+	std::string::iterator	first;
 	std::string::iterator	last;
 	std::string				arg;
 
-	std::cout << "PARSE ARG begin\n";
-	while (*first == ' ')
-		first++;
-	buf->erase(buf->begin(), first - 1);
-	if (first == buf->end())
-		return "";
-	// if (*first == '\r' || *first == '\n')
-	// {
-	// 	buf->erase(buf->find("\r"));
-	// 	return "";
-	// }
+	if (GetNextWord(buf) == NULL)
+		return NULL;
+	first = buf->begin();
 	last = first;
 	while(last != buf->end() && *last != '\r' && *last != '\n' )
 		last++;
-	// if (last != buf->end() && *last == '\r' || *last == '\n') // 
-	// 	buf->erase(buf->find("\r"));
+	if (last != buf->end())
+	 	buf->erase(last);
 	arg.assign(first, last);
 	buf->erase(first, last);
-	std::cout << "PARSE ARG end\n";
-	return arg;
+	return new std::string(arg);
+}
+
+std::string *	Interpret::GetNextWord(std::string * buf)
+{
+	std::string::iterator	first(buf->begin());
+
+	if (*first == '\n' || *first == '\r')
+	{
+		buf->erase(first);
+		return NULL;
+	}
+	while (first != buf->end() && *first == ' ')
+		first++;
+	buf->erase(buf->begin(), first);
+	if (buf->empty())
+		return NULL;
+
+	first = buf->begin();
+	if (*first == '\n' || *first == '\r')
+	{
+		buf->erase(first);
+		return NULL;
+	}
+	return buf;
 }
 
 // Les deux bout commented font segfault si "PASS " sur netcat

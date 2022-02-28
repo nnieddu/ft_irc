@@ -47,7 +47,8 @@ $(NAME) : $(OBJ) $(INCS)
 	$(COMP) $(FLAG) $(OBJ) -o $(NAME)
 
 runv : $(NAME)
-	valgrind ./$(NAME) 7005 password | cat -e
+	valgrind ./$(NAME) 7005 password
+#| cat -e
 
 clean :
 	rm -rf $(OBJ_DIR)

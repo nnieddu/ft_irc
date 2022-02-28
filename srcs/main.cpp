@@ -39,5 +39,9 @@ int main(int ac, char **av)
 		std::cout << e.what() << std::endl;
 		ret = 0;
 	}
+	catch (std::exception &e)
+	{
+		std::cerr << e.what() << std::endl;
+	}
 	return(ret);
 }
