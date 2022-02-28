@@ -29,11 +29,9 @@ Pass::Pass(server * serv):Command(serv)
 
 int Pass::execute()
 {
-	_expeditor->setLogged(true);
-	return 0;
 	// if (usr->isRegister == true) // voir si on garde un historic pas sur de capter voir 4.1.1
 	// 	 serv->send_replies(usr, NULL, ERR_ALREADYREGISTRED);
-	if (!_arg) //
+	if (!_arg)
 	{
 		serv->send_replies(_expeditor, "PASS :Not enough parameters", ERR_NEEDMOREPARAMS);
 		return -1;
@@ -173,11 +171,11 @@ int	Join::execute()
 	}
 	return 0;
 }
-        //    ERR_NEEDMOREPARAMS              ERR_BANNEDFROMCHAN
-        //    ERR_INVITEONLYCHAN              ERR_BADCHANNELKEY
-        //    ERR_CHANNELISFULL               ERR_BADCHANMASK
-        //    ERR_NOSUCHCHANNEL               ERR_TOOMANYCHANNELS
-        //    RPL_TOPIC
+//    ERR_NEEDMOREPARAMS              ERR_BANNEDFROMCHAN
+//    ERR_INVITEONLYCHAN              ERR_BADCHANNELKEY
+//    ERR_CHANNELISFULL               ERR_BADCHANMASK
+//    ERR_NOSUCHCHANNEL               ERR_TOOMANYCHANNELS
+//    RPL_TOPIC
 
 /*	LIST	*/
 

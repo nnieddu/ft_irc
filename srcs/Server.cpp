@@ -28,6 +28,8 @@ server::~server()
 	}
 	for (std::vector<user*>::iterator it = _users.begin() ; it != _users.end(); ++it)
 		delete *it;
+	for (std::map<std::string, Channel*>::iterator itc = channels.begin() ; itc != channels.end(); ++itc)
+		delete itc->second;
 }
 
 int 		server::getSock() const { return _socket.fd; }
@@ -184,7 +186,6 @@ void	server::remove_user_from_channels(user * usr)
 	while (!(usr->getChannels().empty()))
 	{
 		std::string name = usr->getChannels().begin()->first;
-
 		std::cout << usr->getNickname() << " leaving channel : " << name << std::endl;
 		remove_user_from(usr, name);
 		usr->leave_channel(name);
@@ -195,7 +196,7 @@ void	server::remove_user_from_channels(user * usr)
 
 void	server::create_channel(user & usr, std::string & name)
 {
-	*channels[name] = Channel(usr, name);
+	channels[name] = new Channel(usr, name);
 	usr.join_channel(name, true);
 
 	std::string replies = ":" + usr.getNickname() + " JOIN :" + name + "\r\n";
