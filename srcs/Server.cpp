@@ -195,9 +195,9 @@ void	server::remove_user_from_channels(user * usr)
 
 void	server::create_channel(user & usr, std::string & name)
 {
-	_channels[name].push_back(&usr);
+	_channels[name] = Channel(usr, name);
 	usr.join_channel(name, true);
-	
+
 	std::string replies = ":" + usr.getNickname() + " JOIN :" + name + "\r\n";
 	send(usr.getSock(), replies.c_str(), replies.length(), 0);
 }

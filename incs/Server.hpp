@@ -21,6 +21,7 @@
 #include "User.hpp"
 #include "Interpret.hpp"
 #include "NumericReplies.hpp"
+#include "Channel.hpp"
 
 class server
 {
@@ -41,7 +42,7 @@ class server
 		server(const int & port, const std::string & password);
 		~server();
 		
-		std::map<std::string, std::vector<user*> > _channels;
+		std::map<std::string, Channel& > channels;
 
 		int			getSock() const;
 		std::string	getName() const;

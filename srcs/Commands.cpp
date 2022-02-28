@@ -158,8 +158,8 @@ int	Join::execute()
 // weechat le gere tt seul mais on doit check quand l'user input des chan si ya bien '&' or '#' et pas cree le chan si non
 	std::string	name(*_arg);
 
-	if (!_expeditor->isMember(name) && serv->_channels.find(name) == serv->_channels.end() 
-		&& _expeditor->getisLogged() == true) //
+	if (!_expeditor->isMember(name) && serv->channels.find(name) == serv->channels.end()
+		&& _expeditor->getisLogged())
 	{
 		std::cout << "Channel : " << name << " created" << std::endl;
 		// _expeditor->setOperator(true);
@@ -202,8 +202,8 @@ List::List(server * serv):Command(serv)
 
 int List::execute()
 {
-	for (std::map<std::string, std::vector<user*> >::iterator it = serv->_channels.begin();
-		it != serv->_channels.end(); ++it)
+	for (std::map<std::string, Channel&>::iterator it = serv->channels.begin();
+		it != serv->channels.end(); ++it)
 	{
 		std::cout << it->first << std::endl;
 	}

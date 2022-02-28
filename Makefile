@@ -6,7 +6,7 @@
 #    By: ninieddu <ninieddu@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/22 17:20:49 by ninieddu          #+#    #+#              #
-#    Updated: 2022/02/24 10:27:29 by ninieddu         ###   ########lyon.fr    #
+#   Updated: 2022/02/28 15:34:06 by mrozniec         ###   ########.fr       # #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,21 +14,23 @@ NAME	=	ircserv
 
 COMP 	=	c++
 
-FLAG	=	-Wall -Wextra -Werror -std=c++98
+FLAG	=	-Wall -Wextra -Werror -std=c++98 -g
 
-SRCS	=	main.cpp  \
-			Server.cpp \
-			Socket.cpp \
-			User.cpp \
-			Command.cpp \
-			Commands.cpp \
+SRCS	=	main.cpp	\
+			Server.cpp	\
+			Channel.cpp	\
+			Socket.cpp	\
+			User.cpp	\
+			Command.cpp	\
+			Commands.cpp\
 			Interpret.cpp
 
-INCS	=	incs/Server.hpp \
-			incs/Socket.hpp \
-			incs/User.hpp \
-			incs/Command.hpp \
-			incs/Commands.hpp \
+INCS	=	incs/Server.hpp		\
+			incs/Channel.hpp	\
+			incs/Socket.hpp		\
+			incs/User.hpp		\
+			incs/Command.hpp	\
+			incs/Commands.hpp	\
 			incs/Interpret.hpp
 
 SRCS_DIR=	./srcs/
