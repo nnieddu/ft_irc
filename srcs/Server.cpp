@@ -173,13 +173,10 @@ void	server::close_user(size_t index)
 }
 
 void	server::remove_user_from(user * usr, const std::string & name)
-{/*
-	std::vector<user *>::iterator	it(channels[name]->getUsers().begin());
-
-	while ((*it)->getNickname() != usr->getNickname())
-		it++;
-	channels[name]->getUsers().erase(it);
-*/}
+{
+	if (channels[name]->getUsers().find(usr) != channels[name]->getUsers().end())
+		channels[name]->removeUser(*usr);
+}
 
 void	server::remove_user_from_channels(user * usr)
 {

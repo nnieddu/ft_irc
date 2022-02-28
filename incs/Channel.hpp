@@ -6,13 +6,14 @@
 /*   By: mrozniec <mrozniec@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/27 18:15:52 by mrozniec          #+#    #+#             */
-/*   Updated: 2022/02/28 16:13:27 by mrozniec         ###   ########.fr       */
+/*   Updated: 2022/02/28 17:00:54 by mrozniec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include <string>
+#include <set>
 #include "User.hpp"
 #include <exception>
 
@@ -49,7 +50,7 @@ class Channel {
 		std::string			topic;
 		std::string			password;
 		user*				chanCrea;
-		std::vector<user *>	users;
+		std::set<user *>	users;
 
 	public:
 		Channel(user&, std::string&);
@@ -60,6 +61,7 @@ class Channel {
 		void	setTopic(const std::string&);
 		void	setPass(const std::string&);
 		void	addUser(user&);
+		void	removeUser(user&);
 
 		const unsigned int&			getMod() const;
 		const unsigned int&			getLim() const;
@@ -68,6 +70,6 @@ class Channel {
 		const std::string&			getTopic() const;
 		const std::string&			getPass() const;
 		const user&					getChanCrea() const;
-		const std::vector<user*>&	getUsers() const;
+		const std::set<user*>&		getUsers() const;
 
 };

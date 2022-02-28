@@ -6,7 +6,7 @@
 /*   By: mrozniec <mrozniec@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/28 13:56:40 by mrozniec          #+#    #+#             */
-/*   Updated: 2022/02/28 15:57:53 by mrozniec         ###   ########.fr       */
+/*   Updated: 2022/02/28 17:03:29 by mrozniec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 Channel::Channel(user &users, std::string &newName) : users(), name(), id(),
 topic(), password("password"), limit_user(0), chanCrea(NULL) {
-	this->users.push_back(&users);
+	this->users.insert(&users);
 	id.clear();
 	if (newName[0] == '&' || newName[0] == '#')
 		mod = o;
@@ -36,8 +36,10 @@ topic(), password("password"), limit_user(0), chanCrea(NULL) {
 		}
 		name = newName.erase(0, 1);
 	}
-	else
+	else {
+		std::cerr << "this is a test" << std::endl;
 		throw std::exception(); //TODO:: need to be modified
+	}
 }
 
 void Channel::setMod(unsigned int newMod) {
@@ -57,7 +59,11 @@ void Channel::setPass(const std::string &newPass) {
 }
 
 void Channel::addUser(user &newUser) {
-	users.push_back(&newUser);
+	users.insert(&newUser);
+}
+
+void Channel::removeUser(user &remUser) {
+	users.erase(users.find(&remUser));
 }
 
 const unsigned int &Channel::getMod() const {
@@ -88,7 +94,7 @@ const user &Channel::getChanCrea() const {
 	return *chanCrea;
 }
 
-const std::vector<user *> &Channel::getUsers() const {
+const std::set<user *> &Channel::getUsers() const {
 	return users;
 }
 
