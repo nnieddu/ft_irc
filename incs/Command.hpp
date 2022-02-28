@@ -12,9 +12,11 @@ class Command
 		Command(const Command& x);
 
 		user *			_expeditor;
+		std::string *	_nick;
 		std::string *	_channel;
 		std::string *	_user;
 		std::string *	_arg;
+		bool			_nck;
 		bool			_chan;
 		bool			_usr;
 		bool			_argument;
@@ -36,6 +38,7 @@ class Command
 
 		int				getReply() const;
 
+		bool			needNick() const;
 		bool			needChannel() const;
 		bool			needUser() const;
 		bool			needArg() const;

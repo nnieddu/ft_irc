@@ -59,6 +59,8 @@ int Interpret::launch(user & usr)
 			cmd = it->second;
 			cmd->setExpeditor(&usr);
 
+			if (cmd->needNick())
+				args.push_back(parseNick(&usr.buf));
 			if (cmd->needChannel())
 				args.push_back(parseChannel(&usr.buf));
 			if (cmd->needUser())
