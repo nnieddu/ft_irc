@@ -222,3 +222,40 @@ int List::execute()
 //    Numeric Replies:
 //    ERR_NOSUCHSERVER                RPL_LISTSTART
 //    RPL_LIST                        RPL_LISTEND
+
+
+/*	PING	*/
+
+Ping::Ping():Command()
+{
+	_argument = true;
+}
+
+Ping::~Ping(){}
+
+Ping & Ping::operator=(const Ping & x)
+{
+	if (this != &x)
+		serv = x.serv;
+	return *this;
+}
+
+Ping::Ping(server * serv):Command(serv)
+{
+	_argument = true;
+}
+
+int Ping::execute()
+{
+	if (!_arg)
+		serv->send_replies(_expeditor, ":No origin specified", ERR_NOORIGIN);
+	if (_arg->compare(serv->getName()) != 0)
+		serv->send_replies(_expeditor, serv->getName() + ":No such server", ERR_NOSUCHSERVER);
+	else
+	{
+		std::string reply = (":" + _expeditor->getUsername() + " PONG " + serv->getName() + " \r\n");
+		send(_expeditor->getSock(), reply.c_str(), reply.length(), 0);
+		return 0;
+	}
+	return 1;
+}

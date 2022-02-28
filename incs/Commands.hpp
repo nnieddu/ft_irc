@@ -134,3 +134,14 @@ class Kick : public Command
 		Kick(server * serv);
 		virtual int	execute();
 };
+
+class Ping : public Command
+{
+	public:
+
+		Ping();
+		virtual ~Ping();
+		Ping&	operator=(const Ping & x);
+		Ping(server * serv);
+		virtual int	execute();
+};

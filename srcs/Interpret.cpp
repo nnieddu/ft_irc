@@ -34,7 +34,7 @@ Interpret::Interpret(server * serv): _serv(serv)
 	// cmds_list["WHOIS"] = Whois(_serv);
 	// cmds_list["WHOWAS"] = Whowas(_serv); // a voir mais relou
 	// cmds_list["KILL"] = Kill(_serv);
-	// cmds_list["PING"] = Ping(_serv);
+	cmds_list["PING"] = new Ping(_serv);
 	// cmds_list["PONG"] = Pong(_serv);
 }
 
