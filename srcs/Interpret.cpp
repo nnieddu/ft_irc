@@ -67,15 +67,14 @@ int Interpret::launch(user & usr)
 				args.push_back(parseNick(&usr.buf));
 			if (cmd->needArg())
 				args.push_back(parseArg(&usr.buf));
+
 			cmd->setArgs(args);
 			ret = cmd->execute();
 			cmd->reset();
 		}
 		else
-			break;
+			ret = cmd_not_found(usr);
 	}
-	// std::cout << "Command not found" << std::endl;
-	 // send replies cmd not found ou envoyer msg dans chan
 	return ret;
 }
 
@@ -84,11 +83,23 @@ std::string Interpret::parseCmds(std::string * buf)
 	std::string::iterator	it = buf->begin();
 	std::string				cmd;
 
-	while (*it != ' ' && it != buf->end())
+	while (it != buf->end() && *it != '\r' && *it != '\n' && *it != ' ')
 		it++;
 	cmd.assign(buf->begin(), it);
 	buf->erase(buf->begin(), it);
 	return (cmd);
+}
+
+int	Interpret::cmd_not_found(user & usr)
+{
+	std::string::iterator	it(usr.buf.begin());
+
+	while (it != usr.buf.end() && *it != '\r' && *it != '\n')		// tel quel : fait sortir de la boucle
+		it++;														// quoi qu'il arrive, peut etre
+	usr.buf.erase(usr.buf.begin(), it);								// a changer si il y a plusieurs EOC
+
+	std::cerr << "Command not found" << std::endl;
+	return 1;
 }
 
 std::string *	Interpret::parseChannel(std::string * buf)	//parseChannel et parseNick identique atm, les channels doivent commencer par '#' donc veridier si on peut improve
@@ -152,11 +163,6 @@ std::string *	Interpret::GetNextWord(std::string * buf)
 {
 	std::string::iterator	first(buf->begin());
 
-	if (*first == '\n' || *first == '\r')
-	{
-		buf->erase(first);
-		return NULL;
-	}
 	while (first != buf->end() && *first == ' ')
 		first++;
 	buf->erase(buf->begin(), first);

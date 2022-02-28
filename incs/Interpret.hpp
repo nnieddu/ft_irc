@@ -27,7 +27,9 @@ class Interpret
 		std::map<std::string, Command *> cmds_list;
 
 		int launch(user & usr);
+	
 		std::string parseCmds(std::string * buf);
+		int	cmd_not_found(user & usr);
 
 		std::string *	parseChannel(std::string * buf);
 		std::string *	parseNick(std::string * buf);

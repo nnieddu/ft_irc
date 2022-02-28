@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 
-Command::Command() {}//: serv(NULL), _channel(NULL), _user(NULL), _arg(NULL), _chan(false), _usr(false), _argument(false){}
+Command::Command() {}//: serv(NULL), _nick(NULL), _channel(NULL), _user(NULL), _arg(NULL), _chan(false), _usr(false), _argument(false){}
 
 Command &	Command::operator=(const Command & x)
 {
@@ -24,7 +24,7 @@ Command::~Command()
 		delete _arg;
 }
 
-Command::Command(server * serv): serv(serv), _channel(NULL), _user(NULL), _arg(NULL), _nck(false), _chan(false), _usr(false), _argument(false)
+Command::Command(server * serv): serv(serv), _nick(NULL), _channel(NULL), _user(NULL), _arg(NULL), _nck(false), _chan(false), _usr(false), _argument(false)
 {}
 
 int	Command::execute() { return 0; }
@@ -52,7 +52,6 @@ void	Command::setArgs(std::vector<std::string *> args)
 			_arg = new_ptr;
 
 		args.erase(args.begin());
-		new_ptr = NULL;
 	}
 }
 
