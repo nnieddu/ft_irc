@@ -2,8 +2,8 @@
 #include "../incs/User.hpp"
 #include "../incs/Socket.hpp"
 
-user::user(std::string ip, std::string nickname, std::string username, const Socket & socket, bool server_operator)
-: _ip(ip), _nickname(nickname), _username(username), _socket(socket), _server_operator(server_operator), _isLogged(false)
+user::user(std::string hostname, std::string nickname, std::string username, const Socket & socket, bool server_operator)
+: _hostname(hostname), _nickname(nickname), _username(username), _socket(socket), _server_operator(server_operator), _isLogged(false)
 {}
 
 user::~user() {}
@@ -18,6 +18,7 @@ Socket		user::getSocket() const { return _socket; }
 void		user::setPassword(std::string psw) { _password = psw; }
 void		user::setNickname(std::string nick) { _nickname = nick; }
 
+// void		user::setOperator(bool op) { }
 void		user::setLogged(bool log) 
 { 
 	_isLogged = log; 

@@ -86,7 +86,7 @@ void server::accept_user()
 	struct pollfd		new_pollfd;
 	sockaddr_in			address;
 	socklen_t			len = sizeof(sockaddr);
-	std::string			ip;
+	std::string			hostname;
 	std::stringstream	nick;
 
 	memset(&new_pollfd, 0, sizeof(new_pollfd));
@@ -107,8 +107,8 @@ void server::accept_user()
 
 	nick << "nickname" << new_pollfd.fd;
 	std::cout << "New incoming connection - " << nick.str()<< std::endl;
-	ip = inet_ntoa(reinterpret_cast<sockaddr_in*>(&address)->sin_addr);
-	user *new_user = new user(ip, nick.str(), "username", Socket(new_pollfd.fd, address, len), false);
+	hostname = inet_ntoa(reinterpret_cast<sockaddr_in*>(&address)->sin_addr);
+	user *new_user = new user(hostname, nick.str(), "username", Socket(new_pollfd.fd, address, len), false);
 	_users.push_back(new_user);
 	_fds.push_back(new_pollfd);
 
@@ -138,14 +138,14 @@ void	server::receive_data(size_t i)
 
 	tmp = buf;
 	_users[i - 1]->buf += tmp;
-	if (tmp.find("\n") != std::string::npos)
+	if (tmp.find("\n") != std::string::npos) // check si sur mac / a lecole netcat renvoi aussi un \r
 	{
 
-		// std::cout << _users[i - 1]->getNickname() << " send : [";
-		// for (std::string::iterator it = _users[i - 1]->buf.begin() ; it != (_users[i - 1]->buf.end() - 1); ++it)
-		// 	std::cout << *it; 
-		// std::cout << "]" << std::endl;
-		std::cout << tmp << std::endl;
+		std::cout << _users[i - 1]->getNickname() << " send : [";
+		for (std::string::iterator it = _users[i - 1]->buf.begin() ; it != (_users[i - 1]->buf.end() - 1); ++it)
+			std::cout << *it; 
+		std::cout << "]" << std::endl;
+		// std::cout << tmp << std::endl;
 
 		ret = _interpret.launch(*_users[i - 1]);
 		_users[i - 1]->buf.clear();

@@ -9,9 +9,9 @@
 class user
 {
 	private:
-		std::string					_ip;
 		std::string					_nickname;
 		std::string					_username;
+		std::string					_hostname;
 		std::string					_password;
 
 		bool						_server_operator;
@@ -26,7 +26,7 @@ class user
 		user& operator=(const user& x);
 
 	public:
-		user(std::string ip, std::string nickname, std::string username,
+		user(std::string hostname, std::string nickname, std::string username,
 			const Socket & socket, bool server_operator);
 		virtual ~user();
 
@@ -42,6 +42,7 @@ class user
 		void		setPassword(std::string psw);
 		void		setNickname(std::string nick);
 		void		setLogged(bool log);
+		// void		setOperator(bool log);
 
 		std::map<std::string, bool>	getChannels() const;
 

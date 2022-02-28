@@ -146,18 +146,17 @@ std::string	Interpret::parseArg(std::string * buf)
 	std::string::iterator	last;
 	std::string				arg;
 
+	std::cout << "PARSE ARG begin\n";
 	while (*first == ' ')
 		first++;
 	buf->erase(buf->begin(), first - 1);
 	if (first == buf->end())
 		return "";
-		// return "";
 	// if (*first == '\r' || *first == '\n')
 	// {
 	// 	buf->erase(buf->find("\r"));
 	// 	return "";
 	// }
-	// std::cout << "\n---- [ARGS] ---\n";
 	last = first;
 	while(last != buf->end() && *last != '\r' && *last != '\n' )
 		last++;
@@ -165,5 +164,9 @@ std::string	Interpret::parseArg(std::string * buf)
 	// 	buf->erase(buf->find("\r"));
 	arg.assign(first, last);
 	buf->erase(first, last);
+	std::cout << "PARSE ARG end\n";
 	return arg;
 }
+
+// Les deux bout commented font segfault si "PASS " sur netcat
+// si un champs vide pour le pass est donne dans weechat, il nenvoit pas la commande PASS

@@ -80,7 +80,6 @@ Pass & Pass::operator=(const Pass & x)
 	if (this != &x)
 		serv = x.serv;
 	return *this;
-	return *this;
 }
 
 Pass::Pass(server * serv):Command(serv)
@@ -92,14 +91,14 @@ int Pass::execute()
 {
 	// if (usr->isRegister == true) // voir si on garde un historic pas sur de capter voir 4.1.1
 	// 	 serv->send_replies(usr, NULL, ERR_ALREADYREGISTRED);
-	if (*_arg == "") //
+	if (!_arg) //
 	{
 		serv->send_replies(_expeditor, "PASS :Not enough parameters", ERR_NEEDMOREPARAMS);
 		return -1;
 	}
 	else if (_arg->compare(serv->getPassword()) != 0)
 	{
-		serv->send_replies(_expeditor, ":Password incorrect", ERR_PASSWDMISMATCH); // pas dans la rfc au log
+		serv->send_replies(_expeditor, ":Password incorrect", ERR_PASSWDMISMATCH); // pas dans la rfc au loggin maybe a remove
 		_expeditor->setLogged(false);
 		return -1;
 	}
@@ -151,7 +150,7 @@ int Nick::execute()
 	return 1;
 }
 
-/*	USER	*/
+/*	USER	*/ // Executee seulement lors de la premiere co
 
 User::User():Command()
 {
@@ -214,14 +213,14 @@ int	Join::execute()
 		return 1;
 	}
 	// std::string	name("#" + *_arg);
-// weechat le gere tt seul mais on doit check quand l'user input ya bien '&' or '#' et pas cree le chan si non
+// weechat le gere tt seul mais on doit check quand l'user input des chan si ya bien '&' or '#' et pas cree le chan si non
 	std::string	name(*_arg);
 
 	if (!_expeditor->isMember(name) && serv->_channels.find(name) == serv->_channels.end() 
 		&& _expeditor->getisLogged() == true)
 	{
 		std::cout << "Channel : " << name << " created" << std::endl;
-		//usr->setOperator(true);
+		// _expeditor->setOperator(true);
 		serv->create_channel(*_expeditor, name);
 	}
 	else
@@ -238,7 +237,7 @@ int	Join::execute()
 
 List::List():Command()
 {
-	_chan = true;
+	// _chan = true; // fait segfault si "LIST" (sans arg(sur netcat)
 }
 
 List::~List(){}
@@ -252,7 +251,7 @@ List & List::operator=(const List & x)
 
 List::List(server * serv):Command(serv)
 {
-	_chan = true;
+	// _chan = true; // fait segfault si "LIST" (sur netcat)
 }
 
 int List::execute()
@@ -272,10 +271,8 @@ int List::execute()
 //    is displayed.  Private  channels  are  listed  (without  their
 //    topics)  as channel "Prv" unless the client generating the query is
 //    actually on that channel.  Likewise, secret channels are not listed
-
 //    at  all  unless  the client is a member of the channel in question.
 
 //    Numeric Replies:
-
-//            ERR_NOSUCHSERVER                RPL_LISTSTART
-//            RPL_LIST                        RPL_LISTEND
+//    ERR_NOSUCHSERVER                RPL_LISTSTART
+//    RPL_LIST                        RPL_LISTEND
