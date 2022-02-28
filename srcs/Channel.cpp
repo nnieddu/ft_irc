@@ -6,16 +6,17 @@
 /*   By: mrozniec <mrozniec@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/28 13:56:40 by mrozniec          #+#    #+#             */
-/*   Updated: 2022/02/28 17:03:29 by mrozniec         ###   ########.fr       */
+/*   Updated: 2022/02/28 17:51:48 by mrozniec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../incs/Channel.hpp"
 
 Channel::Channel(user &users, std::string &newName) : users(), name(), id(),
-topic(), password("password"), limit_user(0), chanCrea(NULL) {
+topic("No topic set for channel "), password("password"), limit_user(0), chanCrea(NULL) {
 	this->users.insert(&users);
 	id.clear();
+	name = newName;
 	if (newName[0] == '&' || newName[0] == '#')
 		mod = o;
 	else if (newName[0] == '+')
@@ -34,12 +35,13 @@ topic(), password("password"), limit_user(0), chanCrea(NULL) {
 			else
 				id.push_back(static_cast<char>(random + 61));
 		}
-		name = newName.erase(0, 1);
+		name = newName.substr(1);
 	}
 	else {
 		std::cerr << "this is a test" << std::endl;
 		throw std::exception(); //TODO:: need to be modified
 	}
+	topic = topic + name[0] + id + name.substr(1);
 }
 
 void Channel::setMod(unsigned int newMod) {
