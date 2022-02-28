@@ -6,7 +6,7 @@
 /*   By: mrozniec <mrozniec@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/27 18:15:52 by mrozniec          #+#    #+#             */
-/*   Updated: 2022/02/28 15:57:53 by mrozniec         ###   ########.fr       */
+/*   Updated: 2022/02/28 16:13:27 by mrozniec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,6 @@ class Channel {
 		void	setLim(unsigned int);
 		void	setTopic(const std::string&);
 		void	setPass(const std::string&);
-		void	addOp(user&);
 		void	addUser(user&);
 
 		const unsigned int&			getMod() const;
