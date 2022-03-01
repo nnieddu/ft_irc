@@ -135,6 +135,18 @@ class Kick : public Command
 		virtual int	execute();
 };
 
+class Privmsg : public Command
+{
+	public:
+
+		Privmsg();
+		virtual ~Privmsg();
+		Privmsg&	operator=(const Privmsg & x);
+		Privmsg(server * serv);
+		virtual int	execute();
+};
+
+
 class Ping : public Command
 {
 	public:

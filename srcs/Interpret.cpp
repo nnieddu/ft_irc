@@ -28,7 +28,7 @@ Interpret::Interpret(server * serv): _serv(serv)
 	// cmds_list["TIME"] = Time(_serv);
 	// cmds_list["ADMIN"] = Admin(_serv); // maybe useless
 	// cmds_list["INFO"] = Info(_serv);
-	// cmds_list["PRIVMSG"] = Privmsg(_serv);
+	cmds_list["PRIVMSG"] = new Privmsg(_serv);
 	// cmds_list["NOTICE"] = Notice(_serv);
 	// cmds_list["WHO"] = Who(_serv);
 	// cmds_list["WHOIS"] = Whois(_serv);

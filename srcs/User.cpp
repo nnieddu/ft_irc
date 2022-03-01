@@ -1,6 +1,7 @@
 
 #include "../incs/User.hpp"
 #include "../incs/Socket.hpp"
+#define RPL_WELCOME "001"
 
 user::user(std::string hostname, std::string nickname, std::string username, const Socket & socket, bool server_operator)
 : _hostname(hostname), _nickname(nickname), _username(username), _socket(socket), _server_operator(server_operator), _isLogged(false)
@@ -22,16 +23,12 @@ void		user::setNickname(std::string nick) { _nickname = nick; }
 void		user::setLogged(bool log) 
 { 
 	_isLogged = log; 
-	// a modifier en meme temps que send_replies (qui est pas full ok dans le format, la c deg but works)
 	if (log == true) 
 	{
-		std::string to_send;
-		std::string msg = "Welcome to the Internet Relay Network ";
-		const char* code = "001";
 		std::string prefix = ":" + getUsername();
-		msg += prefix;
-		to_send += (prefix +  " " + code + " " + getNickname() + " " + msg + "\r\n");
-		send(getSock(), to_send.c_str(), to_send.length(), 0);		
+		std::string logged = prefix +  " " + RPL_WELCOME + " " + getNickname() + \
+			" Welcome to the Internet Relay Network :" + getUsername() + "\r\n";
+		send(getSock(), logged.c_str(), logged.length(), 0);		
 	}
 }
 

@@ -2,7 +2,7 @@
 #include "../incs/Server.hpp"
 
 server::server(const int & port, const std::string & password)
-: _name("ft_irc.serv"), _port(port), _password(password), _interpret(this)
+: _name("127.0.0.1"), _port(port), _password(password), _interpret(this)
 {
 	if (_port <= 1023 || _port > 65535)
 		throw(std::invalid_argument(std::string("port number")));
@@ -107,7 +107,7 @@ void server::accept_user()
 		return ;
 	}
 
-	nick << "nickname" << new_pollfd.fd;
+	nick << "Guest" << new_pollfd.fd;
 	std::cout << "New incoming connection - " << nick.str()<< std::endl;
 	hostname = inet_ntoa(reinterpret_cast<sockaddr_in*>(&address)->sin_addr);
 	user *new_user = new user(hostname, nick.str(), "username", Socket(new_pollfd.fd, address, len), false);
@@ -131,7 +131,7 @@ void	server::receive_data(size_t index)
 		return ;
 	}
 
-	if (ret > 510) 
+	if (ret > 512) 
 	{
 		std::cerr << "Too long message" << std::endl; // a test et voir si une replies vas bien
 		_users[index - 1]->buf.clear();
@@ -142,12 +142,7 @@ void	server::receive_data(size_t index)
 	_users[index - 1]->buf += tmp;
 	if (tmp.find("\n") != std::string::npos) // check si sur mac / a lecole netcat renvoi aussi un \r
 	{
-
-		std::cout << _users[index - 1]->getNickname() << " send : [";
-		for (std::string::iterator it = _users[index - 1]->buf.begin() ; it != (_users[index - 1]->buf.end() - 1); ++it)
-			std::cout << *it; 
-		std::cout << "]" << std::endl;
-		// std::cout << tmp << std::endl;
+		std::cout << _users[index - 1]->getNickname() << " send : [" <<  _users[index - 1]->buf << "]" << std::endl;
 
 		ret = _interpret.launch(*_users[index - 1]);
 		_users[index - 1]->buf.clear();

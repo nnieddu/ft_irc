@@ -152,10 +152,15 @@ int	Join::execute()
 		serv->send_replies(_expeditor, "JOIN :Not enough parameters", ERR_NEEDMOREPARAMS);
 		return 1;
 	}
-	// std::string	name("#" + *_arg);
-// weechat le gere tt seul mais on doit check quand l'user input des chan si ya bien '&' or '#' et pas cree le chan si non
 	std::string	name(*_arg);
-
+	if (name.find("#") == std::string::npos)
+	{
+		// std::string replies(":" + name + " No such channel (need a chan mask : #)\r\n");
+		// send(_expeditor->getSock(), replies.c_str(), replies.length(), 0);	
+		serv->send_replies(_expeditor, "No such channel (need a chan mask : #)", ERR_BADCHANMASK); 
+		// apparait pas si deja dans un chan a test sur vrai serveur
+		return 1;
+	}
 	if (!_expeditor->isMember(name) && serv->channels.find(name) == serv->channels.end()
 		&& _expeditor->getisLogged())
 	{
@@ -171,17 +176,17 @@ int	Join::execute()
 	}
 	return 0;
 }
-//    ERR_NEEDMOREPARAMS              ERR_BANNEDFROMCHAN
-//    ERR_INVITEONLYCHAN              ERR_BADCHANNELKEY
-//    ERR_CHANNELISFULL               ERR_BADCHANMASK
-//    ERR_NOSUCHCHANNEL               ERR_TOOMANYCHANNELS
-//    RPL_TOPIC
+//ERR_NEEDMOREPARAMS              ERR_BANNEDFROMCHAN
+//ERR_INVITEONLYCHAN              ERR_BADCHANNELKEY
+//ERR_CHANNELISFULL               ERR_BADCHANMASK
+//ERR_NOSUCHCHANNEL               ERR_TOOMANYCHANNELS
+//RPL_TOPIC
 
 /*	LIST	*/
 
 List::List():Command()
 {
-	// _chan = true; // fait segfault si "LIST" (sans arg(sur netcat)
+	_chan = true;
 }
 
 List::~List(){}
@@ -195,7 +200,7 @@ List & List::operator=(const List & x)
 
 List::List(server * serv):Command(serv)
 {
-	// _chan = true; // fait segfault si "LIST" (sur netcat)
+	_chan = true;
 }
 
 int List::execute()
@@ -220,6 +225,69 @@ int List::execute()
 //    Numeric Replies:
 //    ERR_NOSUCHSERVER                RPL_LISTSTART
 //    RPL_LIST                        RPL_LISTEND
+
+
+
+/*	PRIVMSG	*/   // NOTICE
+//  Command: PRIVMSG Parameters: <receiver>{,<receiver>} <text to be sent>
+//   PRIVMSG is used to send private messages between users.  <receiver>
+//    is the nickname of the receiver of the message.  <receiver> can also
+//    be a list of names or channels separated with commas.
+//    ERR_NORECIPIENT                 ERR_NOTEXTTOSEND
+//    ERR_CANNOTSENDTOCHAN            ERR_NOTOPLEVEL
+//    ERR_WILDTOPLEVEL                ERR_TOOMANYTARGETS
+//    ERR_NOSUCHNICK
+//    RPL_AWAY
+
+//    The <receiver> parameter may also me a host mask  (#mask) In  both cases the server will only send the PRIVMSG
+//    to those who have a server or host matching the mask.  The mask  must have at  least  1  (one)  "."  
+//    in it and no wildcards following the last ".".  This requirement exists to prevent people sending messages
+//    to  "#*"  or "$*",  which  would  broadcast  to  all  users; from experience, this is abused more than 
+//    used responsibly and properly. Wildcards are  the  '*' and  '?'   characters.   This  extension  to
+//    the PRIVMSG command is only available to Operators.
+
+Privmsg::Privmsg():Command()
+{
+	_argument = true;
+	_chan = true;
+}
+
+Privmsg::~Privmsg(){}
+
+Privmsg & Privmsg::operator=(const Privmsg & x)
+{
+	if (this != &x)
+		serv = x.serv;
+	return *this;
+}
+
+Privmsg::Privmsg(server * serv):Command(serv)
+{
+	_argument = true;
+	_chan = true;
+}
+
+int Privmsg::execute()
+{
+	if (!_arg)
+	{
+		serv->send_replies(_expeditor, ":No text to send", ERR_NOTEXTTOSEND);
+		// serv->send_replies(_expeditor, ":No recipient given PRIVMSG", ERR_NORECIPIENT);
+	}
+	// if (_expeditor.getIsOperator() == false)
+	// 	serv->send_replies(_expeditor, "<mask> :Wildcard in toplevel domain", ERR_WILDTOPLEVEL);
+
+	// if (_arg->compare(serv->getName()) != 0)
+	// 	serv->send_replies(_expeditor, serv->getName() + ":No such server", ERR_NOSUCHSERVER);
+	// else
+	// {
+	// 	std::string reply = (":" + _expeditor->getUsername() + " PONG " + serv->getName() + " \r\n");
+	// 	send(_expeditor->getSock(), reply.c_str(), reply.length(), 0);
+	// 	return 0;
+	// }
+	return 0;
+}
+
 
 
 /*	PING	*/
