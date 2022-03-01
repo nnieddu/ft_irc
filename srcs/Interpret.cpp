@@ -116,7 +116,7 @@ std::string *	Interpret::parseWord(std::string * buf)
 	last = first;
 	while(last != buf->end() && *last != ' ' && *last != '\r' && *last != '\n' )
 		last++;
-	if (last != buf->end() && *last == '\r' || *last == '\n')
+	if (last != buf->end() && (*last == '\r' || *last == '\n'))
 		buf->erase(last);
 	arg.assign(first, last);
 	buf->erase(first, last);
