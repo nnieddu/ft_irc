@@ -23,7 +23,6 @@ int main(int ac, char **av)
 	}
 	try
 	{
-		throw(server::quitexcept());
 		server	serv(atoi(av[1]), std::string(av[2]));
 		return (serv.run());
 	}
