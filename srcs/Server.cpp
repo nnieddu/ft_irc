@@ -48,11 +48,18 @@ bool		server::isIn(std::string nickname) const
 
 static void	ft_exit(int sign)
 {
+	static int FLAG = 0;
+
+	if (FLAG != 0)
+		throw(server::quitexcept());
+	FLAG = sign;
 	if (sign == 2)
 		std:: cout << std::endl << "SIGINT" << std::endl;
-	else
+	else if (sign != 0)
 		std:: cout << std::endl << "SIGQUIT" << std::endl;
-	throw(server::quitexcept());
+	else
+		throw(std::runtime_error("poll() failed"));
+
 }
 
 int	server::run()
@@ -66,7 +73,7 @@ int	server::run()
 	{
 		it = _fds.begin();
 		if (poll(&(*it), _fds.size(), -1) < 0)
-			throw(std::runtime_error("poll() failed"));
+			ft_exit(0);
 
 		size_t nfd = _fds.size();
 		for (size_t index = 0; index < nfd; index++)

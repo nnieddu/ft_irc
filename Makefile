@@ -23,6 +23,7 @@ SRCS	=	main.cpp	\
 			User.cpp	\
 			Command.cpp	\
 			Commands.cpp\
+			Topic.cpp	\
 			Interpret.cpp
 
 INCS	=	incs/Server.hpp		\
@@ -31,6 +32,7 @@ INCS	=	incs/Server.hpp		\
 			incs/User.hpp		\
 			incs/Command.hpp	\
 			incs/Commands.hpp	\
+			incs/Topic.hpp		\
 			incs/Interpret.hpp
 
 SRCS_DIR=	./srcs/
@@ -40,7 +42,7 @@ OBJ		=	$(addprefix $(OBJ_DIR),$(SRCS:.cpp=.o))
 all :
 	mkdir -p $(OBJ_DIR)
 	$(MAKE) $(NAME)
-	$(MAKE) runv
+##	$(MAKE) runv
 
 $(OBJ_DIR)%.o:$(SRCS_DIR)%.cpp $(INC)
 	$(COMP) $(CFLAGS) -c $< -o $@
