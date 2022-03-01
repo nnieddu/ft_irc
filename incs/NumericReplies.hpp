@@ -24,6 +24,11 @@
 // #define RPL_BOUNCE "005"
 
 #define RPL_AWAY "301"
+#define RPL_TOPIC "332"
+#define RPL_NAMREPLY "353"
+#define RPL_ENDOFNAMES "366"
+// 353 	RPL_NAMREPLY 	RFC1459 	
+// ( '=' / '*' / '@' ) <channel> ' ' : [ '@' / '+' ] <nick> *( ' ' [ '@' / '+' ] <nick> ) 	Reply to NAMES (See RFC) 
 
 #define ERR_NOSUCHNICK "401"
 #define ERR_CANNOTSENDTOCHAN "404"

@@ -198,9 +198,19 @@ void	server::create_channel(user & usr, std::string & name)
 void	server::send_replies(user *usr, std::string msg, const char* code)
 {
 	std::string replies;
-	std::string prefix = ":" + usr->getUsername();
+	std::string prefix = ":" + usr->getUsername(); // usr->getUsername();
 	msg += prefix;
 
 	replies += (prefix +  " " + code + " " + usr->getNickname() + " " + msg + "\r\n");
 	send(usr->getSock(), replies.c_str(), replies.length(), 0);
+}
+
+void	server::send_to_chan(std::string chan)
+{
+	std::string msg;
+	for(std::set<user *>::iterator it = channels[chan]->getUsers().begin(); it!=channels[chan]->getUsers().end(); ++it)
+	{
+		msg = ":" + (*it)->getNickname() + " JOIN :" + chan + "\r\n";
+	  	send((*it)->getSock(), msg.c_str(), msg.length(), 0);
+	}
 }

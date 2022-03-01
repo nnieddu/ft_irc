@@ -98,7 +98,7 @@ int	Interpret::cmd_not_found(user & usr)
 		it++;														// quoi qu'il arrive, peut etre
 	usr.buf.erase(usr.buf.begin(), it);								// a changer si il y a plusieurs EOC
 
-	std::cerr << "Command not found" << std::endl;
+	// std::cerr << "Command not found" << std::endl; // pass tt le temps par la 
 	return 1;
 }
 
