@@ -69,4 +69,5 @@ class server
 		void	send_replies(user * usr, std::string msg, const char* code);
 
 		void	create_channel(user & usr, std::string & name);
+		void	actualise_users_in_chan(std::string & name);
 };

@@ -164,8 +164,6 @@ void	server::receive_data(size_t index)
 void	server::close_user(size_t index)
 {
 	std::vector<user*>::iterator it = (_users.begin() + (index - 1));
-
-	remove_user_from_channels(*it);
 	std::cout << (*it)->getNickname() << " deconnexion" << std::endl; //to remove
 	delete *it;
 	close(_fds[index].fd);
@@ -209,8 +207,21 @@ void	server::send_replies(user *usr, std::string msg, const char* code)
 {
 	std::string replies;
 	std::string prefix = ":" + usr->getUsername(); // usr->getUsername();
-	msg += prefix;
+	// msg += prefix;
 
 	replies += (prefix +  " " + code + " " + usr->getNickname() + " " + msg + "\r\n");
 	send(usr->getSock(), replies.c_str(), replies.length(), 0);
+}
+
+void	server::actualise_users_in_chan(std::string & name)
+{
+	std::set<user *>::iterator it;
+	std::string usersInChan;
+	for(it = channels[name]->getUsers().begin(); it != channels[name]->getUsers().end(); ++it)
+		usersInChan += (*it)->getNickname() + " ";
+	for(it = channels[name]->getUsers().begin(); it != channels[name]->getUsers().end(); ++it)
+	{
+		send_replies(*it, "= " + name + " :" + usersInChan, RPL_NAMREPLY);
+		send_replies(*it, name + " :End of names list", RPL_ENDOFNAMES);
+	}
 }

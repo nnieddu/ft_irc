@@ -38,6 +38,7 @@ class user
 		Socket		getSocket() const;
 		int			getSock() const;
 		bool		getisLogged() const;
+		bool		getLocation(std::string chan) const;
 
 		void		setPassword(std::string psw);
 		void		setNickname(std::string nick);
@@ -53,7 +54,6 @@ class user
 		void		join_channel(std::string & name, bool op);
 		void		leave_channel(std::string & name);
 		void		setLocation(std::string & name);
-		std::string	getLocation() const;		// /!\ locations related stuff
 		bool		isMember(std::string & name) const;
 
 };

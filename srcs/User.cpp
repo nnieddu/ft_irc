@@ -13,6 +13,12 @@ std::string	user::getNickname() const { return _nickname; }
 std::string	user::getUsername() const { return _username; }
 std::string	user::getPassword() const { return _password; }
 bool		user::getisLogged() const { return _isLogged; }
+bool		user::getLocation(std::string chan) const 
+{
+	if (chan == _location)
+		return true;
+	return false;
+}
 int 		user::getSock() const { return _socket.fd; }
 Socket		user::getSocket() const { return _socket; }
 
@@ -71,11 +77,6 @@ void	user::leave_channel(std::string & name)
 void	user::setLocation(std::string & name)
 {
 	_location = name;
-}
-
-std::string	user::getLocation() const		// /!\ locations related stuff
-{
-	return _location;
 }
 
 bool	user::isMember(std::string & name) const

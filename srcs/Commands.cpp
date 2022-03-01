@@ -167,27 +167,27 @@ int	Join::execute()
 		std::cout << "Channel : " << name << " created" << std::endl;
 		// _expeditor->setOperator(true);
 		serv->create_channel(*_expeditor, name);
+		_expeditor->setLocation(name);
+
 	}
-	else if (_expeditor->getisLogged())//(_expeditor->getLocation(name) == false)
+	else if (_expeditor->getisLogged() && _expeditor->getLocation(name) == false)
 	{
 		std::string msg;
 		std::string usersInChan;
 		std::set<user *>::iterator it;
 		for(it = serv->channels[name]->getUsers().begin(); it != serv->channels[name]->getUsers().end(); ++it)
 		{
-				msg = ":" + _expeditor->getNickname() + " JOIN :" + name + "\r\n";
-				usersInChan += (*it)->getNickname() + " ";
-				send((*it)->getSock(), msg.c_str(), msg.length(), 0);
+			msg = ":" + _expeditor->getNickname() + " JOIN :" + name + "\r\n";
+			usersInChan += (*it)->getNickname() + " ";
+			send((*it)->getSock(), msg.c_str(), msg.length(), 0);
 		}
 		msg = ":" + _expeditor->getNickname() + " JOIN :" + name + "\r\n";
 		send(_expeditor->getSock(), msg.c_str(), msg.length(), 0);
-		serv->send_replies(_expeditor, name + ":" + usersInChan, RPL_NAMREPLY);
+		//send_replies(_expeditor, "", RPL_TOPIC); retourner topic ici
+		serv->send_replies(_expeditor, "= " + name + " :" + usersInChan, RPL_NAMREPLY);
+		serv->send_replies(_expeditor, name + " :End of names list", RPL_ENDOFNAMES);
 		serv->channels[name]->addUser(*_expeditor);
-
-		//send_replies(_expeditor, "", RPL_TOPIC); returner topic name
-		// send_replies(*it, chan + ":End of names list", RPL_ENDOFNAMES);
-
-		// _expeditor->setLocation(name);	// /!\ locations related stuff
+		_expeditor->setLocation(name);
 	}
 	return 0;
 }
