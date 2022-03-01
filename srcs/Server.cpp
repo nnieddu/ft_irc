@@ -35,6 +35,7 @@ server::~server()
 int 		server::getSock() const { return _socket.fd; }
 std::string server::getName() const { return _name; }
 std::string server::getPassword() const { return _password; }
+std::vector<user*>	server::getUsers() const { return _users; }
 
 bool		server::isIn(std::string nickname) const
 { 

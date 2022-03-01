@@ -47,10 +47,13 @@ int Privmsg::execute()
 	{
 		if ((*_receiver)[index] == ',')
 		{
-			
+			list.push_back(std::string().assign(_receiver->begin() + index_bis, _receiver->begin() + index));
+			index_bis = index + 1;
 		}
 	}
-	if (serv->channels.find(*_receiver) != serv->channels.end())
+	list.push_back(std::string().assign(_receiver->begin() + index_bis, _receiver->end()));
+	if (serv->channels.find(list[0]) != serv->channels.end())
+	{}
 	return 0;
 }
 

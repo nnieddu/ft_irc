@@ -46,9 +46,10 @@ class server
 		
 		std::map<std::string, Channel* > channels;
 
-		int			getSock() const;
-		std::string	getName() const;
-		std::string	getPassword() const;
+		int					getSock() const;
+		std::string			getName() const;
+		std::string			getPassword() const;
+		std::vector<user*>	getUsers() const;
 
 		bool		isIn(std::string nickname) const;
 
