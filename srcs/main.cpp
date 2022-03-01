@@ -23,8 +23,14 @@ int main(int ac, char **av)
 	}
 	try
 	{
+		throw(server::quitexcept());
 		server	serv(atoi(av[1]), std::string(av[2]));
 		return (serv.run());
+	}
+	catch (server::quitexcept er)
+	{
+		std::cout << er.what() << std::endl;
+		ret = 0;
 	}
 	catch (std::runtime_error &er)
 	{
@@ -33,11 +39,6 @@ int main(int ac, char **av)
 	catch (std::invalid_argument &er)
 	{
 		std::cerr << "[error]: invalid argument : " << er.what() << std::endl;
-	}
-	catch (server::quitexcept &er)
-	{
-		std::cout << er.what() << std::endl;
-		ret = 0;
 	}
 	catch (std::exception &er)
 	{

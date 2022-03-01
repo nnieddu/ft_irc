@@ -23,6 +23,8 @@
 #include "NumericReplies.hpp"
 #include "Channel.hpp"
 
+# define	MAC_EXIT	17
+
 class server
 {
 	private:
@@ -37,6 +39,8 @@ class server
 		Interpret									_interpret;
 		std::vector<struct pollfd> 					_fds;
 		std::vector<user*>							_users;
+
+		bool										_end_serv;
 
 	public:
 		server(const int & port, const std::string & password);

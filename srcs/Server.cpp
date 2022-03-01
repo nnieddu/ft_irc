@@ -85,6 +85,8 @@ int	server::run()
 				else
 					receive_data(index);
 			}								// /!\ revent_error ?
+			else if (_fds[index].revents == MAC_EXIT)
+				close_user(index);
 		}
 	}
 	return(0);
