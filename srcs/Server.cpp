@@ -78,15 +78,13 @@ int	server::run()
 		size_t nfd = _fds.size();
 		for (size_t index = 0; index < nfd; index++)
 		{
-			if(_fds[index].revents == POLLIN || _fds[index].revents == 25)
+			if((_fds[index].revents & POLLIN) == POLLIN)
 			{
 				if (index == 0)
 					accept_user();
 				else
 					receive_data(index);
 			}								// /!\ revent_error ?
-			else if (_fds[index].revents == MAC_EXIT)
-				close_user(index);
 		}
 	}
 	return(0);

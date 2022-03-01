@@ -23,8 +23,6 @@
 #include "NumericReplies.hpp"
 #include "Channel.hpp"
 
-# define	MAC_EXIT	17
-
 class server
 {
 	private:

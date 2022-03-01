@@ -28,6 +28,8 @@ Privmsg::Privmsg(server * serv):Command(serv)
 
 int Privmsg::execute()
 {
+	std::vector<std::string>	list;
+
 	if (!_receiver)
 	{
 		serv->send_replies(_expeditor, "PRIVMSG :No receiver specified", ERR_NORECIPIENT);
@@ -38,6 +40,17 @@ int Privmsg::execute()
 		serv->send_replies(_expeditor, "PRIVMSG :No text to be sent", ERR_NOTEXTTOSEND);
 		return -1;
 	}
+
+	size_t	index_bis = 0;
+
+	for(size_t index = 0; index < _receiver->size(); index++)
+	{
+		if ((*_receiver)[index] == ',')
+		{
+			
+		}
+	}
+	if (serv->channels.find(*_receiver) != serv->channels.end())
 	return 0;
 }
 
