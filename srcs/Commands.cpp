@@ -155,7 +155,7 @@ int	Join::execute()
 	std::string	name(*_arg);
 	if (name.find("#") == std::string::npos && name.find("&") == std::string::npos)
 	{
-		serv->send_replies(_expeditor, "No such channel (need a chan mask : #)", ERR_BADCHANMASK); 
+		serv->send_replies(_expeditor, "No such channel (need a chan mask : #)", ERR_BADCHANMASK);
 		// apparait pas si deja dans un chan a test sur vrai serveur
 		return 1;
 	}
@@ -168,11 +168,7 @@ int	Join::execute()
 	}
 	else //if(_expeditor->getLocation(name) == false)
 	{
-		// serv->send_replies(_expeditor, "", RPL_TOPIC); returner topic name
-
 		serv->send_to_chan(_expeditor, name);
-		serv->send_replies(_expeditor, name + ":@test testing", RPL_NAMREPLY);
-		serv->send_replies(_expeditor, name + ":End of /NAMES list", RPL_ENDOFNAMES);
 		_expeditor->setLocation(name);	// /!\ locations related stuff
 	}
 	return 0;

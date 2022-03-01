@@ -182,7 +182,10 @@ void	server::remove_user_from_channels(user * usr)
 		remove_user_from(usr, name);
 		usr->leave_channel(name);
 		if (channels[name]->getUsers().empty())		// <-- remove channel if its users vector is empty
+		{	
+			delete channels[name];
 			channels.erase(name);
+		}
 	}
 }
 
@@ -208,12 +211,21 @@ void	server::send_replies(user *usr, std::string msg, const char* code)
 void	server::send_to_chan(user * usr, std::string chan)
 {
 	std::string msg;
+	// std::string usersInChan;
 	std::set<user *>::iterator it;
 	channels[chan]->addUser(*usr);
+	// for(it = channels[chan]->getUsers().begin(); it != channels[chan]->getUsers().end(); ++it)
+	// {
+	// 	if (usr->getNickname() != (*it)->getNickname())
+	// 		usersInChan += (*it)->getNickname() + " ";
+	// }
 	for(it = channels[chan]->getUsers().begin(); it != channels[chan]->getUsers().end(); ++it)
 	{
-		msg = ":" + (*it)->getNickname() + " JOIN :" + chan + "\r\n";
-		std::cout << "sendtochan=[" << msg << "]" << std::endl;
-	  	send((*it)->getSock(), msg.c_str(), msg.length(), 0);
+		msg = ":" + usr->getNickname() + " JOIN :" + chan + "\r\n";
+		send((*it)->getSock(), msg.c_str(), msg.length(), 0);
+		// std::cout << usr->getNickname() << ":" << usersInChan << std::endl;
+		//send_replies(_expeditor, "", RPL_TOPIC); returner topic name
+		// send_replies(*it, chan + ":" + usersInChan, RPL_NAMREPLY);
+		// send_replies(*it, chan + ":End of names list", RPL_ENDOFNAMES);
 	}
 }
