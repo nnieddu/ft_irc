@@ -211,6 +211,7 @@ void	server::send_to_chan(std::string chan)
 	for(std::set<user *>::iterator it = channels[chan]->getUsers().begin(); it!=channels[chan]->getUsers().end(); ++it)
 	{
 		msg = ":" + (*it)->getNickname() + " JOIN :" + chan + "\r\n";
+		std::cout << "sendtochan=[" << msg << "]" << std::endl;
 	  	send((*it)->getSock(), msg.c_str(), msg.length(), 0);
 	}
 }

@@ -153,7 +153,7 @@ int	Join::execute()
 		return 1;
 	}
 	std::string	name(*_arg);
-	if (name.find("#") == std::string::npos || name.find("&") == std::string::npos)
+	if (name.find("#") == std::string::npos && name.find("&") == std::string::npos)
 	{
 		serv->send_replies(_expeditor, "No such channel (need a chan mask : #)", ERR_BADCHANMASK); 
 		// apparait pas si deja dans un chan a test sur vrai serveur
