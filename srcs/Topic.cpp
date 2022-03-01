@@ -38,20 +38,20 @@ int Topic::execute() {
 			return -1;
 		}
 	}
-	else if (_channel) {
-		if (serv->channels.find(*_channel) == serv->channels.end()) {
-			if (!(serv->channels[_expeditor->getLocation()]->getMod() & t) || \
-			_expeditor->getChannels()[*_channel])
-				serv->channels[_expeditor->getLocation()]->setTopic(*_channel);
-		}
-		else {
-			send(_expeditor->getSock(), serv->channels[*_channel]->getTopic().c_str(), \
-			serv->channels[*_channel]->getTopic().length(), 0);
-		}
-	}
-	else {
-		send(_expeditor->getSock(), serv->channels[_expeditor->getLocation()]->getTopic().c_str(), \
-			serv->channels[_expeditor->getLocation()]->getTopic().length(), 0);
-	}
+	// else if (_channel) {
+	// 	if (serv->channels.find(*_channel) == serv->channels.end()) {
+	// 		if (!(serv->channels[_expeditor->getLocation()]->getMod() & t) || \
+	// 		_expeditor->getChannels()[*_channel])
+	// 			serv->channels[_expeditor->getLocation()]->setTopic(*_channel);
+	// 	}
+	// 	else {
+	// 		send(_expeditor->getSock(), serv->channels[*_channel]->getTopic().c_str(), \
+	// 		serv->channels[*_channel]->getTopic().length(), 0);
+	// 	}
+	// }
+	// else {
+	// 	send(_expeditor->getSock(), serv->channels[_expeditor->getLocation()]->getTopic().c_str(), \
+	// 		serv->channels[_expeditor->getLocation()]->getTopic().length(), 0);
+	// }
 	return 0;
 }
