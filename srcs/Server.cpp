@@ -205,10 +205,12 @@ void	server::send_replies(user *usr, std::string msg, const char* code)
 	send(usr->getSock(), replies.c_str(), replies.length(), 0);
 }
 
-void	server::send_to_chan(std::string chan)
+void	server::send_to_chan(user * usr, std::string chan)
 {
 	std::string msg;
-	for(std::set<user *>::iterator it = channels[chan]->getUsers().begin(); it!=channels[chan]->getUsers().end(); ++it)
+	std::set<user *>::iterator it;
+	channels[chan]->addUser(*usr);
+	for(it = channels[chan]->getUsers().begin(); it != channels[chan]->getUsers().end(); ++it)
 	{
 		msg = ":" + (*it)->getNickname() + " JOIN :" + chan + "\r\n";
 		std::cout << "sendtochan=[" << msg << "]" << std::endl;

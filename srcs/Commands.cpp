@@ -168,14 +168,10 @@ int	Join::execute()
 	}
 	else //if(_expeditor->getLocation(name) == false)
 	{
-		std::string replies = ":" + _expeditor->getNickname() + " JOIN :" + name + "\r\n";
-		send(_expeditor->getSock(), replies.c_str(), replies.length(), 0);
-
 		// serv->send_replies(_expeditor, "", RPL_TOPIC); returner topic name
 
-		// A envoyer a tous ceux aussi deja present dans le chan
-		serv->send_to_chan(name);
-		serv->send_replies(_expeditor, name + ":@douwi jason freddy", RPL_NAMREPLY);
+		serv->send_to_chan(_expeditor, name);
+		serv->send_replies(_expeditor, name + ":@test testing", RPL_NAMREPLY);
 		serv->send_replies(_expeditor, name + ":End of /NAMES list", RPL_ENDOFNAMES);
 		_expeditor->setLocation(name);	// /!\ locations related stuff
 	}
