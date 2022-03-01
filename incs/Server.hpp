@@ -73,6 +73,6 @@ class server
 		void	actualise_users_in_chan(std::string & name);
 
 		std::string format_msg(user * expeditor, std::string & msg);
-		void	send_msg_to_user(user * expeditor, user * dest, std::string & msg);
-		void	send_msg_to_channel(user * expeditor, Channel * dest, std::string & msg);
+		int	send_msg_to_user(user * expeditor, user * dest, std::string & msg);
+		int	send_msg_to_channel(user * expeditor, Channel * dest, std::string & msg);
 };

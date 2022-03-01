@@ -23,6 +23,7 @@ SRCS	=	main.cpp	\
 			User.cpp	\
 			Command.cpp	\
 			Commands.cpp\
+			privmsg.cpp	\
 			Topic.cpp	\
 			Interpret.cpp
 

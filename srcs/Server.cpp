@@ -251,24 +251,28 @@ std::string	server::format_msg(user * expeditor, std::string & msg)
 	return expeditor->getNickname() + "	|	" + msg + "\r\n";
 }
 
-void	server::send_msg_to_user(user * expeditor, user * dest, std::string & msg)
+int	server::send_msg_to_user(user * expeditor, user * dest, std::string & msg)
 {
 	if (!dest)
-		;	//add error case
+		return 1;
+
 	std::string fmsg = format_msg(expeditor, msg);
 
-	send(dest->getSock(), fmsg.c_str(), fmsg.size(), 0);
+	send(dest->getSock(), fmsg.c_str(), fmsg.size(), 0);	// add error case
+	return 0;
 }
 
-void	server::send_msg_to_channel(user * expeditor, Channel * dest, std::string & msg)
+int	server::send_msg_to_channel(user * expeditor, Channel * dest, std::string & msg)
 {
 	if (!dest)
-		;	//add error case
-	std::set<user*>	userlist(dest->getUsers());
+		return 1;
 
-	for	(std::set<user*>::iterator it = userlist.begin(); it != userlist.end(); it++)
+	std::set<user*>	userlist(dest->getUsers());
+	int	ret = 0;
+
+	for	(std::set<user*>::iterator it = userlist.begin(); ret == 0 && it != userlist.end(); it++)
 	{
-		if (*it != expeditor)
-			send_msg_to_user(expeditor, *it, msg);
+		ret = send_msg_to_user(expeditor, *it, msg);
 	}
+	return ret;
 }

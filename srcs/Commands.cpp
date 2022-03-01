@@ -262,6 +262,7 @@ int List::execute()
 //    used responsibly and properly. Wildcards are  the  '*' and  '?'   characters.   This  extension  to
 //    the PRIVMSG command is only available to Operators.
 
+/*
 Privmsg::Privmsg():Command()
 {
 	_argument = true;
@@ -303,7 +304,7 @@ int Privmsg::execute()
 	// }
 	return 0;
 }
-
+*/
 
 
 /*	PING	*/

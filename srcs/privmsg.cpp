@@ -1,5 +1,5 @@
 #include "../incs/Command.hpp"
-#include "../incs/privmsg.hpp"
+#include "../incs/Commands.hpp"
 #include "../incs/Server.hpp"
 
 
@@ -38,7 +38,7 @@ int Privmsg::execute()
 	}
 	if (!_arg)
 	{
-		serv->send_replies(_expeditor, "PRIVMSG :No text to be sent", ERR_NOTEXTTOSEND);
+		serv->send_replies(_expeditor, "PRIVMSG :No text to send", ERR_NOTEXTTOSEND);
 		return -1;
 	}
 
@@ -61,9 +61,15 @@ int Privmsg::execute()
 	while (!list.empty())
 	{
 		if (mode == 0)
-			serv->send_msg_to_user(_expeditor, serv->getUser(list[0]), *_arg);
+		{
+			if (serv->send_msg_to_user(_expeditor, serv->getUser(list[0]), *_arg))
+				serv->send_replies(_expeditor, "PRIVMSG :No such nick", ERR_NOSUCHNICK);
+		}
 		else if (mode == 1)
-			serv->send_msg_to_channel(_expeditor, serv->getChannel(list[0]), *_arg);
+		{
+			if (serv->send_msg_to_channel(_expeditor, serv->getChannel(list[0]), *_arg))
+				serv->send_replies(_expeditor, "PRIVMSG :cannot send to channel", ERR_CANNOTSENDTOCHAN);
+		}
 		list.erase(list.begin());
 	}
 	return 0;
