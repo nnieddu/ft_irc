@@ -128,6 +128,7 @@ int User::execute()
 Join::Join():Command()
 {
 	_argument = true;
+	// _chan = true;
 }
 
 Join::~Join(){}
@@ -142,6 +143,7 @@ Join & Join::operator=(const Join & x)
 Join::Join(server * serv):Command(serv)
 {
 	_argument = true;
+	// _chan = true;
 }
 
 
@@ -153,10 +155,10 @@ int	Join::execute()
 		return 1;
 	}
 	std::string	name(*_arg);
-	if (name.find("#") == std::string::npos && name.find("&") == std::string::npos)
+	if (name.find("#") && name.find("&") == std::string::npos && name.find("+") == std::string::npos 
+	&& name.find("!!") == std::string::npos) // A MODIFIER (check juste premier char)
 	{
 		serv->send_replies(_expeditor, "No such channel (need a chan mask : #)", ERR_BADCHANMASK);
-		// apparait pas si deja dans un chan a test sur vrai serveur
 		return 1;
 	}
 	if (!_expeditor->isMember(name) && serv->channels.find(name) == serv->channels.end()
@@ -166,10 +168,26 @@ int	Join::execute()
 		// _expeditor->setOperator(true);
 		serv->create_channel(*_expeditor, name);
 	}
-	else //if(_expeditor->getLocation(name) == false)
+	else if (_expeditor->getisLogged())//(_expeditor->getLocation(name) == false)
 	{
-		serv->send_to_chan(_expeditor, name);
-		_expeditor->setLocation(name);	// /!\ locations related stuff
+		std::string msg;
+		std::string usersInChan;
+		std::set<user *>::iterator it;
+		for(it = serv->channels[name]->getUsers().begin(); it != serv->channels[name]->getUsers().end(); ++it)
+		{
+				msg = ":" + _expeditor->getNickname() + " JOIN :" + name + "\r\n";
+				usersInChan += (*it)->getNickname() + " ";
+				send((*it)->getSock(), msg.c_str(), msg.length(), 0);
+		}
+		msg = ":" + _expeditor->getNickname() + " JOIN :" + name + "\r\n";
+		send(_expeditor->getSock(), msg.c_str(), msg.length(), 0);
+		serv->send_replies(_expeditor, name + ":" + usersInChan, RPL_NAMREPLY);
+		serv->channels[name]->addUser(*_expeditor);
+
+		//send_replies(_expeditor, "", RPL_TOPIC); returner topic name
+		// send_replies(*it, chan + ":End of names list", RPL_ENDOFNAMES);
+
+		// _expeditor->setLocation(name);	// /!\ locations related stuff
 	}
 	return 0;
 }
@@ -207,6 +225,7 @@ int List::execute()
 	{
 		std::cout << it->first << std::endl;
 	}
+	
 	std::cout << "EOF List" << std::endl;
 	return 0;
 }

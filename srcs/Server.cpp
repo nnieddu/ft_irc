@@ -78,7 +78,7 @@ int	server::run()
 		size_t nfd = _fds.size();
 		for (size_t index = 0; index < nfd; index++)
 		{
-			if(_fds[index].revents == POLLIN || _fds[index].revents == 25)
+			if((_fds[index].revents & POLLIN) == POLLIN)
 			{
 				if (index == 0)
 					accept_user();
@@ -213,26 +213,4 @@ void	server::send_replies(user *usr, std::string msg, const char* code)
 
 	replies += (prefix +  " " + code + " " + usr->getNickname() + " " + msg + "\r\n");
 	send(usr->getSock(), replies.c_str(), replies.length(), 0);
-}
-
-void	server::send_to_chan(user * usr, std::string chan)
-{
-	std::string msg;
-	// std::string usersInChan;
-	std::set<user *>::iterator it;
-	channels[chan]->addUser(*usr);
-	// for(it = channels[chan]->getUsers().begin(); it != channels[chan]->getUsers().end(); ++it)
-	// {
-	// 	if (usr->getNickname() != (*it)->getNickname())
-	// 		usersInChan += (*it)->getNickname() + " ";
-	// }
-	for(it = channels[chan]->getUsers().begin(); it != channels[chan]->getUsers().end(); ++it)
-	{
-		msg = ":" + usr->getNickname() + " JOIN :" + chan + "\r\n";
-		send((*it)->getSock(), msg.c_str(), msg.length(), 0);
-		// std::cout << usr->getNickname() << ":" << usersInChan << std::endl;
-		//send_replies(_expeditor, "", RPL_TOPIC); returner topic name
-		// send_replies(*it, chan + ":" + usersInChan, RPL_NAMREPLY);
-		// send_replies(*it, chan + ":End of names list", RPL_ENDOFNAMES);
-	}
 }

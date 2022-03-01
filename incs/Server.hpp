@@ -38,6 +38,8 @@ class server
 		std::vector<struct pollfd> 					_fds;
 		std::vector<user*>							_users;
 
+		bool										_end_serv;
+
 	public:
 		server(const int & port, const std::string & password);
 		~server();
@@ -65,7 +67,6 @@ class server
 		void	remove_user_from(user * usr, const std::string & name);
 		void	remove_user_from_channels(user * usr);
 		void	send_replies(user * usr, std::string msg, const char* code);
-		void	send_to_chan(user * usr, std::string chan);
 
 		void	create_channel(user & usr, std::string & name);
 };
