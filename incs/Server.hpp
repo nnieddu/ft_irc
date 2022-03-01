@@ -38,8 +38,6 @@ class server
 		std::vector<struct pollfd> 					_fds;
 		std::vector<user*>							_users;
 
-		bool										_end_serv;
-
 	public:
 		server(const int & port, const std::string & password);
 		~server();
@@ -50,8 +48,10 @@ class server
 		std::string			getName() const;
 		std::string			getPassword() const;
 		std::vector<user*>	getUsers() const;
+		user *				getUser(std::string & nickname);
+		Channel *			getChannel(std::string & name);
 
-		bool		isIn(std::string nickname) const;
+		bool isUser(std::string nickname) const;
 
 		class quitexcept : public std::exception
 		{
@@ -71,4 +71,8 @@ class server
 
 		void	create_channel(user & usr, std::string & name);
 		void	actualise_users_in_chan(std::string & name);
+
+		std::string format_msg(user * expeditor, std::string & msg);
+		void	send_msg_to_user(user * expeditor, user * dest, std::string & msg);
+		void	send_msg_to_channel(user * expeditor, Channel * dest, std::string & msg);
 };

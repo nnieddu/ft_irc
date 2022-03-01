@@ -75,7 +75,7 @@ int Nick::execute()
 {
 	if (!_arg)
 	serv->send_replies(_expeditor, ":No nickname given", ERR_NONICKNAMEGIVEN);
-	if (serv->isIn(*_arg) == false)
+	if (serv->isUser(*_arg) == false)
 	{
 		std::string str = ":" + _expeditor->getNickname() + " NICK " + ":" + *_arg + "\r\n";
 	    send(_expeditor->getSock(), str.c_str(), strlen(str.c_str()), 0);

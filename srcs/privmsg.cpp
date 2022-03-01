@@ -29,6 +29,7 @@ Privmsg::Privmsg(server * serv):Command(serv)
 int Privmsg::execute()
 {
 	std::vector<std::string>	list;
+	int							mode;
 
 	if (!_receiver)
 	{
@@ -52,8 +53,19 @@ int Privmsg::execute()
 		}
 	}
 	list.push_back(std::string().assign(_receiver->begin() + index_bis, _receiver->end()));
-	if (serv->channels.find(list[0]) != serv->channels.end())
-	{}
+
+	if (serv->isUser(list[0]))
+		mode = 0;
+	else if (serv->channels.find(list[0]) != serv->channels.end())
+		mode = 1;
+	while (!list.empty())
+	{
+		if (mode == 0)
+			serv->send_msg_to_user(_expeditor, serv->getUser(list[0]), *_arg);
+		else if (mode == 1)
+			serv->send_msg_to_channel(_expeditor, serv->getChannel(list[0]), *_arg);
+		list.erase(list.begin());
+	}
 	return 0;
 }
 

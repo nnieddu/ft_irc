@@ -37,7 +37,26 @@ std::string server::getName() const { return _name; }
 std::string server::getPassword() const { return _password; }
 std::vector<user*>	server::getUsers() const { return _users; }
 
-bool		server::isIn(std::string nickname) const
+user *		server::getUser(std::string & nickname)
+{
+	for (std::vector<user*>::iterator it = _users.begin(); it != _users.end(); it++)
+	{
+		if ((*it)->getNickname() == nickname)
+			return *it;
+	}
+	return NULL;
+}
+
+Channel *	server::getChannel(std::string & name)
+{
+	std::map<std::string, Channel* >::iterator	it(channels.find(name));
+
+	if (it != channels.end())
+		return it->second;
+	return NULL;
+}
+
+bool		server::isUser(std::string nickname) const
 { 
 	for (std::vector<user*>::const_iterator it = _users.begin() ; it != _users.end(); ++it)
 	{
@@ -224,5 +243,32 @@ void	server::actualise_users_in_chan(std::string & name)
 	{
 		send_replies(*it, "= " + name + " :" + usersInChan, RPL_NAMREPLY);
 		send_replies(*it, name + " :End of names list", RPL_ENDOFNAMES);
+	}
+}
+
+std::string	server::format_msg(user * expeditor, std::string & msg)
+{
+	return expeditor->getNickname() + "	|	" + msg + "\r\n";
+}
+
+void	server::send_msg_to_user(user * expeditor, user * dest, std::string & msg)
+{
+	if (!dest)
+		;	//add error case
+	std::string fmsg = format_msg(expeditor, msg);
+
+	send(dest->getSock(), fmsg.c_str(), fmsg.size(), 0);
+}
+
+void	server::send_msg_to_channel(user * expeditor, Channel * dest, std::string & msg)
+{
+	if (!dest)
+		;	//add error case
+	std::set<user*>	userlist(dest->getUsers());
+
+	for	(std::set<user*>::iterator it = userlist.begin(); it != userlist.end(); it++)
+	{
+		if (*it != expeditor)
+			send_msg_to_user(expeditor, *it, msg);
 	}
 }
