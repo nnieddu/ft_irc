@@ -12,10 +12,12 @@ class Command
 		Command(const Command& x);
 
 		user *			_expeditor;
+		std::string *	_receiver;
 		std::string *	_nick;
 		std::string *	_channel;
 		std::string *	_user;
 		std::string *	_arg;
+		bool			_rcv;
 		bool			_nck;
 		bool			_chan;
 		bool			_usr;
@@ -27,8 +29,8 @@ class Command
 		server *		serv;
 
 		Command();
-		Command& operator=(const Command& x);
 		Command(server * serv);
+		Command& operator=(const Command& x);
 		virtual ~Command();
 
 		virtual int	execute();
@@ -38,6 +40,7 @@ class Command
 
 		int				getReply() const;
 
+		bool			needReceiver() const;
 		bool			needNick() const;
 		bool			needChannel() const;
 		bool			needUser() const;

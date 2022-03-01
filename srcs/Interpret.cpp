@@ -59,6 +59,8 @@ int Interpret::launch(user & usr)
 			cmd = it->second;
 			cmd->setExpeditor(&usr);
 
+			if (cmd->needReceiver())
+				args.push_back(parseWord(&usr.buf));
 			if (cmd->needNick())
 				args.push_back(parseWord(&usr.buf));
 			if (cmd->needChannel())
@@ -102,7 +104,7 @@ int	Interpret::cmd_not_found(user & usr)
 	return 1;
 }
 
-std::string *	Interpret::parseWord(std::string * buf)	//parseChannel et parseNick identique atm, les channels doivent commencer par '#' donc veridier si on peut improve
+std::string *	Interpret::parseWord(std::string * buf)
 {
 	std::string::iterator	first(buf->begin());
 	std::string::iterator	last;

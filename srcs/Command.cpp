@@ -3,7 +3,35 @@
 
 #include <stdlib.h>
 
-Command::Command() {}//: serv(NULL), _nick(NULL), _channel(NULL), _user(NULL), _arg(NULL), _chan(false), _usr(false), _argument(false){}
+Command::Command() {}/*
+:
+	serv(serv),
+	_receiver(NULL),
+	_nick(NULL),
+	_channel(NULL),
+	_user(NULL),
+	_arg(NULL),
+	_rcv(false),
+	_nck(false),
+	_chan(false),
+	_usr(false),
+	_argument(false)
+{}*/
+
+Command::Command(server * serv)
+:
+	serv(serv),
+	_receiver(NULL),
+	_nick(NULL),
+	_channel(NULL),
+	_user(NULL),
+	_arg(NULL),
+	_rcv(false),
+	_nck(false),
+	_chan(false),
+	_usr(false),
+	_argument(false)
+{}
 
 Command &	Command::operator=(const Command & x)
 {
@@ -14,6 +42,8 @@ Command &	Command::operator=(const Command & x)
 
 Command::~Command()
 {
+	if (_receiver)
+		delete _receiver;
 	if (_nick)
 		delete _nick;
 	if (_channel)
@@ -23,9 +53,6 @@ Command::~Command()
 	if (_arg)
 		delete _arg;
 }
-
-Command::Command(server * serv): serv(serv), _nick(NULL), _channel(NULL), _user(NULL), _arg(NULL), _nck(false), _chan(false), _usr(false), _argument(false)
-{}
 
 int	Command::execute() { return 0; }
 
@@ -42,13 +69,15 @@ void	Command::setArgs(std::vector<std::string *> args)
 	{
 		new_ptr = args[0];
 
-		if (_nck)
+		if (!_receiver && _rcv)
+			_receiver = new_ptr;
+		else if (!_nick && _nck)
 			_nick = new_ptr;
-		else if (_chan)
+		else if (!_channel && _chan)
 			_channel = new_ptr;
-		else if (_usr)
+		else if (!_user && _usr)
 			_user = new_ptr;
-		else if (_argument)
+		else if (!_arg && _argument)
 			_arg = new_ptr;
 
 		args.erase(args.begin());
@@ -56,6 +85,8 @@ void	Command::setArgs(std::vector<std::string *> args)
 }
 
 int	Command::getReply() const{ return _reply; }
+
+bool	Command::needReceiver() const{ return _rcv; }
 
 bool	Command::needNick() const{ return _nck; }
 
@@ -67,6 +98,8 @@ bool	Command::needArg() const{ return _argument; }
 
 void	Command::reset()
 {
+	if (_receiver)
+		delete _receiver;
 	if (_nick)
 		delete _nick;
 	if (_channel)
@@ -76,6 +109,7 @@ void	Command::reset()
 	if (_arg)
 		delete _arg;
 
+	_receiver	= NULL;
 	_expeditor	= NULL;
 	_nick		= NULL;
 	_channel	= NULL;
