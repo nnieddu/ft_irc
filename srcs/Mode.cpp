@@ -27,15 +27,63 @@ Mode &Mode::operator=(const Mode &old) {
 }
 
 int Mode::modeChan(Channel& chan, std::string &mod, std::string &arg) {
-	bool	addRule = false;
+	bool		addRule = false;
+	int			num_o_b = 0;
+	std::string	temp = arg;
 
+	temp.clear();
 	if (mod[0] == '+')
 		addRule = true;
 	mod.erase(0,1);
-	if (_expeditor->getChannels()[chan.getName()]) {
-		for (int index = 0; mod[index] ; ++index) {
-
+	if (_expeditor->isOperator(chan.getName())) {
+		while (!mod.empty()) {
+			if (mod[0] == 'l') {
+				if (!addRule)
+					chan.removeMod(l);
+				else {
+					chan.setMod(l);
+					chan.setLim(atoi(temp.substr(0, temp.find_first_of(" \n\r", 0)).c_str()));
+					temp.erase(0, temp.find_first_of(" \n\r", 0));
+				}
+			}
+			else if (mod[0] == 'o' && num_o_b < 3) {
+				if (!addRule) {
+					serv->getUser(std::string(temp.substr(0, \
+					temp.find_first_of(" \n\r", 0))))->demote(chan.getName());
+					temp.erase(0, temp.find_first_of(" \n\r", 0));
+				}
+				else {
+					serv->getUser(std::string(temp.substr(0, \
+					temp.find_first_of(" \n\r", 0))))->promote(chan.getName());
+					temp.erase(0, temp.find_first_of(" \n\r", 0));
+				}
+				num_o_b++;
+			}
+			else if (mod[0] == 'b' && num_o_b < 3) {
+				if (!addRule)
+					chan.removeMod(b);
+				else {
+					chan.setMod(b);
+					chan.setBanMask(temp.substr(0, temp.find_first_of(" \n\r", 0)));
+					temp.erase(0, temp.find_first_of(" \n\r", 0));
+				}
+				num_o_b++;
+			}
+			else if (mod[0] == 'k') {
+				if (!addRule)
+					chan.removeMod(k);
+				else {
+					chan.setMod(k);
+					chan.setPass(temp.substr(0, temp.find_first_of(" \n\r", 0)));
+					temp.erase(0, temp.find_first_of(" \n\r", 0));
+				}
+			}
+			else if (mod[0] == 'v') {
+				//modification on user for this
+			}
+			mod.erase(0, 1);
 		}
+
 	}
 	return 0;
 }
