@@ -51,7 +51,7 @@ PRIVMSG #*.edu :NSFNet is undergoing work, expect interruptions;
 Privmsg::Privmsg():Command()
 {
 	_args[RECEIVER].isNeeded	= true;
-	_args[ARGUMENT].isNeeded	= true;
+	_args[MESSAGE].isNeeded	= true;
 }
 
 Privmsg::~Privmsg() {}
@@ -66,13 +66,13 @@ Privmsg & Privmsg::operator=(const Privmsg & x)
 Privmsg::Privmsg(server * serv):Command(serv)
 {
 	_args[RECEIVER].isNeeded	= true;
-	_args[ARGUMENT].isNeeded	= true;
+	_args[MESSAGE].isNeeded	= true;
 }
 
 int Privmsg::execute()
 {
 	std::string	*			receiver = _args[RECEIVER].arg;
-	std::string	*			arg = _args[ARGUMENT].arg;
+	std::string	*			arg = _args[MESSAGE].arg;
 	std::deque<std::string>	list;
 
 	if (!receiver)

@@ -79,7 +79,7 @@ bool	Command::needChannel() const { return _args.find(CHANNEL)->second.isNeeded;
 
 bool	Command::needUser() const { return _args.find(USER)->second.isNeeded; }
 
-bool	Command::needArg() const { return _args.find(ARGUMENT)->second.isNeeded; }
+bool	Command::needArg() const { return _args.find(MESSAGE)->second.isNeeded; }
 
 bool	Command::needPass() const { return _args.find(PASS)->second.isNeeded; }
 

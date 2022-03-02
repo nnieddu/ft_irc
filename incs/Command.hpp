@@ -9,7 +9,7 @@
 #define NICK		1
 #define CHANNEL		2
 #define USER		4
-#define ARGUMENT	5
+#define MESSAGE		5
 #define PASS		6
 
 class server;

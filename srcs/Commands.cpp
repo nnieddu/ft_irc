@@ -123,16 +123,16 @@ int User::execute()
 		serv->send_replies(_expeditor, "USER :Not enough parameters", ERR_NEEDMOREPARAMS);
 		return 0;
 	}
-	// if (_expeditor->getisLogged() == true)
-	// 	serv->send_replies(_expeditor, ":You may not reregister", ERR_ALREADYREGISTRED);
-	// if (_expeditor->getisLogged() == true) // le parsing bloque
-	// {
+	if (_expeditor->getisLogged() == true)
+	{
 
-	// 	std::string prefix = ":" + _expeditor->getUsername();
-	// 	std::string logged = prefix +  " " + RPL_WELCOME + " " + _expeditor->getUsername() + \
-	// 		" Welcome to the Internet Relay Network :" + _expeditor->getUsername() + "\r\n";
-	// 	send(_expeditor->getSock(), logged.c_str(), logged.length(), 0);		
-	// }
+		std::string prefix = ":" + _expeditor->getUsername();
+		std::string logged = prefix +  " " + RPL_WELCOME + " " + _expeditor->getUsername() + \
+			" Welcome to the Internet Relay Network :" + _expeditor->getUsername() + "\r\n";
+		send(_expeditor->getSock(), logged.c_str(), logged.length(), 0);		
+	}
+	if (_expeditor->getisLogged() == true)
+		serv->send_replies(_expeditor, ":You may not reregister", ERR_ALREADYREGISTRED);
 	return 0;
 }
 
@@ -268,7 +268,7 @@ int List::execute()
 
 Ping::Ping():Command()
 {
-	_args[ARGUMENT].isNeeded = true;
+	_args[MESSAGE].isNeeded = true;
 }
 
 Ping::~Ping(){}
@@ -282,12 +282,12 @@ Ping & Ping::operator=(const Ping & x)
 
 Ping::Ping(server * serv):Command(serv)
 {
-	_args[ARGUMENT].isNeeded = true;
+	_args[MESSAGE].isNeeded = true;
 }
 
 int Ping::execute()
 {
-	std::string	*	arg = _args[ARGUMENT].arg;
+	std::string	*	arg = _args[MESSAGE].arg;
 
 	if (!arg)
 		serv->send_replies(_expeditor, ":No origin specified", ERR_NOORIGIN);
@@ -307,7 +307,7 @@ int Ping::execute()
 
 Quit::Quit():Command()
 {
-	_args[ARGUMENT].isNeeded = true;
+	_args[MESSAGE].isNeeded = true;
 }
 
 Quit::~Quit(){}
@@ -321,12 +321,12 @@ Quit & Quit::operator=(const Quit & x)
 
 Quit::Quit(server * serv):Command(serv)
 {
-	_args[ARGUMENT].isNeeded = true;
+	_args[MESSAGE].isNeeded = true;
 }
 
 int Quit::execute()
 {
-	std::string	*	arg = _args[ARGUMENT].arg;
+	std::string	*	arg = _args[MESSAGE].arg;
 
 	if (!arg)
 	{

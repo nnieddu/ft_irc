@@ -2,7 +2,7 @@
 #include "../incs/Server.hpp"
 
 server::server(const int & port, const std::string & password)
-: _name("127.0.0.1"), _port(port), _password(password), _interpret(this)
+: _name("ft_irc.ircserv"), _port(port), _password(password), _interpret(this)
 {
 	if (_port <= 1023 || _port > 65535)
 		throw(std::invalid_argument(std::string("port number")));
@@ -116,7 +116,8 @@ void server::accept_user()
 	sockaddr_in			address;
 	socklen_t			len = sizeof(sockaddr);
 	std::string			hostname;
-	std::stringstream	nick;
+	std::stringstream	nickname;
+	std::stringstream	username;
 
 	memset(&new_pollfd, 0, sizeof(new_pollfd));
 	new_pollfd.fd = -1;
@@ -134,10 +135,11 @@ void server::accept_user()
 		return ;
 	}
 
-	nick << "Guest" << new_pollfd.fd;
-	std::cout << "New incoming connection - " << nick.str()<< std::endl;
+	nickname << "Guest" << new_pollfd.fd;
+	username << "Username" << new_pollfd.fd;
+	std::cout << "New incoming connection - " << nickname.str()<< std::endl;
 	hostname = inet_ntoa(reinterpret_cast<sockaddr_in*>(&address)->sin_addr);
-	user *new_user = new user(hostname, nick.str(), "username", Socket(new_pollfd.fd, address, len), false);
+	user *new_user = new user(hostname, nickname.str(), username.str(), Socket(new_pollfd.fd, address, len), false);
 	_users.push_back(new_user);
 	_fds.push_back(new_pollfd);
 }
