@@ -331,6 +331,7 @@ int Quit::execute()
 	if (!arg)
 	{
 		serv->user_leave_chan(_expeditor, _expeditor->getLocation(), true, "");
+		// serv->close_user(_expeditor->getSock() - 1, *arg); // msg 
 		return 0;
 	}
 	serv->user_leave_chan(_expeditor, _expeditor->getLocation(), true, *arg);
