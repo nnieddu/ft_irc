@@ -353,3 +353,73 @@ int Ping::execute()
 	}
 	return 1;
 }
+
+
+/*	QUIT	*/
+
+Quit::Quit():Command()
+{
+	_argument = true;
+}
+
+Quit::~Quit(){}
+
+Quit & Quit::operator=(const Quit & x)
+{
+	if (this != &x)
+		serv = x.serv;
+	return *this;
+}
+
+Quit::Quit(server * serv):Command(serv)
+{
+	_argument = true;
+}
+
+int Quit::execute()
+{
+	if (!_arg)
+	{
+
+		serv->send_replies(_expeditor, "QUIT :Not enough parameters", ERR_NEEDMOREPARAMS);
+		return 0;
+	}
+	// serv->user_leave_chan(_expeditor, _expeditor->getLocation(), true);
+	// Deja auto gerer
+	return 0;
+}
+
+
+/*	PART	*/
+
+
+Part::Part():Command()
+{
+	_argument = true;
+}
+
+Part::~Part(){}
+
+Part & Part::operator=(const Part & x)
+{
+	if (this != &x)
+		serv = x.serv;
+	return *this;
+}
+
+Part::Part(server * serv):Command(serv)
+{
+	_argument = true;
+}
+
+int Part::execute()
+{
+	if (!_arg)
+	{
+
+		serv->send_replies(_expeditor, "Part :Not enough parameters", ERR_NEEDMOREPARAMS);
+		return 0;
+	}
+	serv->user_leave_chan(_expeditor, _expeditor->getLocation(), false);
+	return 0;
+}

@@ -196,7 +196,7 @@ void	server::remove_user_from(user * usr, const std::string & name)
 {
 	if (channels[name]->getUsers().find(usr) != channels[name]->getUsers().end())
 	{
-		user_leave_chan(usr, name);
+		user_leave_chan(usr, name, true);
 		channels[name]->removeUser(*usr);
 	}
 }
@@ -237,14 +237,18 @@ void	server::send_replies(user *usr, std::string msg, const char* code)
 	send(usr->getSock(), replies.c_str(), replies.length(), 0);
 }
 
-void	server::user_leave_chan(user * usr, const std::string & name)
+void	server::user_leave_chan(user * usr, const std::string & name, bool flag_delog)
 {
 	std::set<user *>::iterator it;
-	std::string test = ":" + usr->getNickname()+ " QUIT : disconnected\r\n";
+	std::string quit_msg;
+	quit_msg = ":" + usr->getNickname()+ " QUIT : disconnected\r\n";
+	if (flag_delog == false)
+		quit_msg = ":" + usr->getNickname()+ " PART : leave the chan\r\n";
+
 	for(it = channels[name]->getUsers().begin(); it != channels[name]->getUsers().end(); ++it)
 	{
 		if (usr->getNickname() != (*it)->getNickname())
-            send((*it)->getSock(), test.c_str(), test.length(), 0);
+            send((*it)->getSock(), quit_msg.c_str(), quit_msg.length(), 0);
 	}
 }
 

@@ -14,9 +14,9 @@ Interpret::Interpret(server * serv): _serv(serv)
 	cmds_list["NICK"] = new Nick(_serv);
 	cmds_list["USER"] = new User(_serv);
 	// cmds_list["OPER"] = Oper(_serv);
-	// cmds_list["QUIT"] = Quit(_serv);
+	cmds_list["QUIT"] = new Quit(_serv);
 	cmds_list["JOIN"] = new Join(_serv);
-	// cmds_list["PART"] = Part(_serv);
+	cmds_list["PART"] = new Part(_serv);
 	// cmds_list["MODE"] = Mode(_serv);
 	cmds_list["TOPIC"] = new Topic(_serv);
 	// cmds_list["NAMES"] = Names(_serv);

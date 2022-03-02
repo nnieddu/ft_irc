@@ -157,3 +157,14 @@ class Ping : public Command
 		Ping(server * serv);
 		virtual int	execute();
 };
+
+class Part : public Command
+{
+	public:
+
+		Part();
+		virtual ~Part();
+		Part&	operator=(const Part & x);
+		Part(server * serv);
+		virtual int	execute();
+};
