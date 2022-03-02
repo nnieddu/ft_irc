@@ -51,6 +51,7 @@ class Command
 		bool			needChannel() const;
 		bool			needUser() const;
 		bool			needArg() const;
+		bool			isChannelName(std::string & str);
 
 		void			reset();
 };

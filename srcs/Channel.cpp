@@ -6,7 +6,7 @@
 /*   By: mrozniec <mrozniec@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/28 13:56:40 by mrozniec          #+#    #+#             */
-/*   Updated: 2022/03/02 14:51:45 by mrozniec         ###   ########.fr       */
+/*   Updated: 2022/02/28 17:51:48 by mrozniec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,7 @@ Channel::Channel(user &users, std::string &newName) : users(), name(), id(),
 topic("No topic set for channel "), password("password"), limit_user(0), chanCrea(NULL) {
 	this->users.insert(&users);
 	id.clear();
-	//channel name are case-insensitive
-	for (int index = 0; newName[index]; index++)
-		name.push_back(static_cast<char>(std::tolower(newName[index])));
+	name = newName;
 	if (newName[0] == '&' || newName[0] == '#')
 		mod = o;
 	else if (newName[0] == '+')
@@ -29,11 +27,13 @@ topic("No topic set for channel "), password("password"), limit_user(0), chanCre
 
 		srand(time(NULL));
 		for (int index = 0; index < 5; index++) {
-			int random = rand() % 36;
+			int random = rand() % 62;
 			if (random < 10)
 				id.push_back(static_cast<char>(random + 48));
+			else if (random < 36)
+				id.push_back(static_cast<char>(random + 55));
 			else
-				id.push_back(static_cast<char>(random + 87));
+				id.push_back(static_cast<char>(random + 61));
 		}
 		name = newName.substr(1);
 	}

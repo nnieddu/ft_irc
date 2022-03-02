@@ -81,6 +81,8 @@ bool	Command::needUser() const { return _args.find(USER)->second.isNeeded; }
 
 bool	Command::needArg() const { return _args.find(ARGUMENT)->second.isNeeded; }
 
+bool	Command::isChannelName(std::string & str) { return (str[0] == '#' || str[0] == '&'); }
+
 void	Command::reset()
 {
 	for (size_t val = 0; val <= ARGUMENT; val++)
