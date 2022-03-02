@@ -10,7 +10,7 @@
 
 Pass::Pass():Command()
 {
-	_args[ARGUMENT].isNeeded = true;
+	_args[PASS].isNeeded = true;
 }
 
 Pass::~Pass() {}
@@ -24,27 +24,27 @@ Pass & Pass::operator=(const Pass & x)
 
 Pass::Pass(server * serv):Command(serv)
 {
-	_args[ARGUMENT].isNeeded = true;
+	_args[PASS].isNeeded = true;
 }
 
 int Pass::execute()
 {
-	std::string	*	arg = _args[ARGUMENT].arg;
+	std::string	*	pass = _args[PASS].arg;
 	// if (usr->isRegister == true) // voir si on garde un historic pas sur de capter voir 4.1.1
 	// 	 serv->send_replies(usr, NULL, ERR_ALREADYREGISTRED);
-	if (!arg)
+	if (!pass)
 	{
 		serv->send_replies(_expeditor, "PASS :Not enough parameters", ERR_NEEDMOREPARAMS);
 		return -1;
 	}
-	else if (arg->compare(serv->getPassword()) != 0)
+	else if (pass->compare(serv->getPassword()) != 0)
 	{
 		serv->send_replies(_expeditor, ":Password incorrect", ERR_PASSWDMISMATCH); // pas dans la rfc au loggin maybe a remove
 		return -1;
 	}
 	if (_expeditor->getisLogged() == false)
 	{
-		_expeditor->setPassword(*arg);
+		_expeditor->setPassword(*pass);
 		_expeditor->setLogged(true);
 	}
 	return 0;

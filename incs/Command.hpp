@@ -10,6 +10,7 @@
 #define CHANNEL		2
 #define USER		4
 #define ARGUMENT	5
+#define PASS		6
 
 class server;
 
@@ -51,6 +52,7 @@ class Command
 		bool			needChannel() const;
 		bool			needUser() const;
 		bool			needArg() const;
+		bool			needPass() const;
 		bool			isChannelName(std::string & str);
 
 		void			reset();
