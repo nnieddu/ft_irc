@@ -53,5 +53,4 @@ class user
 		void		join_channel(const std::string & name, bool op);
 		void		leave_channel(const std::string & name);
 		bool		isMember(const std::string & name) const;
-
 };

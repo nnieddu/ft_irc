@@ -76,7 +76,7 @@ int Nick::execute()
 	std::string	*	arg = _args[NICK].arg;
 
 	if (!arg)
-	serv->send_replies(_expeditor, ":No nickname given", ERR_NONICKNAMEGIVEN);
+	serv->send_replies(_expeditor, " :No nickname given", ERR_NONICKNAMEGIVEN);
 	if (serv->isUser(*arg) == false)
 	{
 		std::string str = ":" + _expeditor->getNickname() + " NICK " + ":" + *arg + "\r\n";
@@ -123,16 +123,16 @@ int User::execute()
 		serv->send_replies(_expeditor, "USER :Not enough parameters", ERR_NEEDMOREPARAMS);
 		return 0;
 	}
-	if (_expeditor->getisLogged() == true)
-	{
+	// if (_expeditor->getisLogged() != true)
+	// {
 
-		std::string prefix = ":" + _expeditor->getUsername();
-		std::string logged = prefix +  " " + RPL_WELCOME + " " + _expeditor->getUsername() + \
-			" Welcome to the Internet Relay Network :" + _expeditor->getUsername() + "\r\n";
-		send(_expeditor->getSock(), logged.c_str(), logged.length(), 0);		
-	}
-	if (_expeditor->getisLogged() == true)
-		serv->send_replies(_expeditor, ":You may not reregister", ERR_ALREADYREGISTRED);
+	// 	std::string prefix = ":" + _expeditor->getUsername();
+	// 	std::string logged = prefix +  " " + RPL_WELCOME + " " + _expeditor->getUsername() + \
+	// 		" Welcome to the Internet Relay Network :" + _expeditor->getUsername() + "\r\n";
+	// 	send(_expeditor->getSock(), logged.c_str(), logged.length(), 0);	
+	// }
+	// if (_expeditor->getisLogged() == true)
+	// 	serv->send_replies(_expeditor, " :You may not reregister", ERR_ALREADYREGISTRED);
 	return 0;
 }
 
@@ -330,11 +330,10 @@ int Quit::execute()
 
 	if (!arg)
 	{
-		serv->send_replies(_expeditor, "QUIT :Not enough parameters", ERR_NEEDMOREPARAMS);
+		serv->user_leave_chan(_expeditor, _expeditor->getLocation(), true, "");
 		return 0;
 	}
-	// serv->user_leave_chan(_expeditor, _expeditor->getLocation(), true);
-	// Deja auto gerer, rajouter possibilite de mettre un message de depart, voir dans le parsing
+	serv->user_leave_chan(_expeditor, _expeditor->getLocation(), true, *arg);
 	return 0;
 }
 
@@ -363,7 +362,6 @@ Part::Part(server * serv):Command(serv)
 
 int Part::execute()
 {
-	//PARSING Issue : [PART #a :WeeChat 2.8]
 	std::string	*	arg = _args[CHANNEL].arg;
 
 	if (!arg)
@@ -371,18 +369,16 @@ int Part::execute()
 		serv->send_replies(_expeditor, "PART :Not enough parameters", ERR_NEEDMOREPARAMS);
 		return 0;
 	}
-	if (_expeditor->getLocation() != *arg)
+	if (_expeditor->getChannels().find(*arg) == _expeditor->getChannels().end())
 	{
-
 		serv->send_replies(_expeditor, *arg + " :You're not on that channel", ERR_NOTONCHANNEL);
 		return 0;
 	}
-	if (serv->channels.find(*arg) != serv->channels.end())
+	if (serv->channels.find(*arg) == serv->channels.end())
 	{
-
-		serv->send_replies(_expeditor, *arg + ":No such channel", ERR_NOSUCHCHANNEL);
+		serv->send_replies(_expeditor, *arg + " :No such channel", ERR_NOSUCHCHANNEL);
 		return 0;
 	}		
-	serv->user_leave_chan(_expeditor, _expeditor->getLocation(), false);
+	serv->user_leave_chan(_expeditor, *arg, false, "");
 	return 0;
 }

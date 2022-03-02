@@ -58,7 +58,7 @@ class server
 			public:
 
 				virtual const char *	what() const throw()
-				{	return "Closing program...";}
+				{ return "Closing program..."; }
 		};
 
 		int		run();
@@ -70,7 +70,7 @@ class server
 		void	send_replies(user * usr, std::string msg, const char* code);
 
 		void	create_channel(user & usr, std::string & name);
-		void	user_leave_chan(user * usr, const std::string & name, bool flag_delog);
+		void	user_leave_chan(user * usr, const std::string & name, bool flag_delog, std::string msg);
 
 		std::string format_msg(user * expeditor, std::string & msg);
 		int	send_msg_to_user(user * expeditor, user * dest, std::string & msg);
