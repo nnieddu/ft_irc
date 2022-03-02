@@ -12,7 +12,7 @@ Interpret::Interpret(server * serv): _serv(serv)
 {
 	cmds_list["PASS"] = new Pass(_serv);
 	cmds_list["NICK"] = new Nick(_serv);
-	cmds_list["USER"] = new User(_serv);
+	//cmds_list["USER"] = new User(_serv);
 	// cmds_list["OPER"] = Oper(_serv);
 	cmds_list["QUIT"] = new Quit(_serv);
 	cmds_list["JOIN"] = new Join(_serv);
@@ -54,25 +54,29 @@ int Interpret::launch(user & usr)
 	
 	while (usr.buf.empty() == false && (usr.buf.find('\r') && ret == 0))
 	{
+		_iseoc = false;
+
 		if ((it = cmds_list.find(parseCmds(&usr.buf))) != cmds_list.end())
 		{
 			cmd = it->second;
 			cmd->setExpeditor(&usr);
 
-			if (cmd->needReceiver())
+			if (_iseoc == false && cmd->needReceiver())
 				args.push_back(parseWord(&usr.buf));
-			if (cmd->needNick())
+			if (_iseoc == false && cmd->needNick())
 				args.push_back(parseWord(&usr.buf));
-			if (cmd->needChannel())
+			if (_iseoc == false && cmd->needChannel())
 				args.push_back(parseWord(&usr.buf));
-			if (cmd->needUser())
+			if (_iseoc == false && cmd->needUser())
 				args.push_back(parseWord(&usr.buf));
-			if (cmd->needArg())
+			if (_iseoc == false && cmd->needArg())
 				args.push_back(parseAll(&usr.buf));
 
 			cmd->setArgs(args);
 			ret = cmd->execute();
 			cmd->reset();
+			if (_iseoc == false)
+				clearLeftover(&usr.buf);
 		}
 		else
 			ret = cmd_not_found(usr);
@@ -159,6 +163,16 @@ std::string *	Interpret::GetNextWord(std::string * buf)
 		return NULL;
 	}
 	return buf;
+}
+
+void	Interpret::clearLeftover(std::string * buf)
+{
+	std::string::iterator	it(buf->begin());
+
+	while (it != buf->end() && *it != '\r' && *it != '\n')
+		it++;
+	if (it != buf->end())
+	 	buf->erase(buf->begin(), ++it);
 }
 
 // Les deux bout commented font segfault si "PASS " sur netcat

@@ -89,8 +89,8 @@ int Nick::execute()
 	return 1;
 }
 
-/*	USER	*
-
+/*	USER	*/
+/*
 User::User():Command()
 {
 	_argument = true;
@@ -131,13 +131,13 @@ int User::execute()
 	// }
 	return 0;
 }
-
+*/
 /*	JOIN	*/
 
 Join::Join():Command()
 {
-	_argument = true;
-	// _chan = true;
+	// _argument = true;
+	_chan = true;
 }
 
 Join::~Join(){}
@@ -151,19 +151,20 @@ Join & Join::operator=(const Join & x)
 
 Join::Join(server * serv):Command(serv)
 {
-	_argument = true;
-	// _chan = true;
+	// _argument = true;
+	_chan = true;
 }
 
 
 int	Join::execute()
 {
-	if (!_arg)
+	if (!_channel)
 	{
 		serv->send_replies(_expeditor, "JOIN :Not enough parameters", ERR_NEEDMOREPARAMS);
 		return 1;
 	}
-	std::string	name(*_arg);
+	std::string	name(*_channel);
+
 	if (name.find("#") && name.find("&") == std::string::npos && name.find("+") == std::string::npos 
 	&& name.find("!!") == std::string::npos) // A MODIFIER (check juste premier char)
 	{

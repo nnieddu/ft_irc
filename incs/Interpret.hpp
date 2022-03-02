@@ -16,6 +16,7 @@ class Interpret
 		Interpret& operator=(const Interpret& x);
 
 		server *	_serv;
+		bool		_iseoc;
 
 	public:
 		Interpret(server * serv);
@@ -35,4 +36,5 @@ class Interpret
 		std::string *	parseAll(std::string * buf);
 
 		std::string *	GetNextWord(std::string * buf);
+		void			clearLeftover(std::string * buf);
 };
