@@ -2,71 +2,6 @@
 #include "../incs/Commands.hpp"
 #include "../incs/Server.hpp"
 
-
-/*	PRIVMSG	*/
-
-Privmsg::Privmsg():Command()
-{
-	_args[RECEIVER].isNeeded	= true;
-	_args[ARGUMENT].isNeeded	= true;
-}
-
-Privmsg::~Privmsg() {}
-
-Privmsg & Privmsg::operator=(const Privmsg & x)
-{
-	if (this != &x)
-		serv = x.serv;
-	return *this;
-}
-
-Privmsg::Privmsg(server * serv):Command(serv)
-{
-	_args[RECEIVER].isNeeded	= true;
-	_args[ARGUMENT].isNeeded	= true;
-}
-
-int Privmsg::execute()
-{
-	std::string	*	receiver = _args[RECEIVER].arg;
-	std::string	*	arg = _args[ARGUMENT].arg;
-	std::deque<std::string>	list;
-	int						mode;
-
-	if (!receiver)
-	{
-		serv->send_replies(_expeditor, "PRIVMSG :No receiver specified", ERR_NORECIPIENT);
-		return -1;
-	}
-	if (!arg)
-	{
-		serv->send_replies(_expeditor, "PRIVMSG :No text to send", ERR_NOTEXTTOSEND);
-		return -1;
-	}
-
-	list = _args[RECEIVER].parseList();
-
-	if (serv->isUser(list[0]))
-		mode = 0;
-	else if (serv->channels.find(list[0]) != serv->channels.end())
-		mode = 1;
-	while (!list.empty())
-	{
-		if (mode == 0)
-		{
-			if (serv->send_msg_to_user(_expeditor, serv->getUser(list[0]), *arg))
-				serv->send_replies(_expeditor, "PRIVMSG :No such nick", ERR_NOSUCHNICK);
-		}
-		else if (mode == 1)
-		{
-			if (serv->send_msg_to_channel(_expeditor, serv->getChannel(list[0]), *arg))
-				serv->send_replies(_expeditor, "PRIVMSG :cannot send to channel", ERR_CANNOTSENDTOCHAN);
-		}
-		list.erase(list.begin());
-	}
-	return 0;
-}
-
 /*
 4.4.1 Private messages
 
@@ -97,21 +32,75 @@ int Privmsg::execute()
 
 	Examples:
 
-:Angel PRIVMSG Wiz :Hello are you receiving this message ?
-								; Message from Angel to Wiz.
+:Angel PRIVMSG Wiz :Hello are you receiving this message ?;
+	Message from Angel to Wiz.
 
-PRIVMSG Angel :yes I'm receiving it !receiving it !'u>(768u+1n) .br ;
-								Message to Angel.
+PRIVMSG Angel :yes I'm receiving it !receiving it !'u>(768u+1n) .br;
+	Message to Angel.
 
-PRIVMSG jto@tolsun.oulu.fi :Hello !
-								; Message to a client on server
-								tolsun.oulu.fi with username of "jto".
+PRIVMSG jto@tolsun.oulu.fi :Hello !;
+	Message to a client on server tolsun.oulu.fi with username of "jto".
 
-PRIVMSG $*.fi :Server tolsun.oulu.fi rebooting.
-								; Message to everyone on a server which
-								has a name matching *.fi.
+PRIVMSG $*.fi :Server tolsun.oulu.fi rebooting.;
+	Message to everyone on a server which has a name matching *.fi.
 
-PRIVMSG #*.edu :NSFNet is undergoing work, expect interruptions
-								; Message to all users who come from a
-								host which has a name matching *.edu.
+PRIVMSG #*.edu :NSFNet is undergoing work, expect interruptions;
+	Message to all users who come from a host which has a name matching *.edu.
 */
+
+Privmsg::Privmsg():Command()
+{
+	_args[RECEIVER].isNeeded	= true;
+	_args[MESSAGE].isNeeded	= true;
+}
+
+Privmsg::~Privmsg() {}
+
+Privmsg & Privmsg::operator=(const Privmsg & x)
+{
+	if (this != &x)
+		serv = x.serv;
+	return *this;
+}
+
+Privmsg::Privmsg(server * serv):Command(serv)
+{
+	_args[RECEIVER].isNeeded	= true;
+	_args[MESSAGE].isNeeded	= true;
+}
+
+int Privmsg::execute()
+{
+	std::string	*			receiver = _args[RECEIVER].arg;
+	std::string	*			arg = _args[MESSAGE].arg;
+	std::deque<std::string>	list;
+
+	if (!receiver)
+	{
+		serv->send_replies(_expeditor, "PRIVMSG :No receiver specified", ERR_NORECIPIENT);
+		return -1;
+	}
+	if (!arg)
+	{
+		serv->send_replies(_expeditor, "PRIVMSG :No text to send", ERR_NOTEXTTOSEND);
+		return -1;
+	}
+
+	list = _args[RECEIVER].parseList();
+
+	while (!list.empty())
+	{
+		if (isChannelName(list[0]))
+		{
+			if (serv->send_msg_to_channel(_expeditor, serv->getChannel(list[0]), *arg))
+				serv->send_replies(_expeditor, "PRIVMSG :cannot send to channel", ERR_CANNOTSENDTOCHAN);
+		}
+		else
+		{
+			if (serv->send_msg_to_user(_expeditor, serv->getUser(list[0]), *arg))
+				serv->send_replies(_expeditor, "PRIVMSG :No such nick", ERR_NOSUCHNICK);
+		}
+		list.erase(list.begin());
+	}
+	return 0;
+}

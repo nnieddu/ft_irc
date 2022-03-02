@@ -11,6 +11,7 @@ user::~user() {}
 
 std::string	user::getNickname() const { return _nickname; }
 std::string	user::getUsername() const { return _username; }
+std::string	user::getHostname() const { return _hostname; }
 std::string	user::getPassword() const { return _password; }
 bool		user::getisLogged() const { return _isLogged; }
 int 		user::getSock() const { return _socket.fd; }
@@ -34,12 +35,12 @@ void		user::setLogged(bool log)
 	}
 }
 
-bool	user::isOperator(std::string & name) const
+bool	user::isOperator(const std::string & name) const
 {
 	return _channels.find(name)->second;
 }
 
-void	user::promote(std::string & name)
+void	user::promote(const std::string & name)
 {
 	try
 	{
@@ -48,7 +49,7 @@ void	user::promote(std::string & name)
 	catch(std::out_of_range &oor){} // <-- rentre ici si "name" n existe pas, voir si il y a un send a faire
 }
 
-void	user::demote(std::string & name)
+void	user::demote(const std::string & name)
 {
 	try
 	{
@@ -57,18 +58,17 @@ void	user::demote(std::string & name)
 	catch(std::out_of_range &oor){} // <-- rentre ici si "name" n existe pas, voir si il y a un send a faire
 }
 
-void	user::join_channel(std::string & name, bool op)
+void	user::join_channel(const std::string & name, bool op)
 {
 	_channels.insert(std::make_pair(name, op));
 }
 
-void	user::leave_channel(std::string & name)
+void	user::leave_channel(const std::string & name)
 {
 	_channels.erase(name);
 }
 
-
-bool	user::isMember(std::string & name) const
+bool	user::isMember(const std::string & name) const
 {
 	return (_channels.find(name) != _channels.end());
 }

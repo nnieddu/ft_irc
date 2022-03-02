@@ -27,7 +27,7 @@ Command::Command() {}
 
 Command::Command(server * serv):serv(serv)
 {
-	for (size_t elem = 0; elem <= ARGUMENT; elem++)
+	for (size_t elem = 0; elem <= PASS; elem++)
 	{
 		_args[elem].arg = NULL;
 		_args[elem].isNeeded = false;
@@ -43,7 +43,7 @@ Command &	Command::operator=(const Command & x)
 
 Command::~Command()
 {
-	for (size_t val = 0; val <= ARGUMENT; val++)
+	for (size_t val = 0; val <= PASS; val++)
 	{
 		if (_args[val].arg)
 			delete _args[val].arg;
@@ -79,11 +79,15 @@ bool	Command::needChannel() const { return _args.find(CHANNEL)->second.isNeeded;
 
 bool	Command::needUser() const { return _args.find(USER)->second.isNeeded; }
 
-bool	Command::needArg() const { return _args.find(ARGUMENT)->second.isNeeded; }
+bool	Command::needArg() const { return _args.find(MESSAGE)->second.isNeeded; }
+
+bool	Command::needPass() const { return _args.find(PASS)->second.isNeeded; }
+
+bool	Command::isChannelName(std::string & str) { return (str[0] == '#' || str[0] == '&'); }
 
 void	Command::reset()
 {
-	for (size_t val = 0; val <= ARGUMENT; val++)
+	for (size_t val = 0; val <= PASS; val++)
 	{
 		if (_args[val].arg)
 		{

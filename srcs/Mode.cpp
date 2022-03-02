@@ -5,13 +5,13 @@
 #include "../incs/Mode.hpp"
 
 Mode::Mode() : Command() {
-	_args[ARGUMENT].isNeeded	= true;
+	_args[MESSAGE].isNeeded	= true;
 	_args[USER].isNeeded		= true;
 	_args[CHANNEL].isNeeded		= true;
 }
 
 Mode::Mode(server *serv) : Command(serv){
-	_args[ARGUMENT].isNeeded	= true;
+	_args[MESSAGE].isNeeded	= true;
 	_args[USER].isNeeded		= true;
 	_args[CHANNEL].isNeeded		= true;
 }
@@ -45,7 +45,7 @@ int Mode::modeUser(user& usr, std::string &mod, std::string &arg) {
 }
 
 int Mode::execute() {
-	std::string	*arg = _args[ARGUMENT].arg;
+	std::string	*arg = _args[MESSAGE].arg;
 	std::string	*mod = _args[USER].arg;
 	std::string	*channel = _args[CHANNEL].arg;
 

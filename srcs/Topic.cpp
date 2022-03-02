@@ -9,12 +9,12 @@
 //exemple: TOPIC #test :
 
 Topic::Topic() : Command() {
-	_args[ARGUMENT].isNeeded	= true;
+	_args[MESSAGE].isNeeded	= true;
 	_args[CHANNEL].isNeeded		= true;
 }
 
 Topic::Topic(server *serv) : Command(serv) {
-	_args[ARGUMENT].isNeeded	= true;
+	_args[MESSAGE].isNeeded	= true;
 	_args[CHANNEL].isNeeded		= true;
 }
 
@@ -28,7 +28,7 @@ Topic &Topic::operator=(const Topic &old) {
 }
 
 int Topic::execute() {
-	std::string	*	arg = _args[ARGUMENT].arg;
+	std::string	*	arg = _args[MESSAGE].arg;
 	std::string	*	channel = _args[CHANNEL].arg;
 
 	if (arg) {

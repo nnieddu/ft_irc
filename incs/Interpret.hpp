@@ -33,8 +33,9 @@ class Interpret
 		int	cmd_not_found(user & usr);
 
 		std::string *	parseWord(std::string * buf);
-		std::string *	parseAll(std::string * buf);
+		std::string *	parseMessage(std::string * buf);
 
 		std::string *	GetNextWord(std::string * buf);
+		std::string *	GetMessageStart(std::string * buf);
 		void			clearLeftover(std::string * buf);
 };

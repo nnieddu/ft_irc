@@ -2,7 +2,7 @@
 #include "../incs/Server.hpp"
 
 server::server(const int & port, const std::string & password)
-: _name("127.0.0.1"), _port(port), _password(password), _interpret(this)
+: _name("ft_irc.ircserv"), _port(port), _password(password), _interpret(this)
 {
 	if (_port <= 1023 || _port > 65535)
 		throw(std::invalid_argument(std::string("port number")));
@@ -116,7 +116,8 @@ void server::accept_user()
 	sockaddr_in			address;
 	socklen_t			len = sizeof(sockaddr);
 	std::string			hostname;
-	std::stringstream	nick;
+	std::stringstream	nickname;
+	std::stringstream	username;
 
 	memset(&new_pollfd, 0, sizeof(new_pollfd));
 	new_pollfd.fd = -1;
@@ -134,10 +135,11 @@ void server::accept_user()
 		return ;
 	}
 
-	nick << "Guest" << new_pollfd.fd;
-	std::cout << "New incoming connection - " << nick.str()<< std::endl;
+	nickname << "Guest" << new_pollfd.fd;
+	username << "Username" << new_pollfd.fd;
+	std::cout << "New incoming connection - " << nickname.str()<< std::endl;
 	hostname = inet_ntoa(reinterpret_cast<sockaddr_in*>(&address)->sin_addr);
-	user *new_user = new user(hostname, nick.str(), "username", Socket(new_pollfd.fd, address, len), false);
+	user *new_user = new user(hostname, nickname.str(), username.str(), Socket(new_pollfd.fd, address, len), false);
 	_users.push_back(new_user);
 	_fds.push_back(new_pollfd);
 }
@@ -196,7 +198,7 @@ void	server::remove_user_from(user * usr, const std::string & name)
 {
 	if (channels[name]->getUsers().find(usr) != channels[name]->getUsers().end())
 	{
-		user_leave_chan(usr, name, true);
+		user_leave_chan(usr, name, true, "");
 		channels[name]->removeUser(*usr);
 	}
 }
@@ -237,11 +239,14 @@ void	server::send_replies(user *usr, std::string msg, const char* code)
 	send(usr->getSock(), replies.c_str(), replies.length(), 0);
 }
 
-void	server::user_leave_chan(user * usr, const std::string & name, bool flag_delog)
+void	server::user_leave_chan(user * usr, const std::string & name, bool flag_delog, std::string msg)
 {
 	std::set<user *>::iterator it;
 	std::string quit_msg;
-	quit_msg = ":" + usr->getNickname()+ " QUIT : disconnected\r\n";
+	if (msg == "" && flag_delog == true)
+		quit_msg = ":" + usr->getNickname()+ " QUIT : disconnected\r\n";
+	else if (flag_delog == true)
+		quit_msg = ":" + usr->getNickname()+ " QUIT : " + msg + "\r\n";
 	if (flag_delog == false)
 		quit_msg = ":" + usr->getNickname()+ " PART : leave the chan\r\n";
 
@@ -270,7 +275,7 @@ int	server::send_msg_to_user(user * expeditor, user * dest, std::string & msg)
 
 int	server::send_msg_to_channel(user * expeditor, Channel * dest, std::string & msg)
 {
-	if (!dest)
+	if (!dest || expeditor->isMember(dest->getName()))
 		return 1;
 
 	std::set<user*>	userlist(dest->getUsers());

@@ -6,18 +6,19 @@
 /*   By: mrozniec <mrozniec@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/28 13:56:40 by mrozniec          #+#    #+#             */
-/*   Updated: 2022/03/02 16:57:13 by mrozniec         ###   ########.fr       */
+/*   Updated: 2022/03/02 14:51:45 by mrozniec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../incs/Channel.hpp"
 
-Channel::Channel(user &users, std::string &newName) : users(), name(), id(), banMask(),
+Channel::Channel(user &users, std::string &newName) : users(), name(), id(),
 topic("No topic set for channel "), password("password"), limit_user(0), chanCrea(NULL) {
 	this->users.insert(&users);
 	id.clear();
-	banMask.clear();
-	//channel name are case-insensitive
+//	for the moment ame is not case-insensitive
+	name = newName;
+//	channel name are case-insensitive
 //	for (int index = 0; newName[index]; index++)
 //		name.push_back(static_cast<char>(std::tolower(newName[index])));
 	if (newName[0] == '&' || newName[0] == '#')
@@ -109,12 +110,4 @@ Channel &Channel::operator=(const Channel &old) {
 		this->users = old.users;
 	}
 	return *this;
-}
-
-void Channel::setBanMask(const std::string &newMask) {
-	this->banMask = newMask;
-}
-
-const std::string &Channel::getBanMask() const {
-	return this->banMask;
 }

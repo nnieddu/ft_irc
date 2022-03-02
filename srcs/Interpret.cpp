@@ -70,7 +70,9 @@ int Interpret::launch(user & usr)
 			if (_iseoc == false && cmd->needUser())
 				args.push_back(parseWord(&usr.buf));
 			if (_iseoc == false && cmd->needArg())
-				args.push_back(parseAll(&usr.buf));
+				args.push_back(parseMessage(&usr.buf));
+			if (_iseoc == false && cmd->needPass())
+				args.push_back(parseWord(&usr.buf));
 
 			cmd->setArgs(args);
 			ret = cmd->execute();
@@ -116,34 +118,58 @@ std::string *	Interpret::parseWord(std::string * buf)
 
 	if (GetNextWord(buf) == NULL)
 		return NULL;
-	first = buf->begin();
 	last = first;
-	while(last != buf->end() && *last != ' ' && *last != '\r' && *last != '\n' )
+	while(last != buf->end() && *last != ' ' && *last != 7 && *last != '\r' && *last != '\n')
 		last++;
-	if (last != buf->end() && (*last == '\r' || *last == '\n'))
+	if (*last == '\r' || *last == '\n')
+		_iseoc = true;
+	if (last != buf->end() && (*last == 7 || *last == '\r' || *last == '\n'))
 		buf->erase(last);
 	arg.assign(first, last);
 	buf->erase(first, last);
 	return new std::string(arg);
 }
 
-std::string *	Interpret::parseAll(std::string * buf)
+std::string *	Interpret::parseMessage(std::string * buf)
 {
 	std::string::iterator	first;
 	std::string::iterator	last;
 	std::string				arg;
 
-	if (GetNextWord(buf) == NULL)
+	if (GetMessageStart(buf) == NULL)
 		return NULL;
 	first = buf->begin();
 	last = first;
 	while(last != buf->end() && *last != '\r' && *last != '\n' )
 		last++;
 	if (last != buf->end())
-	 	buf->erase(last);
+	{
+		buf->erase(last);
+		_iseoc = true;
+	}
 	arg.assign(first, last);
 	buf->erase(first, last);
 	return new std::string(arg);
+}
+
+std::string *	Interpret::GetMessageStart(std::string * buf)
+{
+	std::string::iterator	first(buf->begin());
+
+	while (first != buf->end() && *(first - 1) != ':')
+		first++;
+	buf->erase(buf->begin(), first);
+	if (buf->empty())
+		return NULL;
+
+	first = buf->begin();
+	if (*first == '\n' || *first == '\r')
+	{
+		buf->erase(first);
+		_iseoc = true;
+		return NULL;
+	}
+	return buf;
 }
 
 std::string *	Interpret::GetNextWord(std::string * buf)
@@ -160,6 +186,7 @@ std::string *	Interpret::GetNextWord(std::string * buf)
 	if (*first == '\n' || *first == '\r')
 	{
 		buf->erase(first);
+		_iseoc = true;
 		return NULL;
 	}
 	return buf;

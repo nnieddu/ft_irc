@@ -35,6 +35,7 @@ class user
 		std::string	getNickname() const;
 		std::string	getUsername() const;
 		std::string	getPassword() const;
+		std::string	getHostname() const;
 		Socket		getSocket() const;
 		int			getSock() const;
 		bool		getisLogged() const;
@@ -46,11 +47,11 @@ class user
 		void		setLogged(bool log);
 		void		setLocation(std::string & name);
 
-		bool		isOperator(std::string & name) const;
-		void		promote(std::string & name);
-		void		demote(std::string & name);
-		void		join_channel(std::string & name, bool op);
-		void		leave_channel(std::string & name);
-		bool		isMember(std::string & name) const;
+		bool		isOperator(const std::string & name) const;
+		void		promote(const std::string & name);
+		void		demote(const std::string & name);
+		void		join_channel(const std::string & name, bool op);
+		void		leave_channel(const std::string & name);
+		bool		isMember(const std::string & name) const;
 
 };
