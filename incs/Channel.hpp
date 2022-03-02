@@ -48,6 +48,7 @@ class Channel {
 		std::string			name;
 		std::string			id;
 		std::string			topic;
+		std::string			banMask;
 		std::string			password;
 		user*				chanCrea;
 		std::set<user *>	users;
@@ -57,19 +58,21 @@ class Channel {
 		Channel& operator=(const Channel&);
 
 		void	setMod(unsigned int);
+		void	setBanMask(const std::string&);
 		void	setLim(unsigned int);
 		void	setTopic(const std::string&);
 		void	setPass(const std::string&);
 		void	addUser(user&);
 		void	removeUser(user&);
 
-		const unsigned int&			getMod() const;
-		const unsigned int&			getLim() const;
-		const std::string&			getName() const;
-		const std::string&			getId() const;
-		const std::string&			getTopic() const;
-		const std::string&			getPass() const;
-		const user&					getChanCrea() const;
-		const std::set<user*>&		getUsers() const;
+		const unsigned int&		getMod() const;
+		const unsigned int&		getLim() const;
+		const std::string&		getName() const;
+		const std::string&		getId() const;
+		const std::string&		getTopic() const;
+		const std::string&		getPass() const;
+		const user&				getChanCrea() const;
+		const std::set<user*>&	getUsers() const;
+		const std::string&		getBanMask() const;
 
 };

@@ -12,6 +12,7 @@ SRCS	=	main.cpp	\
 			Command.cpp	\
 			Commands.cpp\
 			privmsg.cpp	\
+			Mode.cpp	\
 			Topic.cpp	\
 			Interpret.cpp
 
@@ -21,6 +22,7 @@ INCS	=	incs/Server.hpp		\
 			incs/User.hpp		\
 			incs/Command.hpp	\
 			incs/Commands.hpp	\
+			incs/Mode.hpp		\
 			incs/Topic.hpp		\
 			incs/Interpret.hpp
 
