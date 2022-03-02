@@ -89,7 +89,7 @@ int Nick::execute()
 	return 1;
 }
 
-/*	USER	*/ // Executee seulement lors de la premiere co
+/*	USER	*
 
 User::User():Command()
 {
@@ -112,7 +112,8 @@ User::User(server * serv):Command(serv)
 
 int User::execute()
 {
-	if (!_arg)
+	// Parsing issue 
+	if (!_arg) 
 	{
 
 		serv->send_replies(_expeditor, "USER :Not enough parameters", ERR_NEEDMOREPARAMS);
@@ -122,7 +123,6 @@ int User::execute()
 	// 	serv->send_replies(_expeditor, ":You may not reregister", ERR_ALREADYREGISTRED);
 	// if (_expeditor->getisLogged() == true) // le parsing bloque
 	// {
-	// 	std::cout << "USERGOOD\n";
 
 	// 	std::string prefix = ":" + _expeditor->getUsername();
 	// 	std::string logged = prefix +  " " + RPL_WELCOME + " " + _expeditor->getUsername() + \
@@ -208,11 +208,13 @@ int	Join::execute()
 //ERR_NOSUCHCHANNEL               ERR_TOOMANYCHANNELS
 //RPL_TOPIC
 
+
+
 /*	LIST	*/
 
 List::List():Command()
 {
-	_chan = true;
+	_argument = true;
 }
 
 List::~List(){}
@@ -226,52 +228,36 @@ List & List::operator=(const List & x)
 
 List::List(server * serv):Command(serv)
 {
-	_chan = true;
+	_argument = true;
 }
 
 int List::execute()
 {
-	for (std::map<std::string, Channel*>::iterator it = serv->channels.begin();
-		it != serv->channels.end(); ++it)
+	std::string list_msg;
+	std::map<std::string, Channel*>::iterator it;
+	serv->send_replies(_expeditor, "Channel :Users  Name", RPL_LISTSTART);
+	if (!_arg)
 	{
-		std::cout << it->first << std::endl;
+		for (it = serv->channels.begin(); it != serv->channels.end(); ++it)
+		{
+			// serv->send_replies(_expeditor, "<channel> <# visible> :<topic>", RPL_LIST);
+			serv->send_replies(_expeditor, it->first + " <# visible> :" + it->second->getTopic() , RPL_LIST);
+		}
 	}
-	
-	std::cout << "EOF List" << std::endl;
+	if (serv->channels.empty() == true)
+		serv->send_replies(_expeditor, ":End of /LIST", RPL_LISTEND);
+	if (_arg && (serv->channels.find(*_arg) != serv->channels.end()))
+	{
+		it = serv->channels.find(*_arg);
+		serv->send_replies(_expeditor, it->first + " <# visible> :" + it->second->getTopic() , RPL_LIST);
+	}
+	serv->send_replies(_expeditor, ":End of /LIST", RPL_LISTEND);
+
 	return 0;
 }
-//    Parameters: [<channel>{,<channel>} [<server>]]
-
-//    The list message is used to list channels and their topics.  If  the
-//    <channel>  parameter  is  used,  only  the  status  of  that  channel
-//    is displayed.  Private  channels  are  listed  (without  their
-//    topics)  as channel "Prv" unless the client generating the query is
-//    actually on that channel.  Likewise, secret channels are not listed
-//    at  all  unless  the client is a member of the channel in question.
-
-//    Numeric Replies:
-//    ERR_NOSUCHSERVER                RPL_LISTSTART
-//    RPL_LIST                        RPL_LISTEND
 
 
-
-/*	PRIVMSG	*/   // NOTICE
-//  Command: PRIVMSG Parameters: <receiver>{,<receiver>} <text to be sent>
-//   PRIVMSG is used to send private messages between users.  <receiver>
-//    is the nickname of the receiver of the message.  <receiver> can also
-//    be a list of names or channels separated with commas.
-//    ERR_NORECIPIENT                 ERR_NOTEXTTOSEND
-//    ERR_CANNOTSENDTOCHAN            ERR_NOTOPLEVEL
-//    ERR_WILDTOPLEVEL                ERR_TOOMANYTARGETS
-//    ERR_NOSUCHNICK
-//    RPL_AWAY
-
-//    The <receiver> parameter may also me a host mask  (#mask) In  both cases the server will only send the PRIVMSG
-//    to those who have a server or host matching the mask.  The mask  must have at  least  1  (one)  "."  
-//    in it and no wildcards following the last ".".  This requirement exists to prevent people sending messages
-//    to  "#*"  or "$*",  which  would  broadcast  to  all  users; from experience, this is abused more than 
-//    used responsibly and properly. Wildcards are  the  '*' and  '?'   characters.   This  extension  to
-//    the PRIVMSG command is only available to Operators.
+/*	PRIVMSG	*/
 
 /*
 Privmsg::Privmsg():Command()
@@ -385,7 +371,7 @@ int Quit::execute()
 		return 0;
 	}
 	// serv->user_leave_chan(_expeditor, _expeditor->getLocation(), true);
-	// Deja auto gerer
+	// Deja auto gerer, rajouter possibilite de mettre un message de depart, voir dans le parsing
 	return 0;
 }
 
@@ -414,9 +400,9 @@ Part::Part(server * serv):Command(serv)
 
 int Part::execute()
 {
+	//PARSING Issue : [PART #a :WeeChat 2.8] 
 	if (!_arg)
 	{
-
 		serv->send_replies(_expeditor, "PART :Not enough parameters", ERR_NEEDMOREPARAMS);
 		return 0;
 	}

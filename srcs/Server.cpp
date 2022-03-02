@@ -248,7 +248,7 @@ void	server::user_leave_chan(user * usr, const std::string & name, bool flag_del
 	for(it = channels[name]->getUsers().begin(); it != channels[name]->getUsers().end(); ++it)
 	{
 		if (usr->getNickname() != (*it)->getNickname())
-            send((*it)->getSock(), quit_msg.c_str(), quit_msg.length(), 0);
+		send((*it)->getSock(), quit_msg.c_str(), quit_msg.length(), 0);
 	}
 }
 
