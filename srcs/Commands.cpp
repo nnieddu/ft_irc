@@ -167,7 +167,7 @@ int	Join::execute()
 	if (name.find("#") && name.find("&") == std::string::npos && name.find("+") == std::string::npos 
 	&& name.find("!!") == std::string::npos) // A MODIFIER (check juste premier char)
 	{
-		serv->send_replies(_expeditor, "No such channel (need a chan mask : #)", ERR_BADCHANMASK);
+		serv->send_replies(_expeditor, "No such channel (need a chan mask)", ERR_BADCHANMASK);
 		return 1;
 	}
 	if (!_expeditor->isMember(name) && serv->channels.find(name) == serv->channels.end()
@@ -190,11 +190,13 @@ int	Join::execute()
 			usersInChan += (*it)->getNickname() + " ";
 			send((*it)->getSock(), msg.c_str(), msg.length(), 0);
 		}
+
 		msg = ":" + _expeditor->getNickname() + " JOIN :" + name + "\r\n";
 		send(_expeditor->getSock(), msg.c_str(), msg.length(), 0);
 		serv->send_replies(_expeditor, ":" + serv->channels[name]->getTopic(), RPL_TOPIC);
 		serv->send_replies(_expeditor, "= " + name + " :" + usersInChan, RPL_NAMREPLY);
 		serv->send_replies(_expeditor, name + " :End of names list", RPL_ENDOFNAMES);
+		_expeditor->join_channel(name, true);
 		serv->channels[name]->addUser(*_expeditor);
 		_expeditor->setLocation(name);
 	}

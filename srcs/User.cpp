@@ -60,7 +60,6 @@ void	user::demote(std::string & name)
 void	user::join_channel(std::string & name, bool op)
 {
 	_channels.insert(std::make_pair(name, op));
-	setLocation(name);		// /!\ locations related stuff
 }
 
 void	user::leave_channel(std::string & name)

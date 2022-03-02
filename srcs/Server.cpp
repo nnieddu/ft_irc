@@ -195,7 +195,10 @@ void	server::close_user(size_t index)
 void	server::remove_user_from(user * usr, const std::string & name)
 {
 	if (channels[name]->getUsers().find(usr) != channels[name]->getUsers().end())
+	{
+		user_leave_chan(usr, name);
 		channels[name]->removeUser(*usr);
+	}
 }
 
 void	server::remove_user_from_channels(user * usr)
@@ -234,16 +237,14 @@ void	server::send_replies(user *usr, std::string msg, const char* code)
 	send(usr->getSock(), replies.c_str(), replies.length(), 0);
 }
 
-void	server::actualise_users_in_chan(const std::string & name)
+void	server::user_leave_chan(user * usr, const std::string & name)
 {
 	std::set<user *>::iterator it;
-	std::string usersInChan;
-	for(it = channels[name]->getUsers().begin(); it != channels[name]->getUsers().end(); ++it)
-		usersInChan += (*it)->getNickname() + " ";
+	std::string test = ":" + usr->getNickname()+ " QUIT : disconnected\r\n";
 	for(it = channels[name]->getUsers().begin(); it != channels[name]->getUsers().end(); ++it)
 	{
-		send_replies(*it, "= " + name + " :" + usersInChan, RPL_NAMREPLY);
-		send_replies(*it, name + " :End of names list", RPL_ENDOFNAMES);
+		if (usr->getNickname() != (*it)->getNickname())
+            send((*it)->getSock(), test.c_str(), test.length(), 0);
 	}
 }
 
