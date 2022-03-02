@@ -270,7 +270,7 @@ int	server::send_msg_to_user(user * expeditor, user * dest, std::string & msg)
 
 int	server::send_msg_to_channel(user * expeditor, Channel * dest, std::string & msg)
 {
-	if (!dest)
+	if (!dest || expeditor->isMember(dest->getName()))
 		return 1;
 
 	std::set<user*>	userlist(dest->getUsers());
