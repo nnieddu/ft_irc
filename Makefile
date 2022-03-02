@@ -32,7 +32,7 @@ OBJ		=	$(addprefix $(OBJ_DIR),$(SRCS:.cpp=.o))
 all :
 	mkdir -p $(OBJ_DIR)
 	$(MAKE) $(NAME)
-	$(MAKE) runv
+	## $(MAKE) runv
 
 $(OBJ_DIR)%.o:$(SRCS_DIR)%.cpp $(INC)
 	$(COMP) $(CFLAGS) -c $< -o $@
