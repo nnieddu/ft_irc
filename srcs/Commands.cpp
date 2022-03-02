@@ -54,7 +54,7 @@ int Pass::execute()
 
 Nick::Nick():Command()
 {
-	_args[ARGUMENT].isNeeded = true;
+	_args[NICK].isNeeded = true;
 }
 
 Nick::~Nick() {}
@@ -68,12 +68,12 @@ Nick & Nick::operator=(const Nick & x)
 
 Nick::Nick(server * serv):Command(serv)
 {
-	_args[ARGUMENT].isNeeded = true;
+	_args[NICK].isNeeded = true;
 }
 
 int Nick::execute()
 {
-	std::string	*	arg = _args[ARGUMENT].arg;
+	std::string	*	arg = _args[NICK].arg;
 
 	if (!arg)
 	serv->send_replies(_expeditor, ":No nickname given", ERR_NONICKNAMEGIVEN);
@@ -93,10 +93,10 @@ int Nick::execute()
 }
 
 /*	USER	*/
-/*
+
 User::User():Command()
 {
-	_args[ARGUMENT].isNeeded = true;
+	_args[NICK].isNeeded = true;
 }
 
 User::~User(){}
@@ -110,17 +110,16 @@ User & User::operator=(const User & x)
 
 User::User(server * serv):Command(serv)
 {
-	_args[ARGUMENT].isNeeded = true;
+	_args[NICK].isNeeded = true;
 }
 
 int User::execute()
 {
 	// Parsing issue
-	std::string	*	arg = _args[ARGUMENT].arg;
+	std::string	*	arg = _args[NICK].arg;
 
 	if (!arg) 
 	{
-
 		serv->send_replies(_expeditor, "USER :Not enough parameters", ERR_NEEDMOREPARAMS);
 		return 0;
 	}
@@ -136,7 +135,8 @@ int User::execute()
 	// }
 	return 0;
 }
-*/
+
+
 /*	JOIN	*/
 
 Join::Join():Command()
@@ -220,7 +220,7 @@ int	Join::execute()
 
 List::List():Command()
 {
-	_args[ARGUMENT].isNeeded = true;
+	_args[CHANNEL].isNeeded = true;
 }
 
 List::~List(){}
@@ -234,12 +234,12 @@ List & List::operator=(const List & x)
 
 List::List(server * serv):Command(serv)
 {
-	_args[ARGUMENT].isNeeded = true;
+	_args[CHANNEL].isNeeded = true;
 }
 
 int List::execute()
 {
-	std::string	*	arg = _args[ARGUMENT].arg;
+	std::string	*	arg = _args[CHANNEL].arg;
 
 	std::string list_msg;
 	std::map<std::string, Channel*>::iterator it;
@@ -344,7 +344,7 @@ int Quit::execute()
 
 Part::Part():Command()
 {
-	_args[ARGUMENT].isNeeded = true;
+	_args[CHANNEL].isNeeded = true;
 }
 
 Part::~Part(){}
@@ -358,13 +358,13 @@ Part & Part::operator=(const Part & x)
 
 Part::Part(server * serv):Command(serv)
 {
-	_args[ARGUMENT].isNeeded = true;
+	_args[CHANNEL].isNeeded = true;
 }
 
 int Part::execute()
 {
 	//PARSING Issue : [PART #a :WeeChat 2.8]
-	std::string	*	arg = _args[ARGUMENT].arg;
+	std::string	*	arg = _args[CHANNEL].arg;
 
 	if (!arg)
 	{

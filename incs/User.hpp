@@ -35,6 +35,7 @@ class user
 		std::string	getNickname() const;
 		std::string	getUsername() const;
 		std::string	getPassword() const;
+		std::string	getHostname() const;
 		Socket		getSocket() const;
 		int			getSock() const;
 		bool		getisLogged() const;

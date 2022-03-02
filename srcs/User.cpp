@@ -11,6 +11,7 @@ user::~user() {}
 
 std::string	user::getNickname() const { return _nickname; }
 std::string	user::getUsername() const { return _username; }
+std::string	user::getHostname() const { return _hostname; }
 std::string	user::getPassword() const { return _password; }
 bool		user::getisLogged() const { return _isLogged; }
 int 		user::getSock() const { return _socket.fd; }

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   irc_defines.hpp                                    :+:      :+:    :+:   */
+/*   NumericReplies.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ninieddu <ninieddu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 00:05:38 by ninieddu          #+#    #+#             */
-/*   Updated: 2022/02/23 00:14:29 by ninieddu         ###   ########lyon.fr   */
+/*   Updated: 2022/03/02 14:26:56 by ninieddu         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,11 @@
 // #define RPL_CREATED "003"
 // #define RPL_MYINFO "004"
 // #define RPL_BOUNCE "005"
+// 001 	RPL_WELCOME 	RFC2812 	:Welcome to the Internet Relay Network <nick>!<user>@<host> 	
+// 002 	RPL_YOURHOST 	RFC2812 	:Your host is <servername>, running version <version> 	Part of the post-registration greeting. Text varies widely
+// 003 	RPL_CREATED 	RFC2812 	:This server was created <date> 	Part of the post-registration greeting. Text varies widely
+// 004 	RPL_MYINFO 	RFC2812 	<server_name> <version> <user_modes> <chan_modes> 	Part of the post-registration greeting 
+
 
 #define RPL_AWAY "301"
 #define RPL_LISTSTART "321"
