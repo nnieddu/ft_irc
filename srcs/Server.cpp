@@ -183,8 +183,8 @@ void	server::receive_data(size_t index)
 void	server::close_user(size_t index)
 {
 	std::vector<user*>::iterator it = (_users.begin() + (index - 1));
-	std::cout << (*it)->getNickname() << " deconnexion" << std::endl;
 	remove_user_from_channels(*it);
+	std::cout << (*it)->getNickname() << " deconnexion" << std::endl;
 	delete *it;
 	close(_fds[index].fd);
 	_fds.erase(_fds.begin() + index);
