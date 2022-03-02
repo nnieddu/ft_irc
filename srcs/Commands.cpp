@@ -39,7 +39,6 @@ int Pass::execute()
 	else if (_arg->compare(serv->getPassword()) != 0)
 	{
 		serv->send_replies(_expeditor, ":Password incorrect", ERR_PASSWDMISMATCH); // pas dans la rfc au loggin maybe a remove
-		_expeditor->setLogged(false);
 		return -1;
 	}
 	if (_expeditor->getisLogged() == false)
@@ -82,8 +81,8 @@ int Nick::execute()
 		_expeditor->setNickname(*_arg);
 		return 0;
 	}
-	// else
-	// 	serv->send_replies(_expeditor, NULL, ERR_NICKNAMEINUSE); // CAUSE UN SEGFAULT NOW
+	else
+		serv->send_replies(_expeditor, *_arg + " :Nickname is already in use", ERR_NICKNAMEINUSE);
 
 	// ERR_ERRONEUSNICKNAME if non conforme 'anonymous' ou char spe voir grammar protocol d'apres rfc
 	// ERR_NICKCOLLISION osef ?
@@ -115,11 +114,21 @@ int User::execute()
 {
 	if (!_arg)
 	{
+
 		serv->send_replies(_expeditor, "USER :Not enough parameters", ERR_NEEDMOREPARAMS);
 		return 0;
 	}
-	if (_expeditor->getisLogged() == true)
-		serv->send_replies(_expeditor, ":You may not reregister", ERR_ALREADYREGISTRED);
+	// if (_expeditor->getisLogged() == true)
+	// 	serv->send_replies(_expeditor, ":You may not reregister", ERR_ALREADYREGISTRED);
+	// if (_expeditor->getisLogged() == true) // le parsing bloque
+	// {
+	// 	std::cout << "USERGOOD\n";
+
+	// 	std::string prefix = ":" + _expeditor->getUsername();
+	// 	std::string logged = prefix +  " " + RPL_WELCOME + " " + _expeditor->getUsername() + \
+	// 		" Welcome to the Internet Relay Network :" + _expeditor->getUsername() + "\r\n";
+	// 	send(_expeditor->getSock(), logged.c_str(), logged.length(), 0);		
+	// }
 	return 0;
 }
 
@@ -170,7 +179,7 @@ int	Join::execute()
 		_expeditor->setLocation(name);
 
 	}
-	else if (_expeditor->getisLogged() && _expeditor->getLocation(name) == false)
+	else if (_expeditor->getisLogged() && _expeditor->getLocation() != name)
 	{
 		std::string msg;
 		std::string usersInChan;
@@ -183,7 +192,7 @@ int	Join::execute()
 		}
 		msg = ":" + _expeditor->getNickname() + " JOIN :" + name + "\r\n";
 		send(_expeditor->getSock(), msg.c_str(), msg.length(), 0);
-		//send_replies(_expeditor, "", RPL_TOPIC); retourner topic ici
+		serv->send_replies(_expeditor, ":" + serv->channels[name]->getTopic(), RPL_TOPIC);
 		serv->send_replies(_expeditor, "= " + name + " :" + usersInChan, RPL_NAMREPLY);
 		serv->send_replies(_expeditor, name + " :End of names list", RPL_ENDOFNAMES);
 		serv->channels[name]->addUser(*_expeditor);

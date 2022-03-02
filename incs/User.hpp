@@ -38,22 +38,19 @@ class user
 		Socket		getSocket() const;
 		int			getSock() const;
 		bool		getisLogged() const;
-		bool		getLocation(std::string chan) const;
+		std::string	getLocation() const;
+		std::map<std::string, bool>	getChannels() const;
 
 		void		setPassword(std::string psw);
 		void		setNickname(std::string nick);
 		void		setLogged(bool log);
-		// void		setOperator(bool log);
-
-		std::map<std::string, bool>	getChannels() const;
+		void		setLocation(std::string & name);
 
 		bool		isOperator(std::string & name) const;
 		void		promote(std::string & name);
 		void		demote(std::string & name);
-
 		void		join_channel(std::string & name, bool op);
 		void		leave_channel(std::string & name);
-		void		setLocation(std::string & name);
 		bool		isMember(std::string & name) const;
 
 };

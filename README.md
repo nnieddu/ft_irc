@@ -118,6 +118,9 @@ The commands which may only be used by channel operators are:
 - implementer les modes selon la rfc 4.2.3.2 a 4.2.3.1 
 - check tous ce qui peu etre passe en const et private
 
+Probleme avec NICK (set pas directement le nom tt le temp)
+
+
 Parsing :
 - JOIN un channel avec espace tronque le nom ex "JOIN #chan el" donne "chan" sur weechat
 (weechat parse tous seul linput user mais on doit le parser dans notre stockage)

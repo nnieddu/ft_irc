@@ -32,12 +32,12 @@ server::~server()
 		delete itc->second;
 }
 
-int 		server::getSock() const { return _socket.fd; }
-std::string server::getName() const { return _name; }
-std::string server::getPassword() const { return _password; }
+int 				server::getSock() const { return _socket.fd; }
+std::string 		server::getName() const { return _name; }
+std::string 		server::getPassword() const { return _password; }
 std::vector<user*>	server::getUsers() const { return _users; }
 
-user *		server::getUser(std::string & nickname)
+user *				server::getUser(std::string & nickname)
 {
 	for (std::vector<user*>::iterator it = _users.begin(); it != _users.end(); it++)
 	{
@@ -104,7 +104,7 @@ int	server::run()
 					accept_user();
 				else
 					receive_data(index);
-			}								// /!\ revent_error ?
+			}							// /!\ revent_error ?
 		}
 	}
 	return(0);
@@ -140,7 +140,6 @@ void server::accept_user()
 	user *new_user = new user(hostname, nick.str(), "username", Socket(new_pollfd.fd, address, len), false);
 	_users.push_back(new_user);
 	_fds.push_back(new_pollfd);
-
 }
 
 void	server::receive_data(size_t index)
@@ -158,7 +157,7 @@ void	server::receive_data(size_t index)
 		return ;
 	}
 
-	if (ret > 512) 
+	if (ret >= 512) 
 	{
 		std::cerr << "Too long message" << std::endl; // a test et voir si une replies vas bien
 		_users[index - 1]->buf.clear();
@@ -184,7 +183,8 @@ void	server::receive_data(size_t index)
 void	server::close_user(size_t index)
 {
 	std::vector<user*>::iterator it = (_users.begin() + (index - 1));
-	std::cout << (*it)->getNickname() << " deconnexion" << std::endl; //to remove
+	std::cout << (*it)->getNickname() << " deconnexion" << std::endl;
+	remove_user_from_channels(*it);
 	delete *it;
 	close(_fds[index].fd);
 	_fds.erase(_fds.begin() + index);
@@ -206,6 +206,7 @@ void	server::remove_user_from_channels(user * usr)
 		std::cout << usr->getNickname() << " leaving channel : " << name << std::endl;
 		remove_user_from(usr, name);
 		usr->leave_channel(name);
+
 		if (channels[name]->getUsers().empty())		// <-- remove channel if its users vector is empty
 		{	
 			delete channels[name];
@@ -233,7 +234,7 @@ void	server::send_replies(user *usr, std::string msg, const char* code)
 	send(usr->getSock(), replies.c_str(), replies.length(), 0);
 }
 
-void	server::actualise_users_in_chan(std::string & name)
+void	server::actualise_users_in_chan(const std::string & name)
 {
 	std::set<user *>::iterator it;
 	std::string usersInChan;

@@ -37,10 +37,6 @@ topic("No topic set for channel "), password("password"), limit_user(0), chanCre
 		}
 		name = newName.substr(1);
 	}
-	// else {
-		// std::cerr << "this is a test" << std::endl;
-		// throw std::exception(); //TODO:: need to be modified
-	// }
 	topic = topic + name[0] + id + name.substr(1);
 }
 

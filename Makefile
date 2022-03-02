@@ -1,14 +1,3 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: ninieddu <ninieddu@student.42lyon.fr>      +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2022/02/22 17:20:49 by ninieddu          #+#    #+#              #
-#   Updated: 2022/02/28 16:47:01 by mrozniec         ###   ########.fr       # #
-#                                                                              #
-# **************************************************************************** #
 
 NAME	=	ircserv
 
@@ -43,7 +32,7 @@ OBJ		=	$(addprefix $(OBJ_DIR),$(SRCS:.cpp=.o))
 all :
 	mkdir -p $(OBJ_DIR)
 	$(MAKE) $(NAME)
-##	$(MAKE) runv
+	$(MAKE) runv
 
 $(OBJ_DIR)%.o:$(SRCS_DIR)%.cpp $(INC)
 	$(COMP) $(CFLAGS) -c $< -o $@
@@ -52,7 +41,7 @@ $(NAME) : $(OBJ) $(INCS)
 	$(COMP) $(FLAG) $(OBJ) -o $(NAME)
 
 runv : $(NAME)
-	valgrind --leak-check=full ./$(NAME) 7005 password
+	valgrind --leak-check=full -s ./$(NAME) 7005 password
 #| cat -e
 
 clean :
