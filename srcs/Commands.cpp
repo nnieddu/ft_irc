@@ -268,7 +268,7 @@ int List::execute()
 
 Ping::Ping():Command()
 {
-	_args[MESSAGE].isNeeded = true;
+	_args[HOSTNAME].isNeeded = true;
 }
 
 Ping::~Ping(){}
@@ -282,12 +282,12 @@ Ping & Ping::operator=(const Ping & x)
 
 Ping::Ping(server * serv):Command(serv)
 {
-	_args[MESSAGE].isNeeded = true;
+	_args[HOSTNAME].isNeeded = true;
 }
 
 int Ping::execute()
 {
-	std::string	*	arg = _args[MESSAGE].arg;
+	std::string	*	arg = _args[HOSTNAME].arg;
 
 	if (!arg)
 		serv->send_replies(_expeditor, ":No origin specified", ERR_NOORIGIN);

@@ -7,6 +7,7 @@
 
 #define RECEIVER	0
 #define NICK		1
+#define HOSTNAME	1
 #define CHANNEL		2
 #define USER		4
 #define MESSAGE		5
