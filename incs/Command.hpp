@@ -1,27 +1,33 @@
 #pragma once
 
 #include <map>
+#include <deque>
 
 #include "User.hpp"
 
+#define RECEIVER	0
+#define NICK		1
+#define CHANNEL		2
+#define USER		4
+#define ARGUMENT	5
+
 class server;
+
+struct	Argument
+{
+	std::string *				arg;
+	bool						isNeeded;
+	std::deque<std::string>		parseList();
+};
 
 class Command
 {
 	protected:
 		Command(const Command& x);
 
-		user *			_expeditor;
-		std::string *	_receiver;
-		std::string *	_nick;
-		std::string *	_channel;
-		std::string *	_user;
-		std::string *	_arg;
-		bool			_rcv;
-		bool			_nck;
-		bool			_chan;
-		bool			_usr;
-		bool			_argument;
+		user *					_expeditor;
+		std::map<int, Argument>	_args;
+
 		int				_reply;
 
 	public:

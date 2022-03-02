@@ -1,37 +1,38 @@
 #include "../incs/Command.hpp"
 #include "../incs/Server.hpp"
 
-#include <stdlib.h>
+#include <map>
+#include <deque>
 
-Command::Command() {}/*
-:
-	serv(serv),
-	_receiver(NULL),
-	_nick(NULL),
-	_channel(NULL),
-	_user(NULL),
-	_arg(NULL),
-	_rcv(false),
-	_nck(false),
-	_chan(false),
-	_usr(false),
-	_argument(false)
-{}*/
+#include <cstdlib>	// /!\ <*.h>
 
-Command::Command(server * serv)
-:
-	serv(serv),
-	_receiver(NULL),
-	_nick(NULL),
-	_channel(NULL),
-	_user(NULL),
-	_arg(NULL),
-	_rcv(false),
-	_nck(false),
-	_chan(false),
-	_usr(false),
-	_argument(false)
-{}
+std::deque<std::string>		Argument::parseList()
+{
+	std::deque<std::string>	lst;
+	size_t					index_bis = 0;
+
+	for(size_t index = 0; index < arg->size(); index++)
+	{
+		if ((*arg)[index] == ',')
+		{
+			lst.push_back(std::string().assign(arg->begin() + index_bis, arg->begin() + index));
+			index_bis = index + 1;
+		}
+	}
+	lst.push_back(std::string().assign(arg->begin() + index_bis, arg->end()));
+	return lst;
+}
+
+Command::Command() {}
+
+Command::Command(server * serv):serv(serv)
+{
+	for (size_t elem = 0; elem <= ARGUMENT; elem++)
+	{
+		_args[elem].arg = NULL;
+		_args[elem].isNeeded = false;
+	}
+}
 
 Command &	Command::operator=(const Command & x)
 {
@@ -42,16 +43,11 @@ Command &	Command::operator=(const Command & x)
 
 Command::~Command()
 {
-	if (_receiver)
-		delete _receiver;
-	if (_nick)
-		delete _nick;
-	if (_channel)
-		delete _channel;
-	if (_user)
-		delete _user;
-	if (_arg)
-		delete _arg;
+	for (size_t val = 0; val <= ARGUMENT; val++)
+	{
+		if (_args[val].arg)
+			delete _args[val].arg;
+	}
 }
 
 int	Command::execute() { return 0; }
@@ -63,56 +59,36 @@ void	Command::setExpeditor(user * expeditor)
 
 void	Command::setArgs(std::vector<std::string *> args)
 {
-	std::string *	new_ptr;
-
-	while (args.empty() == false)
+	for (size_t val = 0; args.empty(); val++)
 	{
-		new_ptr = args[0];
-
-		if (!_receiver && _rcv)
-			_receiver = new_ptr;
-		else if (!_nick && _nck)
-			_nick = new_ptr;
-		else if (!_channel && _chan)
-			_channel = new_ptr;
-		else if (!_user && _usr)
-			_user = new_ptr;
-		else if (!_arg && _argument)
-			_arg = new_ptr;
-
-		args.erase(args.begin());
+		if (_args[val].isNeeded)
+		{
+			_args[val].arg = args[0];
+			args.erase(args.begin());
+		}
 	}
 }
 
 int	Command::getReply() const{ return _reply; }
 
-bool	Command::needReceiver() const{ return _rcv; }
+bool	Command::needReceiver() const { return _args.find(RECEIVER)->second.isNeeded; }
 
-bool	Command::needNick() const{ return _nck; }
+bool	Command::needNick() const { return _args.find(NICK)->second.isNeeded; }
 
-bool	Command::needChannel() const{ return _chan; }
+bool	Command::needChannel() const { return _args.find(CHANNEL)->second.isNeeded; }
 
-bool	Command::needUser() const{ return _usr; }
+bool	Command::needUser() const { return _args.find(USER)->second.isNeeded; }
 
-bool	Command::needArg() const{ return _argument; }
+bool	Command::needArg() const { return _args.find(ARGUMENT)->second.isNeeded; }
 
 void	Command::reset()
 {
-	if (_receiver)
-		delete _receiver;
-	if (_nick)
-		delete _nick;
-	if (_channel)
-		delete _channel;
-	if (_user)
-		delete _user;
-	if (_arg)
-		delete _arg;
-
-	_receiver	= NULL;
-	_expeditor	= NULL;
-	_nick		= NULL;
-	_channel	= NULL;
-	_arg		= NULL;
-	_channel	= NULL;
+	for (size_t val = 0; val <= ARGUMENT; val++)
+	{
+		if (_args[val].arg)
+		{
+			delete _args[val].arg;
+			_args[val].arg = NULL;
+		}
+	}
 }

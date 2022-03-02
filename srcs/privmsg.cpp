@@ -7,8 +7,8 @@
 
 Privmsg::Privmsg():Command()
 {
-	_rcv = true;
-	_argument = true;
+	_args[RECEIVER].isNeeded	= true;
+	_args[ARGUMENT].isNeeded	= true;
 }
 
 Privmsg::~Privmsg() {}
@@ -22,37 +22,29 @@ Privmsg & Privmsg::operator=(const Privmsg & x)
 
 Privmsg::Privmsg(server * serv):Command(serv)
 {
-	_rcv = true;
-	_argument = true;
+	_args[RECEIVER].isNeeded	= true;
+	_args[ARGUMENT].isNeeded	= true;
 }
 
 int Privmsg::execute()
 {
-	std::vector<std::string>	list;
-	int							mode;
+	std::string	*	receiver = _args[RECEIVER].arg;
+	std::string	*	arg = _args[ARGUMENT].arg;
+	std::deque<std::string>	list;
+	int						mode;
 
-	if (!_receiver)
+	if (!receiver)
 	{
 		serv->send_replies(_expeditor, "PRIVMSG :No receiver specified", ERR_NORECIPIENT);
 		return -1;
 	}
-	if (!_arg)
+	if (!arg)
 	{
 		serv->send_replies(_expeditor, "PRIVMSG :No text to send", ERR_NOTEXTTOSEND);
 		return -1;
 	}
 
-	size_t	index_bis = 0;
-
-	for(size_t index = 0; index < _receiver->size(); index++)
-	{
-		if ((*_receiver)[index] == ',')
-		{
-			list.push_back(std::string().assign(_receiver->begin() + index_bis, _receiver->begin() + index));
-			index_bis = index + 1;
-		}
-	}
-	list.push_back(std::string().assign(_receiver->begin() + index_bis, _receiver->end()));
+	list = _args[RECEIVER].parseList();
 
 	if (serv->isUser(list[0]))
 		mode = 0;
@@ -62,12 +54,12 @@ int Privmsg::execute()
 	{
 		if (mode == 0)
 		{
-			if (serv->send_msg_to_user(_expeditor, serv->getUser(list[0]), *_arg))
+			if (serv->send_msg_to_user(_expeditor, serv->getUser(list[0]), *arg))
 				serv->send_replies(_expeditor, "PRIVMSG :No such nick", ERR_NOSUCHNICK);
 		}
 		else if (mode == 1)
 		{
-			if (serv->send_msg_to_channel(_expeditor, serv->getChannel(list[0]), *_arg))
+			if (serv->send_msg_to_channel(_expeditor, serv->getChannel(list[0]), *arg))
 				serv->send_replies(_expeditor, "PRIVMSG :cannot send to channel", ERR_CANNOTSENDTOCHAN);
 		}
 		list.erase(list.begin());

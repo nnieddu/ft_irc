@@ -10,7 +10,7 @@
 
 Pass::Pass():Command()
 {
-	_argument = true;
+	_args[ARGUMENT].isNeeded = true;
 }
 
 Pass::~Pass() {}
@@ -24,26 +24,27 @@ Pass & Pass::operator=(const Pass & x)
 
 Pass::Pass(server * serv):Command(serv)
 {
-	_argument = true;
+	_args[ARGUMENT].isNeeded = true;
 }
 
 int Pass::execute()
 {
+	std::string	*	arg = _args[ARGUMENT].arg;
 	// if (usr->isRegister == true) // voir si on garde un historic pas sur de capter voir 4.1.1
 	// 	 serv->send_replies(usr, NULL, ERR_ALREADYREGISTRED);
-	if (!_arg)
+	if (!arg)
 	{
 		serv->send_replies(_expeditor, "PASS :Not enough parameters", ERR_NEEDMOREPARAMS);
 		return -1;
 	}
-	else if (_arg->compare(serv->getPassword()) != 0)
+	else if (arg->compare(serv->getPassword()) != 0)
 	{
 		serv->send_replies(_expeditor, ":Password incorrect", ERR_PASSWDMISMATCH); // pas dans la rfc au loggin maybe a remove
 		return -1;
 	}
 	if (_expeditor->getisLogged() == false)
 	{
-		_expeditor->setPassword(*_arg);
+		_expeditor->setPassword(*arg);
 		_expeditor->setLogged(true);
 	}
 	return 0;
@@ -53,7 +54,7 @@ int Pass::execute()
 
 Nick::Nick():Command()
 {
-	_argument = true;
+	_args[ARGUMENT].isNeeded = true;
 }
 
 Nick::~Nick() {}
@@ -67,22 +68,24 @@ Nick & Nick::operator=(const Nick & x)
 
 Nick::Nick(server * serv):Command(serv)
 {
-	_argument = true;
+	_args[ARGUMENT].isNeeded = true;
 }
 
 int Nick::execute()
 {
-	if (!_arg)
+	std::string	*	arg = _args[ARGUMENT].arg;
+
+	if (!arg)
 	serv->send_replies(_expeditor, ":No nickname given", ERR_NONICKNAMEGIVEN);
-	if (serv->isUser(*_arg) == false)
+	if (serv->isUser(*arg) == false)
 	{
-		std::string str = ":" + _expeditor->getNickname() + " NICK " + ":" + *_arg + "\r\n";
+		std::string str = ":" + _expeditor->getNickname() + " NICK " + ":" + *arg + "\r\n";
 	    send(_expeditor->getSock(), str.c_str(), strlen(str.c_str()), 0);
-		_expeditor->setNickname(*_arg);
+		_expeditor->setNickname(*arg);
 		return 0;
 	}
 	else
-		serv->send_replies(_expeditor, *_arg + " :Nickname is already in use", ERR_NICKNAMEINUSE);
+		serv->send_replies(_expeditor, *arg + " :Nickname is already in use", ERR_NICKNAMEINUSE);
 
 	// ERR_ERRONEUSNICKNAME if non conforme 'anonymous' ou char spe voir grammar protocol d'apres rfc
 	// ERR_NICKCOLLISION osef ?
@@ -93,7 +96,7 @@ int Nick::execute()
 /*
 User::User():Command()
 {
-	_argument = true;
+	_args[ARGUMENT].isNeeded = true;
 }
 
 User::~User(){}
@@ -107,13 +110,15 @@ User & User::operator=(const User & x)
 
 User::User(server * serv):Command(serv)
 {
-	_argument = true;
+	_args[ARGUMENT].isNeeded = true;
 }
 
 int User::execute()
 {
-	// Parsing issue 
-	if (!_arg) 
+	// Parsing issue
+	std::string	*	arg = _args[ARGUMENT].arg;
+
+	if (!arg) 
 	{
 
 		serv->send_replies(_expeditor, "USER :Not enough parameters", ERR_NEEDMOREPARAMS);
@@ -136,8 +141,7 @@ int User::execute()
 
 Join::Join():Command()
 {
-	// _argument = true;
-	_chan = true;
+	_args[CHANNEL].isNeeded = true;
 }
 
 Join::~Join(){}
@@ -151,19 +155,20 @@ Join & Join::operator=(const Join & x)
 
 Join::Join(server * serv):Command(serv)
 {
-	// _argument = true;
-	_chan = true;
+	_args[CHANNEL].isNeeded = true;
 }
 
 
 int	Join::execute()
 {
-	if (!_channel)
+	std::string	*	channel = _args[CHANNEL].arg;
+
+	if (!channel)
 	{
 		serv->send_replies(_expeditor, "JOIN :Not enough parameters", ERR_NEEDMOREPARAMS);
 		return 1;
 	}
-	std::string	name(*_channel);
+	std::string	name(*channel);
 
 	if (name.find("#") && name.find("&") == std::string::npos && name.find("+") == std::string::npos 
 	&& name.find("!!") == std::string::npos) // A MODIFIER (check juste premier char)
@@ -215,7 +220,7 @@ int	Join::execute()
 
 List::List():Command()
 {
-	_argument = true;
+	_args[ARGUMENT].isNeeded = true;
 }
 
 List::~List(){}
@@ -229,15 +234,17 @@ List & List::operator=(const List & x)
 
 List::List(server * serv):Command(serv)
 {
-	_argument = true;
+	_args[ARGUMENT].isNeeded = true;
 }
 
 int List::execute()
 {
+	std::string	*	arg = _args[ARGUMENT].arg;
+
 	std::string list_msg;
 	std::map<std::string, Channel*>::iterator it;
 	serv->send_replies(_expeditor, "Channel :Users  Name", RPL_LISTSTART);
-	if (!_arg)
+	if (!arg)
 	{
 		for (it = serv->channels.begin(); it != serv->channels.end(); ++it)
 		{
@@ -247,9 +254,9 @@ int List::execute()
 	}
 	if (serv->channels.empty() == true)
 		serv->send_replies(_expeditor, ":End of /LIST", RPL_LISTEND);
-	if (_arg && (serv->channels.find(*_arg) != serv->channels.end()))
+	if (arg && (serv->channels.find(*arg) != serv->channels.end()))
 	{
-		it = serv->channels.find(*_arg);
+		it = serv->channels.find(*arg);
 		serv->send_replies(_expeditor, it->first + " <# visible> :" + it->second->getTopic() , RPL_LIST);
 	}
 	serv->send_replies(_expeditor, ":End of /LIST", RPL_LISTEND);
@@ -257,59 +264,11 @@ int List::execute()
 	return 0;
 }
 
-
-/*	PRIVMSG	*/
-
-/*
-Privmsg::Privmsg():Command()
-{
-	_argument = true;
-	_chan = true;
-}
-
-Privmsg::~Privmsg(){}
-
-Privmsg & Privmsg::operator=(const Privmsg & x)
-{
-	if (this != &x)
-		serv = x.serv;
-	return *this;
-}
-
-Privmsg::Privmsg(server * serv):Command(serv)
-{
-	_argument = true;
-	_chan = true;
-}
-
-int Privmsg::execute()
-{
-	if (!_arg)
-	{
-		serv->send_replies(_expeditor, ":No text to send", ERR_NOTEXTTOSEND);
-		// serv->send_replies(_expeditor, ":No recipient given PRIVMSG", ERR_NORECIPIENT);
-	}
-	// if (_expeditor.getIsOperator() == false)
-	// 	serv->send_replies(_expeditor, "<mask> :Wildcard in toplevel domain", ERR_WILDTOPLEVEL);
-
-	// if (_arg->compare(serv->getName()) != 0)
-	// 	serv->send_replies(_expeditor, serv->getName() + ":No such server", ERR_NOSUCHSERVER);
-	// else
-	// {
-	// 	std::string reply = (":" + _expeditor->getUsername() + " PONG " + serv->getName() + " \r\n");
-	// 	send(_expeditor->getSock(), reply.c_str(), reply.length(), 0);
-	// 	return 0;
-	// }
-	return 0;
-}
-*/
-
-
 /*	PING	*/
 
 Ping::Ping():Command()
 {
-	_argument = true;
+	_args[ARGUMENT].isNeeded = true;
 }
 
 Ping::~Ping(){}
@@ -323,14 +282,16 @@ Ping & Ping::operator=(const Ping & x)
 
 Ping::Ping(server * serv):Command(serv)
 {
-	_argument = true;
+	_args[ARGUMENT].isNeeded = true;
 }
 
 int Ping::execute()
 {
-	if (!_arg)
+	std::string	*	arg = _args[ARGUMENT].arg;
+
+	if (!arg)
 		serv->send_replies(_expeditor, ":No origin specified", ERR_NOORIGIN);
-	if (_arg->compare(serv->getName()) != 0)
+	if (arg->compare(serv->getName()) != 0)
 		serv->send_replies(_expeditor, serv->getName() + ":No such server", ERR_NOSUCHSERVER);
 	else
 	{
@@ -346,7 +307,7 @@ int Ping::execute()
 
 Quit::Quit():Command()
 {
-	_argument = true;
+	_args[ARGUMENT].isNeeded = true;
 }
 
 Quit::~Quit(){}
@@ -360,14 +321,15 @@ Quit & Quit::operator=(const Quit & x)
 
 Quit::Quit(server * serv):Command(serv)
 {
-	_argument = true;
+	_args[ARGUMENT].isNeeded = true;
 }
 
 int Quit::execute()
 {
-	if (!_arg)
-	{
+	std::string	*	arg = _args[ARGUMENT].arg;
 
+	if (!arg)
+	{
 		serv->send_replies(_expeditor, "QUIT :Not enough parameters", ERR_NEEDMOREPARAMS);
 		return 0;
 	}
@@ -382,7 +344,7 @@ int Quit::execute()
 
 Part::Part():Command()
 {
-	_argument = true;
+	_args[ARGUMENT].isNeeded = true;
 }
 
 Part::~Part(){}
@@ -396,27 +358,29 @@ Part & Part::operator=(const Part & x)
 
 Part::Part(server * serv):Command(serv)
 {
-	_argument = true;
+	_args[ARGUMENT].isNeeded = true;
 }
 
 int Part::execute()
 {
-	//PARSING Issue : [PART #a :WeeChat 2.8] 
-	if (!_arg)
+	//PARSING Issue : [PART #a :WeeChat 2.8]
+	std::string	*	arg = _args[ARGUMENT].arg;
+
+	if (!arg)
 	{
 		serv->send_replies(_expeditor, "PART :Not enough parameters", ERR_NEEDMOREPARAMS);
 		return 0;
 	}
-	if (_expeditor->getLocation() != *_arg)
+	if (_expeditor->getLocation() != *arg)
 	{
 
-		serv->send_replies(_expeditor, *_arg + " :You're not on that channel", ERR_NOTONCHANNEL);
+		serv->send_replies(_expeditor, *arg + " :You're not on that channel", ERR_NOTONCHANNEL);
 		return 0;
 	}
-	if (serv->channels.find(*_arg) != serv->channels.end())
+	if (serv->channels.find(*arg) != serv->channels.end())
 	{
 
-		serv->send_replies(_expeditor, *_arg + ":No such channel", ERR_NOSUCHCHANNEL);
+		serv->send_replies(_expeditor, *arg + ":No such channel", ERR_NOSUCHCHANNEL);
 		return 0;
 	}		
 	serv->user_leave_chan(_expeditor, _expeditor->getLocation(), false);
