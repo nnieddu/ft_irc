@@ -417,9 +417,21 @@ int Part::execute()
 	if (!_arg)
 	{
 
-		serv->send_replies(_expeditor, "Part :Not enough parameters", ERR_NEEDMOREPARAMS);
+		serv->send_replies(_expeditor, "PART :Not enough parameters", ERR_NEEDMOREPARAMS);
 		return 0;
 	}
+	if (_expeditor->getLocation() != *_arg)
+	{
+
+		serv->send_replies(_expeditor, *_arg + " :You're not on that channel", ERR_NOTONCHANNEL);
+		return 0;
+	}
+	if (serv->channels.find(*_arg) != serv->channels.end())
+	{
+
+		serv->send_replies(_expeditor, *_arg + ":No such channel", ERR_NOSUCHCHANNEL);
+		return 0;
+	}		
 	serv->user_leave_chan(_expeditor, _expeditor->getLocation(), false);
 	return 0;
 }
