@@ -38,13 +38,13 @@ $(OBJ_DIR)%.o:$(SRCS_DIR)%.cpp $(INC)
 $(NAME) : $(OBJ) $(INCS)
 	$(COMP) $(FLAG) $(OBJ) -o $(NAME)
 
-run : $(NAME)
+run : all
 	./$(NAME) 7005 password
 
-runl : $(NAME)
+runl : all
 	leaks -atExit -- ./$(NAME) 7005 password
 
-runv : $(NAME)
+runv : all
 	valgrind --leak-check=full ./$(NAME) 7005 password
 
 clean :

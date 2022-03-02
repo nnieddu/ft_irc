@@ -4,7 +4,7 @@
 #include <map>
 #include <deque>
 
-#include <cstdlib>	// /!\ <*.h>
+#include <cstdlib>
 
 std::deque<std::string>		Argument::parseList()
 {
@@ -59,7 +59,7 @@ void	Command::setExpeditor(user * expeditor)
 
 void	Command::setArgs(std::vector<std::string *> args)
 {
-	for (size_t val = 0; args.empty(); val++)
+	for (size_t val = 0; !(args.empty()); val++)
 	{
 		if (_args[val].isNeeded)
 		{
