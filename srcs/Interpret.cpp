@@ -52,7 +52,7 @@ int Interpret::launch(user & usr)
 
 	int ret = 0;
 	
-	while (usr.buf.empty() == false && (usr.buf.find('\r') && ret == 0))
+	while (!(usr.buf.empty()) && (usr.buf.find('\r') || usr.buf.find('\n')))
 	{
 		_iseoc = false;
 
@@ -106,9 +106,7 @@ int	Interpret::cmd_not_found(user & usr)
 {
 	std::string::iterator	it(usr.buf.begin());
 
-	while (it != usr.buf.end() && *it != '\r' && *it != '\n')		// tel quel : fait sortir de la boucle
-		it++;														// quoi qu'il arrive, peut etre
-	usr.buf.erase(usr.buf.begin(), it);								// a changer si il y a plusieurs EOC
+	clearLeftover(&usr.buf);
 	std::cerr << "Command not found" << std::endl; // pass tt le temps par la 
 	return 1;
 }
@@ -213,5 +211,6 @@ void	Interpret::clearLeftover(std::string * buf)
 	while (it != buf->end() && *it != '\r' && *it != '\n')
 		it++;
 	if (it != buf->end())
-	 	buf->erase(buf->begin(), ++it);
+	 	it++;
+	buf->erase(buf->begin(), ++it);
 }
