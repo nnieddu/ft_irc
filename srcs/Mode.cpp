@@ -196,7 +196,7 @@ int Mode::modeUser(user& usr, std::string &mod, std::string &arg) {
 				target->setWallOp();
 		}
 		else if (mod[0] == 'r') {
-			if (!addRule)
+			if (!addRule && target != _expeditor)
 				target->delRestrict();
 			else
 				target->setRestrict();
