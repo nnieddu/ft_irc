@@ -18,7 +18,7 @@ class user
 		bool						_isLogged;
 		Socket						_socket;
 
-		std::map<std::string, bool>	_channels;
+		std::map<std::string, unsigned int>	_channels;
 		std::string					_location;
 
 		user();
@@ -40,7 +40,7 @@ class user
 		int			getSock() const;
 		bool		getisLogged() const;
 		std::string	getLocation() const;
-		std::map<std::string, bool>	getChannels() const;
+		std::map<std::string, unsigned int>	getChannels() const;
 
 		void		setPassword(std::string psw);
 		void		setNickname(std::string nick);

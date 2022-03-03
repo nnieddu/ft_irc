@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../incs/Channel.hpp"
+#include "../incs/Server.hpp"
 
 Channel::Channel(user &users, std::string &newName) : users(), name(), id(),
 topic("No topic set for channel "), password("password"), limit_user(0), chanCrea(NULL) {

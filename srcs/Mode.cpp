@@ -58,7 +58,7 @@ int Mode::modeChan(Channel& chan, std::string &mod, std::string &arg) {
 					temp.erase(0, temp.find_first_of(" \n\r", 0));
 				}
 				num_o_b++;
-			}
+			}/*
 			else if (mod[0] == 'b' && num_o_b < 3) {
 				if (!addRule)
 					chan.removeMod(b);
@@ -68,7 +68,7 @@ int Mode::modeChan(Channel& chan, std::string &mod, std::string &arg) {
 					temp.erase(0, temp.find_first_of(" \n\r", 0));
 				}
 				num_o_b++;
-			}
+			}*/
 			else if (mod[0] == 'k') {
 				if (!addRule)
 					chan.removeMod(k);
@@ -89,7 +89,7 @@ int Mode::modeChan(Channel& chan, std::string &mod, std::string &arg) {
 						chan.setMod(a);
 				}
 				else
-					std::cerr << "TODO this case Mode.cpp";//TODO NOT ENOUGH PERMISSION
+					std::cerr << "TODO this case Mode.cpp";//TODO NOT ENOUGH PERMISSION OR NOT AVAILABLE FOR THIS CHANNEL
 			}
 			else if (mod[0] == 'i') {
 				if (!addRule)
@@ -128,14 +128,15 @@ int Mode::modeChan(Channel& chan, std::string &mod, std::string &arg) {
 					chan.setMod(s);
 			}
 			else if (mod[0] == 'r') {
-				if (_expeditor == &chan.getChanCrea() && chan.getName()[0])
-					std::cout << "TODO";
-				//TODO
-				if (!addRule)
-					chan.removeMod(r);
+				if (_expeditor == &chan.getChanCrea() && chan.getName()[0] == '!') {
+					if (!addRule)
+						chan.removeMod(r);
+					else
+						chan.setMod(r);
+				}
 				else
-					chan.setMod(r);
-			}
+					std::cerr << "TODO message d' error pour Mode r" << std::endl;
+			}/*
 			else if (mod[0] == 'e') {
 				//TODO
 				if (!addRule)
@@ -149,7 +150,7 @@ int Mode::modeChan(Channel& chan, std::string &mod, std::string &arg) {
 					chan.removeMod(I);
 				else
 					chan.setMod(I);
-			}
+			}*/
 			mod.erase(0, 1);
 		}
 
@@ -158,6 +159,10 @@ int Mode::modeChan(Channel& chan, std::string &mod, std::string &arg) {
 }
 
 int Mode::modeUser(user& usr, std::string &mod, std::string &arg) {
+	bool		addRule = false;
+	int			num_o_b = 0;
+	std::string	temp = arg;
+
 	return 0;
 }
 

@@ -1,6 +1,7 @@
 
 #include "../incs/User.hpp"
 #include "../incs/Socket.hpp"
+#include "../incs/Channel.hpp"
 #define RPL_WELCOME "001"
 
 user::user(std::string hostname, std::string nickname, std::string username, const Socket & socket, bool server_operator)
@@ -17,7 +18,7 @@ bool		user::getisLogged() const { return _isLogged; }
 int 		user::getSock() const { return _socket.fd; }
 std::string	user::getLocation() const { return _location; }
 Socket		user::getSocket() const { return _socket; }
-std::map<std::string, bool>	user::getChannels() const { return _channels; }
+std::map<std::string, unsigned int>	user::getChannels() const { return _channels; }
 
 void		user::setPassword(std::string psw) { _password = psw; }
 void		user::setNickname(std::string nick) { _nickname = nick; }
@@ -37,14 +38,17 @@ void		user::setLogged(bool log)
 
 bool	user::isOperator(const std::string & name) const
 {
-	return _channels.find(name)->second;
+	if ((_channels.find(name)->second & o) == o)
+		return true;
+	else
+		return false;
 }
 
 void	user::promote(const std::string & name)
 {
 	try
 	{
-		_channels.at(name) = true;
+		_channels.at(name) = _channels.at(name) | o;
 	}
 	catch(std::out_of_range &oor){} // <-- rentre ici si "name" n existe pas, voir si il y a un send a faire
 }
@@ -53,14 +57,17 @@ void	user::demote(const std::string & name)
 {
 	try
 	{
-		_channels.at(name) = false;
+		_channels.at(name) = _channels.at(name) & ~o;
 	}
 	catch(std::out_of_range &oor){} // <-- rentre ici si "name" n existe pas, voir si il y a un send a faire
 }
 
 void	user::join_channel(const std::string & name, bool op)
 {
-	_channels.insert(std::make_pair(name, op));
+	if (op)
+		_channels.insert(std::make_pair(name, o));
+	else
+		_channels.insert(std::make_pair(name, 0));
 }
 
 void	user::leave_channel(const std::string & name)
