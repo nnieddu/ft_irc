@@ -31,7 +31,6 @@ int Mode::modeChan(Channel& chan, std::string &mod, std::string &arg) {
 	int			num_o_b = 0;
 	std::string	temp = arg;
 
-	temp.clear();
 	if (mod[0] == '+')
 		addRule = true;
 	mod.erase(0,1);
@@ -169,9 +168,41 @@ int Mode::modeChan(Channel& chan, std::string &mod, std::string &arg) {
 
 int Mode::modeUser(user& usr, std::string &mod, std::string &arg) {
 	bool		addRule = false;
-	int			num_o_b = 0;
 	std::string	temp = arg;
+	user*		target = serv->getUser(temp.substr(0, temp.find_first_of(" \n\r", 0)));
 
+	temp.erase(0, temp.find_first_of(" \n\r", 0));
+	if (mod[0] == '+')
+		addRule = true;
+	mod.erase(0,1);
+
+	if (_expeditor->isServOp() || _expeditor == target) {
+		if ((mod[0] == 'o' || mod[0] == 'O') && _expeditor->isServOp()) {
+			if (!addRule)
+				target->demoteServ();
+			else
+				target->promoteServ();
+		}
+		else if (mod[0] == 'i') {
+			if (!addRule)
+				target->delInvisible();
+			else
+				target->setInvisible();
+		}
+		else if (mod[0] == 'w') {
+			if (!addRule)
+				target->delWallOp();
+			else
+				target->setWallOp();
+		}
+		else if (mod[0] == 'r') {
+			if (!addRule)
+				target->delRestrict();
+			else
+				target->setRestrict();
+		}
+		mod.erase(0, 1);
+	}
 	return 0;
 }
 

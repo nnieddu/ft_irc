@@ -40,7 +40,6 @@
 #define I 0x10000	// set/remove an invit mask to automatically override TODO?
 					// the invite only flag
 
-#define w 0x20000	// user flag user receive wallops
 
 class user;
 

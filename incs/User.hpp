@@ -62,9 +62,9 @@ class user
 		void		leave_channel(const std::string & name);
 		bool		isMember(const std::string & name) const;
 		bool		isAway() const;
-		void		setAfk(const std::string&);
+		void		setAfk(const std::string&); //command AWAY
 		const std::string&	getAfkString();
-		void		delAfk();
+		void		delAfk(); // command AWAY
 		bool		isVoice(const std::string&) const;
 		void		setVoice(const std::string&);
 		void		delVoice(const std::string&);
