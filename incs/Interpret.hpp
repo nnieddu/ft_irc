@@ -37,5 +37,6 @@ class Interpret
 
 		std::string *	GetNextWord(std::string * buf);
 		std::string *	GetMessageStart(std::string * buf);
+		std::string::iterator	IsEOC(std::string::iterator it, std::string *buf);
 		void			clearLeftover(std::string * buf);
 };
