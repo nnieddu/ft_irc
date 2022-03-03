@@ -63,6 +63,7 @@ class user
 		bool		isMember(const std::string & name) const;
 		bool		isAway() const;
 		void		setAfk(const std::string&);
+		const std::string&	getAfkString();
 		void		delAfk();
 		bool		isVoice(const std::string&) const;
 		void		setVoice(const std::string&);

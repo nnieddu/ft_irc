@@ -163,3 +163,7 @@ void user::setWallOp() {
 void user::delWallOp() {
 	_wallOp = false;
 }
+
+const std::string &user::getAfkString() {
+	return _afkMessage;
+}
