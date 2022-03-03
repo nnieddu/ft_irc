@@ -59,9 +59,9 @@ void	Command::setExpeditor(user * expeditor)
 
 void	Command::setArgs(std::vector<std::string *> args)
 {
-	for (size_t val = 0; !(args.empty()); val++)
+	for (size_t val = 0; val <= PASS; val++)
 	{
-		if (_args[val].isNeeded)
+		if (_args[val].isNeeded && args.empty() == false)
 		{
 			_args[val].arg = args[0];
 			args.erase(args.begin());
