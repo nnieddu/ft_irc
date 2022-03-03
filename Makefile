@@ -44,10 +44,10 @@ run : all
 	./$(NAME) 7005 password
 
 runl : all
-	leaks -atExit -- ./$(NAME) 7005 password
+	leaks -atExit -- ./$(NAME) 7005 password 
 
-runv : all
-	valgrind --leak-check=full ./$(NAME) 7005 password
+runv : re 
+	valgrind --leak-check=full ./$(NAME) 7005 password | cat -e
 
 clean :
 	rm -rf $(OBJ_DIR)

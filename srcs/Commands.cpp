@@ -35,12 +35,12 @@ int Pass::execute()
 	if (!pass)
 	{
 		serv->send_replies(_expeditor, "PASS :Not enough parameters", ERR_NEEDMOREPARAMS);
-		return 1;
+		return 0;
 	}
 	else if (pass->compare(serv->getPassword()) != 0)
 	{
 		serv->send_replies(_expeditor, ":Password incorrect", ERR_PASSWDMISMATCH); // pas dans la rfc au loggin maybe a remove
-		return 1;
+		return 0;
 	}
 	if (_expeditor->getisLogged() == false)
 	{
@@ -91,7 +91,6 @@ int Nick::execute()
 	return 1;
 }
 // ERR_NICKCOLLISION osef ?
-
 
 /*	USER	*/
 

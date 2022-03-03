@@ -59,6 +59,7 @@ void	Command::setExpeditor(user * expeditor)
 
 void	Command::setArgs(std::vector<std::string *> args)
 {
+	std::cout <<"JE SUIS DANS SET ARG\n\n";
 	for (size_t val = 0; !(args.empty()); val++)
 	{
 		if (_args[val].isNeeded)
