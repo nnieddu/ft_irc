@@ -264,6 +264,9 @@ int	server::send_msg_to_user(user * expeditor, user * dest, std::string & msg)
 	if (!dest)
 		return 1;
 
+	if (dest->isAway())
+		send(expeditor->getSock(), dest->getAfkString(), dest->getAfkString().size(), 0);
+
 	std::string fmsg = format_msg(expeditor, msg);
 
 	send(dest->getSock(), fmsg.c_str(), fmsg.size(), 0);	// add error case
