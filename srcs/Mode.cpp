@@ -79,7 +79,16 @@ int Mode::modeChan(Channel& chan, std::string &mod, std::string &arg) {
 				}
 			}
 			else if (mod[0] == 'v') {
-				//modification on user for this
+				if (!addRule) {
+					serv->getUser(std::string(temp.substr(0, \
+					temp.find_first_of(" \n\r", 0))))->delVoice(chan.getName());
+					temp.erase(0, temp.find_first_of(" \n\r", 0));
+				}
+				else {
+					serv->getUser(std::string(temp.substr(0, \
+					temp.find_first_of(" \n\r", 0))))->setVoice(chan.getName());
+					temp.erase(0, temp.find_first_of(" \n\r", 0));
+				}
 			}
 			else if (mod[0] == 'a') {
 				if (chan.getName()[0] == '&' || (chan.getName()[0] == '!' && _expeditor == &chan.getChanCrea())) {

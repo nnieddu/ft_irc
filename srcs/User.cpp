@@ -79,3 +79,87 @@ bool	user::isMember(const std::string & name) const
 {
 	return (_channels.find(name) != _channels.end());
 }
+
+bool user::isServOp() const {
+	return _server_operator;
+}
+
+void user::promoteServ() {
+	_server_operator = true;
+}
+
+void user::demoteServ() {
+	_server_operator = false;
+}
+
+bool user::isAway() const {
+	return _afk;
+}
+
+void user::setAfk(const std::string &afkStr) {
+	_afk = true;
+	_afkMessage = afkStr;
+}
+
+void user::delAfk() {
+	_afk = false;
+}
+
+bool user::isVoice(const std::string &name) const {
+	if ((_channels.find(name)->second & v) == v)
+		return true;
+	else
+		return false;
+}
+
+void user::setVoice(const std::string &name) {
+	try
+	{
+		_channels.at(name) = _channels.at(name) | v;
+	}
+	catch(std::out_of_range &oor){} // <-- rentre ici si "name" n existe pas, voir si il y a un send a faire
+}
+
+void user::delVoice(const std::string &name) {
+	try
+	{
+		_channels.at(name) = _channels.at(name) & ~v;
+	}
+	catch(std::out_of_range &oor){} // <-- rentre ici si "name" n existe pas, voir si il y a un send a faire
+}
+
+bool user::isRestrict() const {
+	return _restricted;
+}
+
+void user::setRestrict() {
+	_restricted = true;
+}
+
+void user::delRestrict() {
+	_restricted = false;
+}
+
+bool user::isInvisible() const {
+	return _invisible;
+}
+
+void user::setInvisible() {
+	_invisible = true;
+}
+
+void user::delInvisible() {
+	_invisible = false;
+}
+
+bool user::wallOp() const {
+	return _wallOp;
+}
+
+void user::setWallOp() {
+	_wallOp = true;
+}
+
+void user::delWallOp() {
+	_wallOp = false;
+}

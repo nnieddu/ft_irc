@@ -19,9 +19,9 @@
 
 //MOD:
 //member status
-#define O 0x00001	// give channel creator status
+#define O 0x00001	// *give channel creator status
 #define o 0x00002	// *give/take channel operator status || user is server op
-#define v 0x00004	// give/take voice privilege
+#define v 0x00004	// give/take voice privilege || userflag on a specific chan
 //channel flag
 #define a 0x00008	// anonymous channel flag   || user flag as away
 #define i 0x00010	// invite-only channel flag || invisible user flag
@@ -29,7 +29,7 @@
 #define n 0x00040	// no messages to channel from clients on the outside
 #define q 0x00080	// quiet channel flag
 #define p 0x00100	// private channel flag
-#define s 0x00200	// secret channel flag
+#define s 0x00200	// secret channel flag || user flag obsolete by irc so not implemented for now
 #define r 0x00400	// server reop channel flag || restricted user connection user flag
 #define t 0x00800	// topic settable only by op
 

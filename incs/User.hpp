@@ -13,8 +13,13 @@ class user
 		std::string					_username;
 		std::string					_hostname;
 		std::string					_password;
+		std::string					_afkMessage;
 
 		bool						_server_operator;
+		bool						_afk;
+		bool						_restricted;
+		bool						_invisible;
+		bool						_wallOp;
 		bool						_isLogged;
 		Socket						_socket;
 
@@ -48,10 +53,28 @@ class user
 		void		setLocation(std::string & name);
 
 		bool		isOperator(const std::string & name) const;
+		bool		isServOp() const;
+		void		promoteServ();
+		void		demoteServ();
 		void		promote(const std::string & name);
 		void		demote(const std::string & name);
 		void		join_channel(const std::string & name, bool op);
 		void		leave_channel(const std::string & name);
 		bool		isMember(const std::string & name) const;
+		bool		isAway() const;
+		void		setAfk(const std::string&);
+		void		delAfk();
+		bool		isVoice(const std::string&) const;
+		void		setVoice(const std::string&);
+		void		delVoice(const std::string&);
+		bool		isRestrict() const;
+		void		setRestrict();
+		void		delRestrict();
+		bool		isInvisible() const;
+		void		setInvisible();
+		void		delInvisible();
+		bool		wallOp() const;
+		void		setWallOp();
+		void		delWallOp();
 
 };
