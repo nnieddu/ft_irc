@@ -83,7 +83,7 @@ bool	Command::needArg() const { return _args.find(MESSAGE)->second.isNeeded; }
 
 bool	Command::needPass() const { return _args.find(PASS)->second.isNeeded; }
 
-bool	Command::isChannelName(std::string & str) { return (str[0] == '#' || str[0] == '&'); }
+bool	Command::isChannelName(std::string & str) { return (str[0] == '#' || str[0] == '&' || str[0] == '+' || str[0] == '!'); }
 
 void	Command::reset()
 {
