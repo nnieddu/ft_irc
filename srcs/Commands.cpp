@@ -76,7 +76,12 @@ int Nick::execute()
 	std::string	*	arg = _args[NICK].arg;
 
 	if (!arg)
-	serv->send_replies(_expeditor, " :No nickname given", ERR_NONICKNAMEGIVEN);
+	{
+		serv->send_replies(_expeditor, " :No nickname given", ERR_NONICKNAMEGIVEN);
+		return 1;
+	}
+	if (*arg == "anonymous") //// check char spe/grammar protocol rfc
+		serv->send_replies(_expeditor, " :Erroneus nickname", ERR_ERRONEUSNICKNAME);
 	if (serv->isUser(*arg) == false)
 	{
 		std::string str = ":" + _expeditor->getNickname() + " NICK " + ":" + *arg + "\r\n";
@@ -86,11 +91,9 @@ int Nick::execute()
 	}
 	else
 		serv->send_replies(_expeditor, *arg + " :Nickname is already in use", ERR_NICKNAMEINUSE);
-
-	// ERR_ERRONEUSNICKNAME if non conforme 'anonymous' ou char spe voir grammar protocol d'apres rfc
-	// ERR_NICKCOLLISION osef ?
 	return 1;
 }
+// ERR_NICKCOLLISION osef ?
 
 /*	USER	*/
 
@@ -115,7 +118,6 @@ User::User(server * serv):Command(serv)
 
 int User::execute()
 {
-	// Parsing issue
 	std::string	*	arg = _args[NICK].arg;
 
 	if (!arg) 
@@ -125,14 +127,14 @@ int User::execute()
 	}
 	// if (_expeditor->getisLogged() != true)
 	// {
-
 	// 	std::string prefix = ":" + _expeditor->getUsername();
 	// 	std::string logged = prefix +  " " + RPL_WELCOME + " " + _expeditor->getUsername() + \
 	// 		" Welcome to the Internet Relay Network :" + _expeditor->getUsername() + "\r\n";
-	// 	send(_expeditor->getSock(), logged.c_str(), logged.length(), 0);	
+	// 	send(_expeditor->getSock(), logged.c_str(), logged.length(), 0);
+	// 	return 0;
 	// }
-	// if (_expeditor->getisLogged() == true)
-	// 	serv->send_replies(_expeditor, " :You may not reregister", ERR_ALREADYREGISTRED);
+	if (_expeditor->getisLogged() == true)
+		serv->send_replies(_expeditor, " :You may not reregister", ERR_ALREADYREGISTRED);
 	return 0;
 }
 
@@ -176,6 +178,11 @@ int	Join::execute()
 		serv->send_replies(_expeditor, "No such channel (need a chan mask)", ERR_BADCHANMASK);
 		return 1;
 	}
+	if (_expeditor->getChannels().size() == 10)
+	{
+		serv->send_replies(_expeditor, name + " :You have joined too many channels (10 max)", ERR_TOOMANYCHANNELS);
+		return 0;
+	}
 	if (!_expeditor->isMember(name) && serv->channels.find(name) == serv->channels.end()
 		&& _expeditor->getisLogged())
 	{
@@ -208,13 +215,11 @@ int	Join::execute()
 	}
 	return 0;
 }
-//ERR_NEEDMOREPARAMS              ERR_BANNEDFROMCHAN
-//ERR_INVITEONLYCHAN              ERR_BADCHANNELKEY
-//ERR_CHANNELISFULL               ERR_BADCHANMASK
-//ERR_NOSUCHCHANNEL               ERR_TOOMANYCHANNELS
-//RPL_TOPIC
-
-
+//ERR_BANNEDFROMCHAN
+//ERR_INVITEONLYCHAN
+//ERR_CHANNELISFULL
+//ERR_NOSUCHCHANNEL
+//ERR_BADCHANNELKEY
 
 /*	LIST	*/
 
@@ -248,12 +253,10 @@ int List::execute()
 	{
 		for (it = serv->channels.begin(); it != serv->channels.end(); ++it)
 		{
-			// serv->send_replies(_expeditor, "<channel> <# visible> :<topic>", RPL_LIST);
-			serv->send_replies(_expeditor, it->first + " <# visible> :" + it->second->getTopic() , RPL_LIST);
+			// serv->send_replies(_expeditor, it->first + " <# visible> :" + it->second->getTopic() , RPL_LIST);
+			serv->send_replies(_expeditor, it->first + ":" + it->second->getTopic() , RPL_LIST);
 		}
 	}
-	if (serv->channels.empty() == true)
-		serv->send_replies(_expeditor, ":End of /LIST", RPL_LISTEND);
 	if (arg && (serv->channels.find(*arg) != serv->channels.end()))
 	{
 		it = serv->channels.find(*arg);
@@ -290,7 +293,10 @@ int Ping::execute()
 	std::string	*	arg = _args[HOSTNAME].arg;
 
 	if (!arg)
+	{
 		serv->send_replies(_expeditor, ":No origin specified", ERR_NOORIGIN);
+		return 0;
+	}
 	if (arg->compare(serv->getName()) != 0)
 		serv->send_replies(_expeditor, serv->getName() + ":No such server", ERR_NOSUCHSERVER);
 	else
@@ -383,3 +389,104 @@ int Part::execute()
 	serv->user_leave_chan(_expeditor, *arg, false, "");
 	return 0;
 }
+
+
+/*	VERSION	*/
+
+Version::Version():Command() {}
+Version::~Version(){}
+Version & Version::operator=(const Version & x)
+{
+	if (this != &x)
+		serv = x.serv;
+	return *this;
+}
+
+Version::Version(server * serv):Command(serv) {}
+int Version::execute()
+{
+	serv->send_replies(_expeditor, " : " + serv->getName() + " running version 1.42", RPL_VERSION);
+	return 0;
+}
+
+
+/*	INFO	*/
+
+Info::Info():Command() {}
+Info::~Info(){}
+Info & Info::operator=(const Info & x)
+{
+	if (this != &x)
+		serv = x.serv;
+	return *this;
+}
+
+Info::Info(server * serv):Command(serv) {}
+int Info::execute()
+{
+	serv->send_replies(_expeditor, " : " + serv->getName() + " running 1.42", RPL_INFO);
+	serv->send_replies(_expeditor, " :End of /INFO list", RPL_ENDOFINFO);
+	return 0;
+}
+
+
+/*	WHOIS */
+
+Whois::Whois():Command() 
+{
+	_args[NICK].isNeeded = true;
+}
+Whois::~Whois(){}
+Whois & Whois::operator=(const Whois & x)
+{
+	if (this != &x)
+		serv = x.serv;
+	return *this;
+}
+
+Whois::Whois(server * serv):Command(serv) 
+{
+	_args[NICK].isNeeded = true;
+}
+
+int Whois::execute()
+{
+	std::string	*	arg = _args[NICK].arg;
+
+// RPL_WHOISUSER                   RPL_WHOISCHANNELS
+// RPL_WHOISCHANNELS               RPL_WHOISSERVER
+// RPL_AWAY                        RPL_WHOISOPERATOR
+// RPL_WHOISIDLE                   ERR_NOSUCHNICK
+// RPL_ENDOFWHOIS
+
+	if (!arg)
+	{
+		serv->send_replies(_expeditor, " :No nickname given", ERR_NONICKNAMEGIVEN);
+		return 1;
+	}
+	if (serv->isUser(*arg) != false)
+	{
+		std::string str = ": " + _expeditor->getNickname() + " " + _expeditor->getUsername() + 
+			+ " " + _expeditor->getHostname() + "\r\n";
+	    send(_expeditor->getSock(), str.c_str(), strlen(str.c_str()), 0);
+		return 0;
+	}
+	return 1;
+}
+
+// /*	WHO	*/
+
+// Who::Who():Command() {}
+// Who::~Who(){}
+// Who & Who::operator=(const Who & x)
+// {
+// 	if (this != &x)
+// 		serv = x.serv;
+// 	return *this;
+// }
+
+// Who::Who(server * serv):Command(serv) {}
+// int Who::execute()
+// {
+// 	return 0;
+// }

@@ -12,29 +12,29 @@ Interpret::Interpret(server * serv): _serv(serv)
 {
 	cmds_list["PASS"] = new Pass(_serv);
 	cmds_list["NICK"] = new Nick(_serv);
-	//cmds_list["USER"] = new User(_serv);
+	cmds_list["USER"] = new User(_serv);
 	// cmds_list["OPER"] = Oper(_serv);
 	cmds_list["QUIT"] = new Quit(_serv);
 	cmds_list["JOIN"] = new Join(_serv);
 	cmds_list["PART"] = new Part(_serv);
 	// cmds_list["MODE"] = Mode(_serv);
 	cmds_list["TOPIC"] = new Topic(_serv);
-	// cmds_list["NAMES"] = Names(_serv);
+	// cmds_list["NAMES"] = Names(_serv); //
 	cmds_list["LIST"] = new List(_serv);
 	// cmds_list["INVITE"] = Invite(_serv);
 	// cmds_list["KICK"] = Kick(_serv);
-	// cmds_list["VERSION"] = Version(_serv);
-	// cmds_list["STATS"] = Stat(_serv);
+	cmds_list["VERSION"] = new Version(_serv);
 	// cmds_list["TIME"] = Time(_serv);
-	// cmds_list["ADMIN"] = Admin(_serv); // maybe useless
-	// cmds_list["INFO"] = Info(_serv);
+	cmds_list["INFO"] = new Info(_serv);
 	cmds_list["PRIVMSG"] = new Privmsg(_serv);
 	// cmds_list["NOTICE"] = Notice(_serv);
-	// cmds_list["WHO"] = Who(_serv);
-	// cmds_list["WHOIS"] = Whois(_serv);
-	// cmds_list["WHOWAS"] = Whowas(_serv); // a voir mais relou
-	// cmds_list["KILL"] = Kill(_serv);
+	cmds_list["WHOIS"] = new Whois(_serv);
 	cmds_list["PING"] = new Ping(_serv);
+	// cmds_list["WHO"] = new Who(_serv);
+	//// cmds_list["STATS"] = Stat(_serv);
+	//// cmds_list["ADMIN"] = Admin(_serv); // maybe useless
+	//// cmds_list["WHOWAS"] = Whowas(_serv); // a voir mais relou
+	//// cmds_list["KILL"] = Kill(_serv);
 	// cmds_list["PONG"] = Pong(_serv);
 }
 

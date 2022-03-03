@@ -61,7 +61,7 @@ class server
 				{ return "Closing program..."; }
 		};
 
-		int		run();
+		void	run();
 		void	accept_user();
 		void	receive_data(size_t index);
 		void	close_user(size_t index);

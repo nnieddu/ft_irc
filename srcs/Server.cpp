@@ -79,10 +79,9 @@ static void	ft_exit(int sign)
 		std:: cout << std::endl << "SIGQUIT" << std::endl;
 	else
 		throw(std::runtime_error("poll() failed"));
-
 }
 
-int	server::run()
+void	server::run()
 {
 	signal(SIGINT, ft_exit);
 	signal(SIGQUIT, ft_exit);
@@ -94,7 +93,6 @@ int	server::run()
 		it = _fds.begin();
 		if (poll(&(*it), _fds.size(), -1) < 0)
 			ft_exit(0);
-
 		size_t nfd = _fds.size();
 		for (size_t index = 0; index < nfd; index++)
 		{
@@ -104,10 +102,9 @@ int	server::run()
 					accept_user();
 				else
 					receive_data(index);
-			}							// /!\ revent_error ?
+			}								// /!\ revent_error ?
 		}
 	}
-	return(0);
 }
 
 void server::accept_user()
@@ -115,7 +112,6 @@ void server::accept_user()
 	struct pollfd		new_pollfd;
 	sockaddr_in			address;
 	socklen_t			len = sizeof(sockaddr);
-	std::string			hostname;
 	std::stringstream	nickname;
 	std::stringstream	username;
 
@@ -138,7 +134,7 @@ void server::accept_user()
 	nickname << "Guest" << new_pollfd.fd;
 	username << "Username" << new_pollfd.fd;
 	std::cout << "New incoming connection - " << nickname.str()<< std::endl;
-	hostname = inet_ntoa(reinterpret_cast<sockaddr_in*>(&address)->sin_addr);
+	std::string hostname = inet_ntoa(reinterpret_cast<sockaddr_in*>(&address)->sin_addr);
 	user *new_user = new user(hostname, nickname.str(), username.str(), Socket(new_pollfd.fd, address, len), false);
 	_users.push_back(new_user);
 	_fds.push_back(new_pollfd);
@@ -147,6 +143,7 @@ void server::accept_user()
 void	server::receive_data(size_t index)
 {
 	char	buf[512];
+	std::string err;
 	std::string tmp;
 	int ret = 0;
 
@@ -154,21 +151,21 @@ void	server::receive_data(size_t index)
 	if((ret = recv(_fds[index].fd, buf, sizeof(buf), 0)) <= 0)
 	{
 		if (ret < 0)
-			std::cerr << "recv() failed" << std::endl;
-		close_user(index);
+		std::cerr << "recv() failed" << std::endl; 
+		close_user(index); // Pas sur de devoir close ici
 		return ;
 	}
-
 	if (ret >= 512) 
 	{
-		std::cerr << "Too long message" << std::endl; // a test et voir si une replies vas bien
+		err =  "Error : too long message.";
+		send(_users[index - 1]->getSock(), err.c_str(), err.length(), 0);
 		_users[index - 1]->buf.clear();
 		return ;
 	}
 
 	tmp = buf;
 	_users[index - 1]->buf += tmp;
-	if (tmp.find("\n") != std::string::npos) // check si sur mac / a lecole netcat renvoi aussi un \r
+	if (tmp.find("\n") != std::string::npos)
 	{
 		std::cout << _users[index - 1]->getNickname() << " send : [" <<  _users[index - 1]->buf << "]" << std::endl;
 
@@ -176,7 +173,8 @@ void	server::receive_data(size_t index)
 		_users[index - 1]->buf.clear();
 		if (_users[index - 1]->getisLogged() == false)
 		{
-			//send replie // need to be log
+			err = "Error : you're not logged.";
+			send(_users[index - 1]->getSock(), err.c_str(), err.length(), 0);
 			close_user(index);
 		}
 	}
@@ -191,7 +189,6 @@ void	server::close_user(size_t index)
 	close(_fds[index].fd);
 	_fds.erase(_fds.begin() + index);
 	_users.erase(_users.begin() + (index - 1));
-	return ;
 }
 
 void	server::remove_user_from(user * usr, const std::string & name)
@@ -244,16 +241,16 @@ void	server::user_leave_chan(user * usr, const std::string & name, bool flag_del
 	std::set<user *>::iterator it;
 	std::string quit_msg;
 	if (msg == "" && flag_delog == true)
-		quit_msg = ":" + usr->getNickname()+ " QUIT : disconnected\r\n";
+		quit_msg = ":" + usr->getNickname()+ " QUIT :disconnected\r\n";
 	else if (flag_delog == true)
-		quit_msg = ":" + usr->getNickname()+ " QUIT : " + msg + "\r\n";
+		quit_msg = ":" + usr->getNickname()+ " QUIT :" + msg + "\r\n";
 	if (flag_delog == false)
-		quit_msg = ":" + usr->getNickname()+ " PART : leave the chan\r\n";
+		quit_msg = ":" + usr->getNickname()+ " PART :leave the chan\r\n";
 
 	for(it = channels[name]->getUsers().begin(); it != channels[name]->getUsers().end(); ++it)
 	{
 		if (usr->getNickname() != (*it)->getNickname())
-		send((*it)->getSock(), quit_msg.c_str(), quit_msg.length(), 0);
+			send((*it)->getSock(), quit_msg.c_str(), quit_msg.length(), 0);
 	}
 }
 

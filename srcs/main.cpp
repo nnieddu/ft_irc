@@ -3,22 +3,20 @@
 
 int main(int ac, char **av)
 {
-	int	ret = 1;
-
 	if (ac != 3)
 	{
 		std::cerr << "[Error] : need 2 args <PORT> and <PASSWORD>" << std::endl;
-		return(ret);
+		return(-1);
 	}
 	try
 	{
 		server	serv(atoi(av[1]), std::string(av[2]));
-		return (serv.run());
+		serv.run();
 	}
 	catch (server::quitexcept er)
 	{
 		std::cout << er.what() << std::endl;
-		ret = 0;
+		return(0);
 	}
 	catch (std::runtime_error &er)
 	{
@@ -32,5 +30,5 @@ int main(int ac, char **av)
 	{
 		std::cerr << er.what() << std::endl;
 	}
-	return(ret);
+	return(0);
 }

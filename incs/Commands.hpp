@@ -168,3 +168,47 @@ class Part : public Command
 		Part(server * serv);
 		virtual int	execute();
 };
+
+class Version : public Command
+{
+	public:
+
+		Version();
+		virtual ~Version();
+		Version&	operator=(const Version & x);
+		Version(server * serv);
+		virtual int	execute();
+};
+
+class Info : public Command
+{
+	public:
+
+		Info();
+		virtual ~Info();
+		Info&	operator=(const Info & x);
+		Info(server * serv);
+		virtual int	execute();
+};
+
+class Whois : public Command
+{
+	public:
+
+		Whois();
+		virtual ~Whois();
+		Whois&	operator=(const Whois & x);
+		Whois(server * serv);
+		virtual int	execute();
+};
+
+// class Who : public Command
+// {
+// 	public:
+
+// 		Who();
+// 		virtual ~Who();
+// 		Who&	operator=(const Who & x);
+// 		Who(server * serv);
+// 		virtual int	execute();
+// };
