@@ -90,10 +90,15 @@ int Privmsg::execute()
 
 	while (!list.empty())
 	{
-		if (isChannelName(list[0]))
+		if (HasChannelPrefix(list[0]))
 		{
-			if (serv->send_msg_to_channel(_expeditor, serv->getChannel(list[0]), *arg))
-				serv->send_replies(_expeditor, "PRIVMSG :cannot send to channel", ERR_CANNOTSENDTOCHAN);
+			if (serv->channels.find(list[0]) != serv->channels.end())
+			{
+				if (serv->send_msg_to_channel(_expeditor, serv->getChannel(list[0]), *arg))
+					serv->send_replies(_expeditor, "PRIVMSG :cannot send to channel", ERR_CANNOTSENDTOCHAN);
+			}
+			else if (serv->send_msg_to_user(_expeditor, serv->getUser(list[0]), *arg))
+				serv->send_replies(_expeditor, "PRIVMSG :No such nick", ERR_NOSUCHNICK);
 		}
 		else
 		{
