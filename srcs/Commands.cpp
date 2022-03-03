@@ -35,12 +35,12 @@ int Pass::execute()
 	if (!pass)
 	{
 		serv->send_replies(_expeditor, "PASS :Not enough parameters", ERR_NEEDMOREPARAMS);
-		return -1;
+		return 1;
 	}
 	else if (pass->compare(serv->getPassword()) != 0)
 	{
 		serv->send_replies(_expeditor, ":Password incorrect", ERR_PASSWDMISMATCH); // pas dans la rfc au loggin maybe a remove
-		return -1;
+		return 1;
 	}
 	if (_expeditor->getisLogged() == false)
 	{
@@ -76,10 +76,7 @@ int Nick::execute()
 	std::string	*	arg = _args[NICK].arg;
 
 	if (!arg)
-	{
 		serv->send_replies(_expeditor, " :No nickname given", ERR_NONICKNAMEGIVEN);
-		return 1;
-	}
 	if (*arg == "anonymous") //// check char spe/grammar protocol rfc
 		serv->send_replies(_expeditor, " :Erroneus nickname", ERR_ERRONEUSNICKNAME);
 	if (serv->isUser(*arg) == false)
@@ -94,6 +91,7 @@ int Nick::execute()
 	return 1;
 }
 // ERR_NICKCOLLISION osef ?
+
 
 /*	USER	*/
 
@@ -133,8 +131,8 @@ int User::execute()
 	// 	send(_expeditor->getSock(), logged.c_str(), logged.length(), 0);
 	// 	return 0;
 	// }
-	if (_expeditor->getisLogged() == true)
-		serv->send_replies(_expeditor, " :You may not reregister", ERR_ALREADYREGISTRED);
+	// if (_expeditor->getisLogged() == true)
+	// 	serv->send_replies(_expeditor, " :You may not reregister", ERR_ALREADYREGISTRED);
 	return 0;
 }
 
@@ -333,14 +331,15 @@ Quit::Quit(server * serv):Command(serv)
 int Quit::execute()
 {
 	std::string	*	arg = _args[MESSAGE].arg;
-
-	if (!arg)
-	{
-		serv->user_leave_chan(_expeditor, _expeditor->getLocation(), true, "");
-		// serv->close_user(_expeditor->getSock() - 1, *arg); // msg 
-		return 0;
-	}
-	serv->user_leave_chan(_expeditor, _expeditor->getLocation(), true, *arg);
+	// if (!arg)
+	// {
+	// 	std::cout << "QUIT !ARG:" << arg << "\n";
+		// serv->user_leave_chan(_expeditor, _expeditor->getLocation(), true, "");
+		// serv->close_user(_expeditor->getSock() - 1); // msg 
+		// return 0;
+	// }
+	// std::cout << "QUIT ARG:" << *arg << "\n";
+	// serv->user_leave_chan(_expeditor, _expeditor->getLocation(), true, *arg);
 	return 0;
 }
 

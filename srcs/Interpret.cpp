@@ -77,6 +77,7 @@ int Interpret::launch(user & usr)
 			cmd->setArgs(args);
 			ret = cmd->execute();
 			cmd->reset();
+
 			if (_iseoc == false)
 				clearLeftover(&usr.buf);
 		}
@@ -95,6 +96,7 @@ std::string Interpret::parseCmds(std::string * buf)
 		it++;
 	cmd.assign(buf->begin(), it);
 	buf->erase(buf->begin(), it);
+	std::cout << "PARSED CMD :[" << cmd <<"]\n";
 	return (cmd);
 }
 
@@ -105,7 +107,6 @@ int	Interpret::cmd_not_found(user & usr)
 	while (it != usr.buf.end() && *it != '\r' && *it != '\n')		// tel quel : fait sortir de la boucle
 		it++;														// quoi qu'il arrive, peut etre
 	usr.buf.erase(usr.buf.begin(), it);								// a changer si il y a plusieurs EOC
-
 	// std::cerr << "Command not found" << std::endl; // pass tt le temps par la 
 	return 1;
 }
@@ -154,9 +155,12 @@ std::string *	Interpret::parseMessage(std::string * buf)
 
 std::string *	Interpret::GetMessageStart(std::string * buf)
 {
-	std::string::iterator	first(buf->begin());
+	std::string::iterator	first;
 
-	while (first != buf->end() && *(first - 1) != ':')
+	if (buf->empty())
+		return NULL;
+	first = buf->begin() + 1;
+	while (first != buf->end() && *(first) != ':')
 		first++;
 	buf->erase(buf->begin(), first);
 	if (buf->empty())
@@ -196,11 +200,10 @@ void	Interpret::clearLeftover(std::string * buf)
 {
 	std::string::iterator	it(buf->begin());
 
+	std::cout << "BUFFER:[" << *buf <<"]\n";
 	while (it != buf->end() && *it != '\r' && *it != '\n')
 		it++;
 	if (it != buf->end())
 	 	buf->erase(buf->begin(), ++it);
+	std::cout << "CLEARED BUFFER:[" << *buf <<"]\n";
 }
-
-// Les deux bout commented font segfault si "PASS " sur netcat
-// si un champs vide pour le pass est donne dans weechat, il nenvoit pas la commande PASS
