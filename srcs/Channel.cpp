@@ -6,7 +6,7 @@
 /*   By: mrozniec <mrozniec@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/28 13:56:40 by mrozniec          #+#    #+#             */
-/*   Updated: 2022/03/02 14:51:45 by mrozniec         ###   ########.fr       */
+/*   Updated: 2022/03/02 20:30:55 by mrozniec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,15 @@ topic("No topic set for channel "), password("password"), limit_user(0), chanCre
 }
 
 void Channel::setMod(unsigned int newMod) {
-	mod = newMod ^ mod;
+	mod = newMod | mod;
+}
+
+void Channel::removeMod(unsigned int oldMod) {
+	mod = mod & ~oldMod;
+}
+
+void Channel::setBanMask(const std::string &newMask) {
+	banMask = newMask;
 }
 
 void Channel::setLim(unsigned int newLim) {

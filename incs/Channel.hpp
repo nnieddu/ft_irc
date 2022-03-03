@@ -6,7 +6,7 @@
 /*   By: mrozniec <mrozniec@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/27 18:15:52 by mrozniec          #+#    #+#             */
-/*   Updated: 2022/02/28 17:00:54 by mrozniec         ###   ########.fr       */
+/*   Updated: 2022/03/02 22:02:28 by mrozniec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 //MOD:
 //member status
 #define O 0x00001	// give channel creator status
-#define o 0x00002	// give/take channel operator status
+#define o 0x00002	// *give/take channel operator status
 #define v 0x00004	// give/take voice privilege
 //channel flag
 #define a 0x00008	// anonymous channel flag
@@ -34,9 +34,8 @@
 #define t 0x00800	// topic settable only by op
 
 #define k 0x01000	// set/remove channel key(password)
-#define l 0x02000	// set/remove user limit to channel
-//channel access control TODO:: need to implement it later(using IP ??)
-#define b 0x04000	// set/remove ban mask to keep user out
+#define l 0x02000	// *set/remove user limit to channel
+#define b 0x04000	// *set/remove ban mask to keep user out
 #define e 0x08000	// set/remove except mask to override ban mask
 #define I 0x10000	// set/remove an invit mask to automatically override
 					//the invite only flag
@@ -58,6 +57,7 @@ class Channel {
 		Channel& operator=(const Channel&);
 
 		void	setMod(unsigned int);
+		void	removeMod(unsigned int);
 		void	setBanMask(const std::string&);
 		void	setLim(unsigned int);
 		void	setTopic(const std::string&);

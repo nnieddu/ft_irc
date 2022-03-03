@@ -37,7 +37,7 @@ std::string 		server::getName() const { return _name; }
 std::string 		server::getPassword() const { return _password; }
 std::vector<user*>	server::getUsers() const { return _users; }
 
-user *				server::getUser(std::string & nickname)
+user *				server::getUser(const std::string & nickname)
 {
 	for (std::vector<user*>::iterator it = _users.begin(); it != _users.end(); it++)
 	{

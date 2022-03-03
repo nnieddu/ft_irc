@@ -48,7 +48,7 @@ class server
 		std::string			getName() const;
 		std::string			getPassword() const;
 		std::vector<user*>	getUsers() const;
-		user *				getUser(std::string & nickname);
+		user *				getUser(const std::string & nickname);
 		Channel *			getChannel(std::string & name);
 
 		bool isUser(std::string nickname) const;

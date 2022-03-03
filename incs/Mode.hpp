@@ -5,8 +5,8 @@
 #pragma once
 
 #include "Command.hpp"
-#include "../incs/Server.hpp"
-#include "../incs/Channel.hpp"
+#include "Server.hpp"
+#include "Channel.hpp"
 
 class Mode : public Command {
 
