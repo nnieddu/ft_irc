@@ -60,7 +60,6 @@ int Interpret::launch(user & usr)
 		{
 			cmd = it->second;
 			cmd->setExpeditor(&usr);
-			std::cout << "USR BUFFER DNAS LE IF = " << usr.buf << std::endl;
 
 			if (_iseoc == false && cmd->needReceiver())
 				args.push_back(parseWord(&usr.buf));
@@ -93,17 +92,14 @@ std::string Interpret::parseCmds(std::string * buf)
 	std::string::iterator	it = buf->begin();
 	std::string				cmd;
 
-	std::cout << "PARSECMD AVANT =[" << *buf << "]" << std::endl;
-
-	if (*it == '\n' && it != buf->end())
-		buf->erase(0, 1);
+	// if (*it == '\n')
+	// 	buf->erase(0, 1);
 	
 	it = buf->begin();
 	while (it != buf->end() && *it != '\r' && *it != '\n' && *it != ' ')
 		it++;
 	cmd.assign(buf->begin(), it);
 	buf->erase(buf->begin(), it);
-	std::cout << "PARSECMD APRES =[" << *buf << "]" <<  std::endl;
 	return (cmd);
 }
 
