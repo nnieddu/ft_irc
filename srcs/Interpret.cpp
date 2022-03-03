@@ -19,7 +19,7 @@ Interpret::Interpret(server * serv): _serv(serv)
 	cmds_list["PART"] = new Part(_serv);
 	// cmds_list["MODE"] = Mode(_serv);
 	cmds_list["TOPIC"] = new Topic(_serv);
-	// cmds_list["NAMES"] = Names(_serv); //
+	cmds_list["NAMES"] = new Names(_serv); //
 	cmds_list["LIST"] = new List(_serv);
 	// cmds_list["INVITE"] = Invite(_serv);
 	// cmds_list["KICK"] = Kick(_serv);

@@ -140,7 +140,7 @@ int Privmsg::execute()
 	NAMES;
 		list all visible channels and users
 */
-/*
+
 Names::Names():Command()
 {
 	_args[CHANNEL].isNeeded = true;
@@ -160,6 +160,22 @@ Names::Names(server * serv):Command(serv)
 	_args[CHANNEL].isNeeded = true;
 }
 
+static std::string	getChannelNicks(Channel * chan)
+{
+	std::stringstream	output;
+
+	output << "Nicks " << chan->getName() << ": [";
+	for (std::set<user *>::iterator	it(chan->getUsers().begin()); it != chan->getUsers().end(); it++)
+	{
+		if (it == chan->getUsers().begin())
+			output << (*it)->getNickname();
+		else
+			output << " " << (*it)->getNickname();
+	}
+	output << "]" << std::endl;
+	return output.str();
+}
+
 int Names::execute()
 {
 	std::string	*		channel = _args[CHANNEL].arg;
@@ -173,23 +189,16 @@ int Names::execute()
 		while (!list.empty())
 		{
 			if (serv->channels.find(list.front()) != serv->channels.end())
-			{
-				chan = serv->channels[list.front()];
-				output << "Nicks " << chan->getName() << ": [";
-				for (std::set<user *>::iterator	it(chan->getUsers().begin()); it != chan->getUsers().end(); it++)
-				{
-					if (it == chan->getUsers().begin())
-						output << (*it)->getNickname();
-					else
-						output << " " << (*it)->getNickname();
-				}
-				output << "]" << std::endl;
-			}
+				output << getChannelNicks(serv->channels[list.front()]);
 			list.pop_front();
 		}
 	}
 	else
-	{}
-	send(_expeditor->getSock(), output.str().c_str(), output.str().size(), RPL_ENDOFNAMES);
+	{
+		for (std::map<std::string, Channel* >::iterator it(serv->channels.begin());
+				it != serv->channels.end(); it++)
+			output << getChannelNicks(it->second);
+	}
+	send(_expeditor->getSock(), output.str().c_str(), output.str().size(), 0);	// je comprends toujours rine aux replies donc y a surement des choses a ameliorer
 	return 0;
-}*/
+}
