@@ -89,7 +89,7 @@ int Mode::modeChan(Channel& chan, std::string &mod, std::string &arg) {
 						chan.setMod(a);
 				}
 				else
-					;//TODO NOT ENOUGH PERMISSION
+					std::cerr << "TODO this case Mode.cpp";//TODO NOT ENOUGH PERMISSION
 			}
 			else if (mod[0] == 'i') {
 				if (!addRule)
@@ -128,7 +128,8 @@ int Mode::modeChan(Channel& chan, std::string &mod, std::string &arg) {
 					chan.setMod(s);
 			}
 			else if (mod[0] == 'r') {
-				if (_expeditor == &chan.getChanCrea() && chan.)
+				if (_expeditor == &chan.getChanCrea() && chan.getName()[0])
+					std::cout << "TODO";
 				//TODO
 				if (!addRule)
 					chan.removeMod(r);
