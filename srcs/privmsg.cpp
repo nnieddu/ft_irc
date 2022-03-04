@@ -164,15 +164,12 @@ static std::string	getChannelNicks(Channel * chan)
 {
 	std::stringstream	output;
 
-	output << "Nicks " << chan->getName() << ": [";
+	output << "Nicks " << chan->getName();
 	for (std::set<user *>::iterator	it(chan->getUsers().begin()); it != chan->getUsers().end(); it++)
 	{
-		if (it == chan->getUsers().begin())
-			output << (*it)->getNickname();
-		else
-			output << " " << (*it)->getNickname();
+		output << " " << (*it)->getNickname();
 	}
-	output << "]" << std::endl;
+	output << std::endl;
 	return output.str();
 }
 
@@ -199,6 +196,8 @@ int Names::execute()
 				it != serv->channels.end(); it++)
 			output << getChannelNicks(it->second);
 	}
-	send(_expeditor->getSock(), output.str().c_str(), output.str().size(), 0);	// je comprends toujours rine aux replies donc y a surement des choses a ameliorer
+	// todo -> Envoyer les bonnes replies au bon format;
+	serv->send_replies(_expeditor, output.str(), RPL_NAMREPLY);
+	serv->send_replies(_expeditor, ":End of /NAMES", RPL_ENDOFNAMES);
 	return 0;
 }
