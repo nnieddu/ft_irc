@@ -70,22 +70,16 @@ Privmsg::Privmsg(server * serv):Command(serv)
 	_args[MESSAGE].isNeeded	= true;
 }
 
-int Privmsg::execute()
+void Privmsg::execute()
 {
 	std::string	*			receiver = _args[RECEIVER].arg;
 	std::string	*			arg = _args[MESSAGE].arg;
 	std::deque<std::string>	list;
 
 	if (!receiver)
-	{
-		serv->send_replies(_expeditor, "PRIVMSG :No receiver specified", ERR_NORECIPIENT);
-		return -1;
-	}
+		return serv->send_replies(_expeditor, "PRIVMSG :No receiver specified", ERR_NORECIPIENT);
 	if (!arg)
-	{
-		serv->send_replies(_expeditor, "PRIVMSG :No text to send", ERR_NOTEXTTOSEND);
-		return -1;
-	}
+		return serv->send_replies(_expeditor, "PRIVMSG :No text to send", ERR_NOTEXTTOSEND);
 
 	list = _args[RECEIVER].parseList();
 
@@ -113,7 +107,7 @@ int Privmsg::execute()
 		}
 		list.erase(list.begin());
 	}
-	return 0;
+	return ;
 }
 
 /*
@@ -179,14 +173,13 @@ static std::string	getChannelNicks(Channel * chan)
 	return output.str();
 }
 
-int Names::execute()
+void Names::execute()
 {
 	std::string	*		channel = _args[CHANNEL].arg;
-	Channel *			chan;
 	std::stringstream	output;
 
 	if (channel)
-	{/*
+	{
 		std::deque<std::string> list = _args[CHANNEL].parseList();
 
 		while (!list.empty())
@@ -196,16 +189,25 @@ int Names::execute()
 			if (it != serv->channels.end())
 				it->second->send_names_replies(_expeditor);
 			list.pop_front();
-		}*/
+		}
 	}
 	else
-	{/*
+	{
+		std::string	names;
+
 		for (std::map<std::string, Channel* >::iterator it(serv->channels.begin()); it != serv->channels.end(); it++)
 			it->second->send_names_replies(_expeditor);
 		for (std::vector<user*>::iterator it(serv->getUsers().begin()); it != serv->getUsers().end(); it++)
 		{
-			if (it->getUsers())
-		}*/
+			if ((*it)->getChannels().empty())
+				names += (*it)->getNickname() + " ";
+		}
+		if (!(names.empty()))
+		{
+			std::string replies = ":" + _expeditor->getUsername() +  " " + RPL_NAMREPLY + " " + _expeditor->getNickname() + " " +  "= * :" + names + "\r\n";
+			send(_expeditor->getSock(), replies.c_str(), replies.length(), 0);
+		}
 	}
-	return 0;
+	serv->send_replies(_expeditor, "* :End of names list", RPL_ENDOFNAMES);
+	return ;
 }
