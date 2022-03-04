@@ -187,27 +187,26 @@ int	Join::execute()
 		std::cout << "Channel : " << name << " created" << std::endl;
 		serv->channels[name] = new Channel(*_expeditor, name);
 		_expeditor->join_channel(name, true);
+		_expeditor->setLocation(name);
 		_expeditor->promote(name);
 		//Voir si d'autre prefix possible que @
 		std::string replies = ":" + _expeditor->getNickname() + " JOIN :" + name + "\r\n";
 		send(_expeditor->getSock(), replies.c_str(), replies.length(), 0);
+		serv->send_names_replies(_expeditor, name);
 	}
-	if (_expeditor->getisLogged() && _expeditor->getLocation() != name)
+	else if (_expeditor->getisLogged() && _expeditor->getLocation() != name)
 	{
 		std::string msg;
-		std::string usersInChan;
 		std::set<user *>::iterator it;
 		for(it = serv->channels[name]->getUsers().begin(); it != serv->channels[name]->getUsers().end(); ++it)
 		{
 			msg = ":" + _expeditor->getNickname() + " JOIN :" + name + "\r\n";
-			usersInChan += (*it)->getNickname() + " ";
 			send((*it)->getSock(), msg.c_str(), msg.length(), 0);
 		}
-
 		msg = ":" + _expeditor->getNickname() + " JOIN :" + name + "\r\n";
 		send(_expeditor->getSock(), msg.c_str(), msg.length(), 0);
 		serv->send_replies(_expeditor, ":" + serv->channels[name]->getTopic(), RPL_TOPIC);
-		serv->send_replies(_expeditor, "= " + name + " :" + usersInChan, RPL_NAMREPLY);
+		serv->send_names_replies(_expeditor, name);
 		serv->send_replies(_expeditor, name + " :End of names list", RPL_ENDOFNAMES);
 		_expeditor->join_channel(name, true);
 		serv->channels[name]->addUser(*_expeditor);

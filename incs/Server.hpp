@@ -68,6 +68,8 @@ class server
 		void	remove_user_from(user * usr, const std::string & name, std::string msg);
 		void	remove_user_from_channels(user * usr, std::string msg);
 		void	send_replies(user * usr, std::string msg, const char* code);
+		void	send_names_replies(user * usr, std::string chan_name);
+
 
 		std::string format_msg(user * expeditor, std::string & msg);
 		int	send_msg_to_user(user * expeditor, user * dest, std::string & msg);
