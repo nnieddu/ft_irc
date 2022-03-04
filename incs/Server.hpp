@@ -65,12 +65,9 @@ class server
 		void	accept_user();
 		void	receive_data(size_t index);
 		void	close_user(size_t index);
-		void	remove_user_from(user * usr, const std::string & name);
-		void	remove_user_from_channels(user * usr);
+		void	remove_user_from(user * usr, const std::string & name, std::string msg);
+		void	remove_user_from_channels(user * usr, std::string msg);
 		void	send_replies(user * usr, std::string msg, const char* code);
-
-		void	create_channel(user & usr, std::string & name);
-		void	user_leave_chan(user * usr, const std::string & name, bool flag_delog, std::string msg);
 
 		std::string format_msg(user * expeditor, std::string & msg);
 		int	send_msg_to_user(user * expeditor, user * dest, std::string & msg);

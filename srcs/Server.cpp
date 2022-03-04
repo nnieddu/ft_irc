@@ -152,7 +152,7 @@ void	server::receive_data(size_t index)
 	{
 		if (ret < 0)
 		std::cerr << "recv() failed" << std::endl; 
-		close_user(index); // Pas sur de devoir close ici
+		close_user(index);
 		return ;
 	}
 	if (ret >= 512) 
@@ -172,44 +172,37 @@ void	server::receive_data(size_t index)
 		ret = _interpret.launch(*_users[index - 1]);
 		_users[index - 1]->buf.clear();
 		if (_users[index - 1]->getisLogged() == false)
-		{
-			err = "Error : you're not logged.";
-			send(_users[index - 1]->getSock(), err.c_str(), err.length(), 0);
 			close_user(index);
-		}
 	}
 }
 
 void	server::close_user(size_t index)
 {
 	std::vector<user*>::iterator it = (_users.begin() + (index - 1));
-	remove_user_from_channels(*it);
-	std::cout << (*it)->getNickname() << " deconnexion" << std::endl;
+	remove_user_from_channels(*it, "QUIT");
+	std::cout << (*it)->getNickname() << " deconnexion" << std::endl; 
 	delete *it;
 	close(_fds[index].fd);
 	_fds.erase(_fds.begin() + index);
 	_users.erase(_users.begin() + (index - 1));
 }
 
-void	server::remove_user_from(user * usr, const std::string & name)
+void	server::remove_user_from(user * usr, const std::string & name, std::string msg)
 {
 	if (channels[name]->getUsers().find(usr) != channels[name]->getUsers().end())
 	{
-		user_leave_chan(usr, name, true, "");
+		if (msg == "QUIT")
+			msg = " QUIT :disconnected";
+		if (msg == "PART")
+			msg = " PART " + name;
+		std::string quit = ":" + usr->getNickname() + msg + "\r\n";
+		for(std::set<user *>::iterator it = channels[name]->getUsers().begin(); it != channels[name]->getUsers().end(); ++it)
+		{
+			if (usr->getNickname() != (*it)->getNickname())
+				send((*it)->getSock(), quit.c_str(), quit.length(), 0);
+		}
 		channels[name]->removeUser(*usr);
-	}
-}
-
-void	server::remove_user_from_channels(user * usr)
-{
-	while (!(usr->getChannels().empty()))
-	{
-		std::string name = usr->getChannels().begin()->first;
-		std::cout << usr->getNickname() << " leaving channel : " << name << std::endl;
-		remove_user_from(usr, name);
-		usr->leave_channel(name);
-
-		if (channels[name]->getUsers().empty())		// <-- remove channel if its users vector is empty
+		if (channels[name]->getUsers().empty())	// <-- remove channel if its users vector is empty
 		{	
 			delete channels[name];
 			channels.erase(name);
@@ -217,13 +210,14 @@ void	server::remove_user_from_channels(user * usr)
 	}
 }
 
-void	server::create_channel(user & usr, std::string & name)
+void	server::remove_user_from_channels(user * usr, std::string msg)
 {
-	channels[name] = new Channel(usr, name);
-	usr.join_channel(name, true);
-
-	std::string replies = ":" + usr.getNickname() + " JOIN :" + name + "\r\n";
-	send(usr.getSock(), replies.c_str(), replies.length(), 0);
+	while (!(usr->getChannels().empty()))
+	{
+		std::string name = usr->getChannels().begin()->first;
+		remove_user_from(usr, name, msg);
+		usr->leave_channel(name);
+	}
 }
 
 void	server::send_replies(user *usr, std::string msg, const char* code)
@@ -234,24 +228,6 @@ void	server::send_replies(user *usr, std::string msg, const char* code)
 
 	replies += (prefix +  " " + code + " " + usr->getNickname() + " " + msg + "\r\n");
 	send(usr->getSock(), replies.c_str(), replies.length(), 0);
-}
-
-void	server::user_leave_chan(user * usr, const std::string & name, bool flag_delog, std::string msg)
-{
-	std::set<user *>::iterator it;
-	std::string quit_msg;
-	if (msg == "" && flag_delog == true)
-		quit_msg = ":" + usr->getNickname()+ " QUIT :disconnected\r\n";
-	else if (flag_delog == true)
-		quit_msg = ":" + usr->getNickname()+ " QUIT :" + msg + "\r\n";
-	if (flag_delog == false)
-		quit_msg = ":" + usr->getNickname()+ " PART :leave the chan\r\n";
-
-	for(it = channels[name]->getUsers().begin(); it != channels[name]->getUsers().end(); ++it)
-	{
-		if (usr->getNickname() != (*it)->getNickname())
-			send((*it)->getSock(), quit_msg.c_str(), quit_msg.length(), 0);
-	}
 }
 
 std::string	server::format_msg(user * expeditor, std::string & msg)
