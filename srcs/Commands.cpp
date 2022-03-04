@@ -35,12 +35,12 @@ int Pass::execute()
 	if (!pass)
 	{
 		serv->send_replies(_expeditor, "PASS :Not enough parameters", ERR_NEEDMOREPARAMS);
-		return 0;
+		return 1;
 	}
 	else if (pass->compare(serv->getPassword()) != 0)
 	{
 		serv->send_replies(_expeditor, ":Password incorrect", ERR_PASSWDMISMATCH); // pas dans la rfc au loggin maybe a remove
-		return 0;
+		return 1;
 	}
 	if (_expeditor->getisLogged() == false)
 	{
@@ -91,6 +91,7 @@ int Nick::execute()
 	return 1;
 }
 // ERR_NICKCOLLISION osef ?
+
 
 /*	USER	*/
 
@@ -170,7 +171,7 @@ int	Join::execute()
 	std::string	name(*channel);
 
 	if (name.find("#") && name.find("&") == std::string::npos && name.find("+") == std::string::npos 
-	&& name.find("!!") == std::string::npos) // A MODIFIER (check juste premier char)
+	&& name.find("!!") == std::string::npos) // A MODIFIER (doit check juste premier char)
 	{
 		serv->send_replies(_expeditor, "No such channel (need a chan mask)", ERR_BADCHANMASK);
 		return 1;
@@ -184,10 +185,13 @@ int	Join::execute()
 		&& _expeditor->getisLogged())
 	{
 		std::cout << "Channel : " << name << " created" << std::endl;
-		// _expeditor->setOperator(true);
-		serv->create_channel(*_expeditor, name);
+		serv->channels[name] = new Channel(*_expeditor, name);
+		_expeditor->join_channel(name, true);
 		_expeditor->setLocation(name);
-
+		_expeditor->promote(name);
+		//Voir si d'autre prefix possible que @
+		std::string replies = ":@" + _expeditor->getNickname() + " JOIN :" + name + "\r\n";
+		send(_expeditor->getSock(), replies.c_str(), replies.length(), 0);
 	}
 	else if (_expeditor->getisLogged() && _expeditor->getLocation() != name)
 	{
@@ -330,18 +334,15 @@ Quit::Quit(server * serv):Command(serv)
 int Quit::execute()
 {
 	std::string	*	arg = _args[MESSAGE].arg;
-	// if (!arg)
-	// {
-	// 	std::cout << "QUIT !ARG:" << arg << "\n";
-		// serv->user_leave_chan(_expeditor, _expeditor->getLocation(), true, "");
-		// serv->close_user(_expeditor->getSock() - 1); // msg 
-		// return 0;
-	// }
-	// std::cout << "QUIT ARG:" << *arg << "\n";
-	// serv->user_leave_chan(_expeditor, _expeditor->getLocation(), true, *arg);
+	if (!arg)
+	{
+		_expeditor->setLogged(false);
+		return 0;
+	}
+	serv->remove_user_from_channels(_expeditor, " QUIT :" + *arg);
+	_expeditor->setLogged(false);
 	return 0;
 }
-
 
 /*	PART	*/
 
@@ -367,8 +368,8 @@ Part::Part(server * serv):Command(serv)
 
 int Part::execute()
 {
+	///// Iterrer dans les args avec nouveau parsing lorsque plusieurs noms de chans en une cmd
 	std::string	*	arg = _args[CHANNEL].arg;
-
 	if (!arg)
 	{
 		serv->send_replies(_expeditor, "PART :Not enough parameters", ERR_NEEDMOREPARAMS);
@@ -385,7 +386,7 @@ int Part::execute()
 		serv->send_replies(_expeditor, *arg + " :No such channel", ERR_NOSUCHCHANNEL);
 		return 0;
 	}		
-	serv->user_leave_chan(_expeditor, *arg, false, "");
+	serv->remove_user_from(_expeditor, *arg, "PART");
 	return 0;
 }
 

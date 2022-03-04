@@ -13,8 +13,9 @@ user::~user() {}
 
 std::string	user::getNickname() const { return _nickname; }
 std::string	user::getUsername() const { return _username; }
-std::string	user::getHostname() const { return _hostname; }
 std::string	user::getPassword() const { return _password; }
+std::string	user::getHostname() const { return _hostname; }
+// std::string	user::getPrefix() const { return _prefix; }
 bool		user::getisLogged() const { return _isLogged; }
 int 		user::getSock() const { return _socket.fd; }
 std::string	user::getLocation() const { return _location; }
@@ -24,6 +25,7 @@ std::map<std::string, unsigned int>	user::getChannels() const { return _channels
 void		user::setPassword(std::string psw) { _password = psw; }
 void		user::setNickname(std::string nick) { _nickname = nick; }
 void		user::setLocation(std::string & name) { _location = name; }
+// void		user::setPrefix(std::string & prefix) { _prefix += prefix; }
 
 void		user::setLogged(bool log) 
 { 
@@ -50,6 +52,7 @@ void	user::promote(const std::string & name)
 	try
 	{
 		_channels.at(name) = _channels.at(name) | o;
+
 	}
 	catch(std::out_of_range &oor){} // <-- rentre ici si "name" n existe pas, voir si il y a un send a faire
 }

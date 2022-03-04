@@ -13,6 +13,7 @@ class user
 		std::string					_username;
 		std::string					_hostname;
 		std::string					_password;
+		// std::string					_prefix;
 		std::string					_afkMessage;
 
 		bool						_server_operator;
@@ -41,6 +42,7 @@ class user
 		std::string	getUsername() const;
 		std::string	getPassword() const;
 		std::string	getHostname() const;
+		std::string	getPrefix() const;
 		Socket		getSocket() const;
 		int			getSock() const;
 		bool		getisLogged() const;
@@ -51,6 +53,7 @@ class user
 		void		setNickname(std::string nick);
 		void		setLogged(bool log);
 		void		setLocation(std::string & name);
+		// void		setPrefix(std::string & prefix);
 
 		bool		isOperator(const std::string & name) const;
 		bool		isServOp() const;
