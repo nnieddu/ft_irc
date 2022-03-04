@@ -44,174 +44,130 @@ Interpret::~Interpret()
 		delete it->second;
 }
 
+bool	Interpret::hasEOC(const std::string * buf) const
+{
+	return (buf->find('\n') != std::string::npos || buf->find('\r') != std::string::npos);
+}
+
 int Interpret::launch(user & usr)
 {
-	Command	*									cmd;
-	std::vector<std::string *>					args;
-	std::map<std::string, Command *>::iterator	it;
+	std::vector<std::string *>*	args;
+	int							ret;
 
-	int ret = 0;
-	
-	while (!(usr.buf.empty()) && (usr.buf.find('\r') || usr.buf.find('\n')))
+	args = parseCmds(&usr.buf);
+
+	while (!args->empty())
 	{
-		_iseoc = false;
-
-		if ((it = cmds_list.find(parseCmds(&usr.buf))) != cmds_list.end())
-		{
-			cmd = it->second;
-			cmd->setExpeditor(&usr);
-
-			if (_iseoc == false && cmd->needReceiver())
-				args.push_back(parseWord(&usr.buf));
-			if (_iseoc == false && cmd->needNick())
-				args.push_back(parseWord(&usr.buf));
-			if (_iseoc == false && cmd->needChannel())
-				args.push_back(parseWord(&usr.buf));
-			if (_iseoc == false && cmd->needUser())
-				args.push_back(parseWord(&usr.buf));
-			if (_iseoc == false && cmd->needArg())
-				args.push_back(parseMessage(&usr.buf));
-			if (_iseoc == false && cmd->needPass())
-				args.push_back(parseWord(&usr.buf));
-
-			cmd->setArgs(args);
-			ret = cmd->execute();
-			cmd->reset();
-
-			if (_iseoc == false)
-				clearLeftover(&usr.buf);
-		}
+		if (cmds_list.find(*args->front()) != cmds_list.end())
+			ret = cmd_found(cmds_list[*args->front()], usr, args);
 		else
-			ret = cmd_not_found(usr);
+			ret = cmd_not_found(usr, args);
 	}
+
+	delete args;
 	return ret;
 }
 
-std::string Interpret::parseCmds(std::string * buf)
+int	Interpret::cmd_found(Command* cmd, user & usr, std::vector<std::string *>* args)
 {
-	std::string::iterator	it = buf->begin();
-	std::string				cmd;
-	
-	it = buf->begin();
-	while (it != buf->end() && *it != '\r' && *it != '\n' && *it != ' ')
-		it++;
-	if (it != buf->end() && *it != ' ')
-		it = IsEOC(it, buf);
-	cmd.assign(buf->begin(), it);
-	buf->erase(buf->begin(), it);
-	//std::cout << "searching : [" << cmd << "]" << std::endl;
-	return (cmd);
+	cmd->setExpeditor(&usr);
+	cmd->setArgs(args);
+	cmd->execute();
+	cmd->reset();
+	clearLeftover(args);
+	return 0;
 }
 
-int	Interpret::cmd_not_found(user & usr)
+int	Interpret::cmd_not_found(user & usr, std::vector<std::string *>* args) const
 {
-	std::string::iterator	it(usr.buf.begin());
+	std::cerr << *args->front() << ": Command not found" << std::endl;
 
-	clearLeftover(&usr.buf);
-	std::cerr << "Command not found" << std::endl; // pass tt le temps par la 
+	clearLeftover(args);
 	return 1;
 }
 
-std::string *	Interpret::parseWord(std::string * buf)
+std::vector<std::string *>* Interpret::parseCmds(std::string * buf) const
 {
-	std::string::iterator	first(buf->begin());
-	std::string::iterator	last;
-	std::string				arg;
+	std::vector<std::string *>*	args = new std::vector<std::string *>;
 
-	if (GetNextWord(buf) == NULL)
-		return NULL;
-	last = first;
-	while(last != buf->end() && *last != ' ' && *last != 7 && *last != '\r' && *last != '\n')
-		last++;
-	if (last != buf->end() && (*last == 7 || *last == '\r' || *last == '\n'))
-		last = IsEOC(last, buf);
-	arg.assign(first, last);
-	buf->erase(first, last);
-	return new std::string(arg);
-}
-
-std::string *	Interpret::parseMessage(std::string * buf)
-{
-	std::string::iterator	first;
-	std::string::iterator	last;
-	std::string				arg;
-
-	if (GetMessageStart(buf) == NULL)
-		return NULL;
-	first = buf->begin();
-	last = first;
-	while(last != buf->end() && *last != '\r' && *last != '\n' )
-		last++;
-	if (last != buf->end())
-		last = IsEOC(last, buf);
-	arg.assign(first, last);
-	buf->erase(first, last);
-	return new std::string(arg);
-}
-
-std::string *	Interpret::GetMessageStart(std::string * buf)
-{
-	std::string::iterator	first;
-
-	if (buf->empty())
-		return NULL;
-	first = buf->begin() + 1;
-	while (first != buf->end() && *(first) != ':')
-		first++;
-	buf->erase(buf->begin(), first);
-	if (buf->empty())
-		return NULL;
-
-	first = buf->begin();
-	if (*first == '\n' || *first == '\r')
+	while (hasEOC(buf))
 	{
-		first = IsEOC(first, buf);
-		return NULL;
+		buf = GetNextWord(buf);
+
+		if (buf->front() != ':')
+			args->push_back(parseWord(buf));
+		else
+			args->push_back(parseMessage(buf));
 	}
-	return buf;
+	return (args);
 }
 
-std::string *	Interpret::GetNextWord(std::string * buf)
-{
-	std::string::iterator	first(buf->begin());
-
-	while (first != buf->end() && *first == ' ')
-		first++;
-	buf->erase(buf->begin(), first);
-	if (buf->empty())
-		return NULL;
-
-	first = buf->begin();
-	if (*first == '\n' || *first == '\r')
-	{
-		first = IsEOC(first, buf);
-		return NULL;
-	}
-	return buf;
-}
-
-std::string::iterator	Interpret::IsEOC(std::string::iterator it, std::string *buf)
-{
-	size_t pos = it - buf->begin();
-
-	buf->erase(it);
-	it = buf->begin() + pos;
-	if (*it == '\n')
-	{
-		buf->erase(it);
-		it = buf->begin() + pos;
-	}
-	_iseoc = true;
-	return it;
-}
-
-void	Interpret::clearLeftover(std::string * buf)
+std::string *	Interpret::GetNextWord(std::string * buf) const
 {
 	std::string::iterator	it(buf->begin());
 
-	while (it != buf->end() && *it != '\r' && *it != '\n')
+	while (*it == ' ')
 		it++;
-	if (it != buf->end())
-	 	it++;
-	buf->erase(buf->begin(), ++it);
+	buf->erase(buf->begin(), it);
+	if (buf->empty())
+		return NULL;
+	return buf;
+}
+
+std::string *	Interpret::isEOC(std::string * buf) const
+{
+	std::string::iterator	it(buf->begin());
+	std::string				arg;
+
+	if (*(++it) == '\n')
+		++it;
+	arg.assign(buf->begin(), it);
+	buf->erase(buf->begin(), it);
+
+	return new std::string(arg);
+}
+
+std::string *	Interpret::parseWord(std::string * buf) const
+{
+	std::string::iterator	it(buf->begin());
+	std::string				arg;
+
+	if (*it == '\r' || *it == '\n')
+		return isEOC(buf);
+	while(it != buf->end() && *it != ' ' && *it != 7 && *it != '\r' && *it != '\n')
+		it++;
+	arg.assign(buf->begin(), it);
+	buf->erase(buf->begin(), it);
+
+	return new std::string(arg);
+}
+
+std::string *	Interpret::parseMessage(std::string * buf) const
+{
+	std::string::iterator	it(buf->begin());
+	std::string				arg;
+
+	if (*it == '\r' || *it == '\n')
+		return isEOC(buf);
+	while(it != buf->end() && *it != '\r' && *it != '\n')
+		it++;
+	arg.assign(buf->begin(), it);
+	buf->erase(buf->begin(), it);
+
+	return new std::string(arg);
+}
+
+void	Interpret::clearLeftover(std::vector<std::string *>* args) const
+{
+	std::vector<std::string *>::iterator	it(args->begin());
+
+	while (!hasEOC(*it))
+	{
+		delete *it;
+		args->erase(it);
+		it = args->begin();
+	}
+	delete *it;
+	args->erase(it);
+	return ;
 }
