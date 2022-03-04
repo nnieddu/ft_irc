@@ -222,11 +222,11 @@ void	server::remove_user_from(user * usr, const std::string & name, const std::s
 
 void	server::remove_user_from_channels(user * usr, const std::string & msg)
 {
+	std::string name;
 	while (!(usr->getChannels().empty()))
 	{
-		std::string name = usr->getChannels().begin()->first;
+		name = usr->getChannels().begin()->first;
 		remove_user_from(usr, name, msg);
-		usr->leave_channel(name);
 	}
 }
 

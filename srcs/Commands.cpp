@@ -381,7 +381,9 @@ int Part::execute()
 	{
 		serv->send_replies(_expeditor, *arg + " :No such channel", ERR_NOSUCHCHANNEL);
 		return 0;
-	}		
+	}
+	std::string quit = ":" + _expeditor->getNickname() + " PART " + *arg + "\r\n";
+	send(_expeditor->getSock(), quit.c_str(), quit.length(), 0);
 	serv->remove_user_from(_expeditor, *arg, "PART");
 	return 0;
 }
@@ -458,7 +460,7 @@ int Whois::execute()
 	if (!arg)
 	{
 		serv->send_replies(_expeditor, " :No nickname given", ERR_NONICKNAMEGIVEN);
-		return 1;
+		return 0;
 	}
 	if (serv->isUser(*arg) != false)
 	{
@@ -467,7 +469,7 @@ int Whois::execute()
 	    send(_expeditor->getSock(), str.c_str(), strlen(str.c_str()), 0);
 		return 0;
 	}
-	return 1;
+	return 0;
 }
 
 // /*	WHO	*/
