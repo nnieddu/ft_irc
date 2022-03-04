@@ -190,8 +190,15 @@ int	Join::execute()
 		_expeditor->setLocation(name);
 		_expeditor->promote(name);
 		//Voir si d'autre prefix possible que @
-		std::string replies = ":@" + _expeditor->getNickname() + " JOIN :" + name + "\r\n";
+		std::string replies = ":" + _expeditor->getNickname() + " JOIN :" + name + "\r\n";
 		send(_expeditor->getSock(), replies.c_str(), replies.length(), 0);
+		
+
+		std::string msg;
+		serv->send_replies(_expeditor, ":" + serv->channels[name]->getTopic(), RPL_TOPIC);
+		serv->send_replies(_expeditor, "= " + name + " :" + _expeditor->getNickname(), RPL_NAMREPLY);
+		serv->send_replies(_expeditor, name + " :End of names list", RPL_ENDOFNAMES);		
+
 	}
 	else if (_expeditor->getisLogged() && _expeditor->getLocation() != name)
 	{
