@@ -70,8 +70,7 @@ class server
 		void	send_replies(user * usr, std::string msg, const char* code);
 
 
-		std::string format_msg(user * expeditor, std::string & msg);
-		int	send_msg_to_user(user * expeditor, user * dest, std::string & msg);
+		int	send_msg_to_user(user * expeditor, user * dest, std::string & msg, std::string chan_name);
 		int	send_msg_to_channel(user * expeditor, Channel * dest, std::string & msg);
 };
 

@@ -99,12 +99,12 @@ int Privmsg::execute()
 						nameCaseIns(list[0])), *arg))
 					serv->send_replies(_expeditor, "PRIVMSG :cannot send to channel", ERR_CANNOTSENDTOCHAN);
 			}
-			else if (serv->send_msg_to_user(_expeditor, serv->getUser(list[0]), *arg))
+			else if (serv->send_msg_to_user(_expeditor, serv->getUser(list[0]), *arg, ""))
 				serv->send_replies(_expeditor, "PRIVMSG :No such nick", ERR_NOSUCHNICK);
 		}
 		else
 		{
-			if (serv->send_msg_to_user(_expeditor, serv->getUser(list[0]), *arg))
+			if (serv->send_msg_to_user(_expeditor, serv->getUser(list[0]), *arg, ""))
 				serv->send_replies(_expeditor, "PRIVMSG :No such nick", ERR_NOSUCHNICK);
 		}
 		list.erase(list.begin());

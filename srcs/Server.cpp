@@ -230,12 +230,7 @@ void	server::send_replies(user *usr, std::string msg, const char* code)
 	send(usr->getSock(), replies.c_str(), replies.length(), 0);
 }
 
-std::string	server::format_msg(user * expeditor, std::string & msg)
-{
-	return expeditor->getNickname() + "	|	" + msg + "\r\n";
-}
-
-int	server::send_msg_to_user(user * expeditor, user * dest, std::string & msg)
+int	server::send_msg_to_user(user * expeditor, user * dest, std::string & msg, std::string chan_name)
 {
 	if (!dest)
 		return 1;
@@ -243,7 +238,14 @@ int	server::send_msg_to_user(user * expeditor, user * dest, std::string & msg)
 	if (dest->isAway())
 		send(expeditor->getSock(), &dest->getAfkString(), dest->getAfkString().size(), 0);
 
-	std::string fmsg = format_msg(expeditor, msg);
+	std::string fmsg; 
+	if (expeditor->getNickname() != dest->getNickname())
+	{
+		if (chan_name == "")
+			fmsg = ":" + expeditor->getNickname() + " PRIVMSG " + dest->getNickname() + " :" + msg + "\r\n";
+		else
+			fmsg = ":" + expeditor->getNickname() + " PRIVMSG " + chan_name + " :" + msg + "\r\n";
+	}
 
 	send(dest->getSock(), fmsg.c_str(), fmsg.size(), 0);	// add error case
 	return 0;
@@ -259,7 +261,7 @@ int	server::send_msg_to_channel(user * expeditor, Channel * dest, std::string & 
 
 	for	(std::set<user*>::iterator it = userlist.begin(); ret == 0 && it != userlist.end(); it++)
 	{
-		ret = send_msg_to_user(expeditor, *it, msg);
+		ret = send_msg_to_user(expeditor, *it, msg, dest->getName());
 	}
 	return ret;
 }
