@@ -168,10 +168,10 @@ int	Join::execute()
 		serv->send_replies(_expeditor, "JOIN :Not enough parameters", ERR_NEEDMOREPARAMS);
 		return 1;
 	}
-	std::string	name(*channel);
+	std::string	name(nameCaseIns(*channel));
 
-	if (name.find("#") && name.find("&") == std::string::npos && name.find("+") == std::string::npos 
-	&& name.find("!!") == std::string::npos) // A MODIFIER (doit check juste premier char)
+	if (name.find('#') && name.find('&') == std::string::npos && name.find('+') == std::string::npos
+	&& name.find('!') == std::string::npos)
 	{
 		serv->send_replies(_expeditor, "No such channel (need a chan mask)", ERR_BADCHANMASK);
 		return 1;

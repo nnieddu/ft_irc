@@ -32,6 +32,7 @@ int Topic::execute() {
 	std::string	*	channel = _args[CHANNEL].arg;
 
 	if (arg) {
+		*channel = nameCaseIns(*channel);
 		if (serv->channels.find(*channel) == serv->channels.end()) {
 			send(_expeditor->getSock(), "Error: Channel doesn't exist\r\n", 30, 0);
 			return -1;
@@ -41,11 +42,8 @@ int Topic::execute() {
 			if (*arg == ":")
 				serv->channels[*channel]->setTopic(std::string("No topic set for channel ") + \
 				(*channel)[0] + serv->channels[*channel]->getId() + channel->substr(1));
-			else {
-				if ((*arg)[0] == ':')
-					(*arg) = arg->substr(1);
+			else
 				serv->channels[*channel]->setTopic(*arg);
-			}
 		}
 		else {
 			send(_expeditor->getSock(), "Error: Need Op permission\r\n", 27, 0);
@@ -53,6 +51,7 @@ int Topic::execute() {
 		}
 	}
 	else if (channel) {
+		*channel = nameCaseIns(*channel);
 		if (serv->channels.find(*channel) != serv->channels.end()) {
 			send(_expeditor->getSock(), serv->channels[*channel]->getTopic().c_str(), \
 			serv->channels[*channel]->getTopic().length(), 0);

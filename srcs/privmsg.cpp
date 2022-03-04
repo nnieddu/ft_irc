@@ -92,9 +92,10 @@ int Privmsg::execute()
 	{
 		if (HasChannelPrefix(list[0]))
 		{
-			if (serv->channels.find(list[0]) != serv->channels.end())
+			if (serv->channels.find(nameCaseIns(list[0])) != serv->channels.end())
 			{
-				if (serv->send_msg_to_channel(_expeditor, serv->getChannel(list[0]), *arg))
+				if (serv->send_msg_to_channel(_expeditor, serv->getChannel(
+						nameCaseIns(list[0])), *arg))
 					serv->send_replies(_expeditor, "PRIVMSG :cannot send to channel", ERR_CANNOTSENDTOCHAN);
 			}
 			else if (serv->send_msg_to_user(_expeditor, serv->getUser(list[0]), *arg))
