@@ -41,7 +41,7 @@ class Command
 		Command& operator=(const Command& x);
 		virtual ~Command();
 
-		virtual int	execute();
+		virtual void execute();
 
 		void			setExpeditor(user * expeditor);
 		bool			cond(const std::vector<std::string *>* args) const;

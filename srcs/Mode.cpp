@@ -26,7 +26,7 @@ Mode &Mode::operator=(const Mode &old) {
 	return *this;
 }
 
-int Mode::modeChan(Channel& chan, std::string &mod, std::string &arg) {
+void Mode::modeChan(Channel& chan, std::string &mod, std::string &arg) {
 	bool		addRule = false;
 	int			num_o_b = 0;
 	std::string	temp = arg;
@@ -163,10 +163,10 @@ int Mode::modeChan(Channel& chan, std::string &mod, std::string &arg) {
 		}
 
 	}
-	return 0;
+	return ;
 }
 
-int Mode::modeUser(user& usr, std::string &mod, std::string &arg) {
+void Mode::modeUser(user& usr, std::string &mod, std::string &arg) {
 	bool		addRule = false;
 	std::string	temp = arg;
 	user*		target = serv->getUser(temp.substr(0, temp.find_first_of(" \n\r", 0)));
@@ -203,10 +203,10 @@ int Mode::modeUser(user& usr, std::string &mod, std::string &arg) {
 		}
 		mod.erase(0, 1);
 	}
-	return 0;
+	return ;
 }
 
-int Mode::execute() {
+void Mode::execute() {
 	std::string	*arg = _args[MESSAGE].arg;
 	std::string	*mod = _args[USER].arg;
 	std::string	*channel = _args[CHANNEL].arg;
@@ -218,5 +218,5 @@ int Mode::execute() {
 		else if (serv->getUser(*users) != NULL)
 			return modeUser(*serv->getUser(*users), *mod, *arg);
 	}
-	return 0;
+	return ;
 }

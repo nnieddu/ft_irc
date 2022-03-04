@@ -11,7 +11,7 @@ class Pass : public Command
 		virtual ~Pass();
 		Pass&	operator=(const Pass & x);
 		Pass(server * serv);
-		virtual int	execute();
+		virtual void execute();
 };
 
 class Nick : public Command
@@ -22,7 +22,7 @@ class Nick : public Command
 		virtual ~Nick();
 		Nick&	operator=(const Nick & x);
 		Nick(server * serv);
-		virtual int	execute();
+		virtual void execute();
 };
 
 class User : public Command
@@ -33,7 +33,7 @@ class User : public Command
 		virtual ~User();
 		User&	operator=(const User & x);
 		User(server * serv);
-		virtual int	execute();
+		virtual void execute();
 };
 
 class Join : public Command
@@ -44,7 +44,7 @@ class Join : public Command
 		virtual ~Join();
 		Join&	operator=(const Join & x);
 		Join(server * serv);
-		virtual int	execute();
+		virtual void execute();
 };
 
 class List : public Command
@@ -55,7 +55,7 @@ class List : public Command
 		virtual ~List();
 		List&	operator=(const List & x);
 		List(server * serv);
-		virtual int	execute();
+		virtual void execute();
 };
 
 class Oper : public Command
@@ -66,7 +66,7 @@ class Oper : public Command
 		virtual ~Oper();
 		Oper&	operator=(const Oper & x);
 		Oper(server * serv);
-		virtual int	execute();
+		virtual void execute();
 };
 
 class Quit : public Command
@@ -77,7 +77,7 @@ class Quit : public Command
 		virtual ~Quit();
 		Quit&	operator=(const Quit & x);
 		Quit(server * serv);
-		virtual int	execute();
+		virtual void execute();
 };
 
 class Mode : public Command
@@ -88,7 +88,7 @@ class Mode : public Command
 		virtual ~Mode();
 		Mode&	operator=(const Mode & x);
 		Mode(server * serv);
-		virtual int	execute();
+		virtual void execute();
 };
 
 class Topic : public Command
@@ -99,7 +99,7 @@ class Topic : public Command
 		virtual ~Topic();
 		Topic&	operator=(const Topic & x);
 		Topic(server * serv);
-		virtual int	execute();
+		virtual void execute();
 };
 
 class Names : public Command
@@ -110,7 +110,7 @@ class Names : public Command
 		virtual ~Names();
 		Names&	operator=(const Names & x);
 		Names(server * serv);
-		virtual int	execute();
+		virtual void execute();
 };
 
 class Invite : public Command
@@ -121,7 +121,7 @@ class Invite : public Command
 		virtual ~Invite();
 		Invite&	operator=(const Invite & x);
 		Invite(server * serv);
-		virtual int	execute();
+		virtual void execute();
 };
 
 class Kick : public Command
@@ -132,7 +132,7 @@ class Kick : public Command
 		virtual ~Kick();
 		Kick&	operator=(const Kick & x);
 		Kick(server * serv);
-		virtual int	execute();
+		virtual void execute();
 };
 
 class Privmsg : public Command
@@ -143,7 +143,7 @@ class Privmsg : public Command
 		virtual ~Privmsg();
 		Privmsg&	operator=(const Privmsg & x);
 		Privmsg(server * serv);
-		virtual int	execute();
+		virtual void execute();
 };
 
 
@@ -155,7 +155,7 @@ class Ping : public Command
 		virtual ~Ping();
 		Ping&	operator=(const Ping & x);
 		Ping(server * serv);
-		virtual int	execute();
+		virtual void execute();
 };
 
 class Part : public Command
@@ -166,7 +166,7 @@ class Part : public Command
 		virtual ~Part();
 		Part&	operator=(const Part & x);
 		Part(server * serv);
-		virtual int	execute();
+		virtual void execute();
 };
 
 class Version : public Command
@@ -177,7 +177,7 @@ class Version : public Command
 		virtual ~Version();
 		Version&	operator=(const Version & x);
 		Version(server * serv);
-		virtual int	execute();
+		virtual void execute();
 };
 
 class Info : public Command
@@ -188,7 +188,7 @@ class Info : public Command
 		virtual ~Info();
 		Info&	operator=(const Info & x);
 		Info(server * serv);
-		virtual int	execute();
+		virtual void execute();
 };
 
 class Whois : public Command
@@ -199,7 +199,7 @@ class Whois : public Command
 		virtual ~Whois();
 		Whois&	operator=(const Whois & x);
 		Whois(server * serv);
-		virtual int	execute();
+		virtual void execute();
 };
 
 // class Who : public Command
@@ -210,5 +210,5 @@ class Whois : public Command
 // 		virtual ~Who();
 // 		Who&	operator=(const Who & x);
 // 		Who(server * serv);
-// 		virtual int	execute();
+// 		virtual void execute();
 // };

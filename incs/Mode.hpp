@@ -11,8 +11,8 @@
 class Mode : public Command {
 
 	private:
-		int	modeChan(Channel&, std::string&, std::string&);
-		int	modeUser(user&, std::string&, std::string&);
+		void	modeChan(Channel&, std::string&, std::string&);
+		void	modeUser(user&, std::string&, std::string&);
 
 	public:
 
@@ -20,5 +20,5 @@ class Mode : public Command {
 		Mode(server*);
 		virtual ~Mode();
 		Mode&	operator=(const Mode&);
-		virtual int execute();
+		virtual void execute();
 };

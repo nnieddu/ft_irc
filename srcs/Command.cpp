@@ -50,7 +50,7 @@ Command::~Command()
 	}
 }
 
-int	Command::execute() { return 0; }
+void	Command::execute() { return ; }
 
 void	Command::setExpeditor(user * expeditor)
 {
