@@ -10,32 +10,32 @@
 
 Interpret::Interpret(server * serv): _serv(serv)
 {
-	cmds_list["PASS"] = new Pass(_serv);
-	cmds_list["NICK"] = new Nick(_serv);
-	cmds_list["USER"] = new User(_serv);
-	// cmds_list["OPER"] = Oper(_serv);
-	cmds_list["QUIT"] = new Quit(_serv);
-	cmds_list["JOIN"] = new Join(_serv);
-	cmds_list["PART"] = new Part(_serv);
-	// cmds_list["MODE"] = Mode(_serv);
-	cmds_list["TOPIC"] = new Topic(_serv);
-	cmds_list["NAMES"] = new Names(_serv); //
-	cmds_list["LIST"] = new List(_serv);
-	// cmds_list["INVITE"] = Invite(_serv);
-	// cmds_list["KICK"] = Kick(_serv);
-	cmds_list["VERSION"] = new Version(_serv);
-	// cmds_list["TIME"] = Time(_serv);
-	cmds_list["INFO"] = new Info(_serv);
-	cmds_list["PRIVMSG"] = new Privmsg(_serv);
-	// cmds_list["NOTICE"] = Notice(_serv);
-	cmds_list["WHOIS"] = new Whois(_serv);
-	cmds_list["PING"] = new Ping(_serv);
-	// cmds_list["WHO"] = new Who(_serv);
-	//// cmds_list["STATS"] = Stat(_serv);
-	//// cmds_list["ADMIN"] = Admin(_serv); // maybe useless
-	//// cmds_list["WHOWAS"] = Whowas(_serv); // a voir mais relou
-	//// cmds_list["KILL"] = Kill(_serv);
-	// cmds_list["PONG"] = Pong(_serv);
+	cmds_list["pass"] = new Pass(_serv);
+	cmds_list["nick"] = new Nick(_serv);
+	cmds_list["user"] = new User(_serv);
+	// cmds_list["oper"] = Oper(_serv);
+	cmds_list["quit"] = new Quit(_serv);
+	cmds_list["join"] = new Join(_serv);
+	cmds_list["part"] = new Part(_serv);
+	// cmds_list["mode"] = Mode(_serv);
+	cmds_list["topic"] = new Topic(_serv);
+	cmds_list["names"] = new Names(_serv); //
+	cmds_list["list"] = new List(_serv);
+	// cmds_list["invite"] = Invite(_serv);
+	// cmds_list["kick"] = Kick(_serv);
+	cmds_list["version"] = new Version(_serv);
+	// cmds_list["time"] = Time(_serv);
+	cmds_list["info"] = new Info(_serv);
+	cmds_list["privmsg"] = new Privmsg(_serv);
+	// cmds_list["notice"] = Notice(_serv);
+	cmds_list["whois"] = new Whois(_serv);
+	cmds_list["ping"] = new Ping(_serv);
+	// cmds_list["who"] = new Who(_serv);
+	//// cmds_list["stats"] = Stat(_serv);
+	//// cmds_list["admin"] = Admin(_serv); // maybe useless
+	//// cmds_list["whowas"] = Whowas(_serv); // a voir mais relou
+	//// cmds_list["kill"] = Kill(_serv);
+	// cmds_list["pong"] = Pong(_serv);
 }
 
 Interpret::~Interpret()
@@ -58,7 +58,7 @@ int Interpret::launch(user & usr)
 
 	while (!args->empty())
 	{
-		if (cmds_list.find(*args->front()) != cmds_list.end())
+		if (cmds_list.find(nameCaseIns(*args->front())) != cmds_list.end())
 			ret = cmd_found(cmds_list[*args->front()], usr, args);
 		else
 			ret = cmd_not_found(usr, args);
