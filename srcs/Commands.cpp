@@ -35,18 +35,15 @@ int Pass::execute()
 	if (!pass)
 	{
 		serv->send_replies(_expeditor, "PASS :Not enough parameters", ERR_NEEDMOREPARAMS);
-		return 1;
+		return 0;
 	}
 	else if (pass->compare(serv->getPassword()) != 0)
 	{
 		serv->send_replies(_expeditor, ":Password incorrect", ERR_PASSWDMISMATCH); // pas dans la rfc au loggin maybe a remove
-		return 1;
+		return 0;
 	}
 	if (_expeditor->getisLogged() == false)
-	{
-		_expeditor->setPassword(*pass);
 		_expeditor->setLogged(true);
-	}
 	return 0;
 }
 
@@ -88,7 +85,7 @@ int Nick::execute()
 	}
 	else
 		serv->send_replies(_expeditor, *arg + " :Nickname is already in use", ERR_NICKNAMEINUSE);
-	return 1;
+	return 0;
 }
 // ERR_NICKCOLLISION osef ?
 
@@ -158,7 +155,6 @@ Join::Join(server * serv):Command(serv)
 	_args[CHANNEL].isNeeded = true;
 }
 
-
 int	Join::execute()
 {
 	std::string	*	channel = _args[CHANNEL].arg;
@@ -166,7 +162,7 @@ int	Join::execute()
 	if (!channel)
 	{
 		serv->send_replies(_expeditor, "JOIN :Not enough parameters", ERR_NEEDMOREPARAMS);
-		return 1;
+		return 0;
 	}
 	std::string	name(nameCaseIns(*channel));
 
@@ -174,29 +170,28 @@ int	Join::execute()
 	&& name.find('!') == std::string::npos)
 	{
 		serv->send_replies(_expeditor, "No such channel (need a chan mask)", ERR_BADCHANMASK);
-		return 1;
+		return 0;
 	}
 	if (_expeditor->getChannels().size() == 10)
 	{
 		serv->send_replies(_expeditor, name + " :You have joined too many channels (10 max)", ERR_TOOMANYCHANNELS);
 		return 0;
 	}
-	if (!_expeditor->isMember(name) && serv->channels.find(name) == serv->channels.end()
-		&& _expeditor->getisLogged())
+	if (!_expeditor->isMember(name) && serv->channels.find(name) == serv->channels.end())
 	{
 		std::cout << "Channel : " << name << " created" << std::endl;
 		serv->channels[name] = new Channel(*_expeditor, name);
 		serv->channels[name]->addUser(*_expeditor);
 		_expeditor->join_channel(name, true);
-		_expeditor->setLocation(name);
+		// _expeditor->setLocation(name);
 		_expeditor->promote(name);
 		//Voir si d'autre prefix possible que @
 		std::string replies = ":" + _expeditor->getNickname() + " JOIN :" + name + "\r\n";
 		send(_expeditor->getSock(), replies.c_str(), replies.length(), 0);
-		serv->getChannel(name)->send_names_replies(_expeditor, name);
+		serv->getChannel(name)->send_names_replies(_expeditor);
 		serv->send_replies(_expeditor, name + " :End of names list", RPL_ENDOFNAMES);
 	}
-	else if (_expeditor->getisLogged() && _expeditor->getLocation() != name)
+	else if (_expeditor->getChannels().find(name) == _expeditor->getChannels().end())
 	{
 		std::string msg;
 		std::set<user *>::iterator it;
@@ -208,11 +203,11 @@ int	Join::execute()
 		msg = ":" + _expeditor->getNickname() + " JOIN :" + name + "\r\n";
 		send(_expeditor->getSock(), msg.c_str(), msg.length(), 0);
 		serv->send_replies(_expeditor, + " " + name + " :" + serv->channels[name]->getTopic(), RPL_TOPIC);
-		serv->getChannel(name)->send_names_replies(_expeditor, name);
+		serv->getChannel(name)->send_names_replies(_expeditor);
 		serv->send_replies(_expeditor, name + " :End of names list", RPL_ENDOFNAMES);
 		_expeditor->join_channel(name, true);
 		serv->channels[name]->addUser(*_expeditor);
-		_expeditor->setLocation(name);
+		// _expeditor->setLocation(name);
 	}
 	return 0;
 }
@@ -221,6 +216,7 @@ int	Join::execute()
 //ERR_CHANNELISFULL
 //ERR_NOSUCHCHANNEL
 //ERR_BADCHANNELKEY
+
 
 /*	LIST	*/
 
@@ -304,9 +300,8 @@ int Ping::execute()
 	{
 		std::string reply = (":" + _expeditor->getUsername() + " PONG " + serv->getName() + " \r\n");
 		send(_expeditor->getSock(), reply.c_str(), reply.length(), 0);
-		return 0;
 	}
-	return 1;
+	return 0;
 }
 
 
@@ -370,6 +365,7 @@ int Part::execute()
 {
 	///// Iterrer dans les args avec nouveau parsing lorsque plusieurs noms de chans en une cmd
 	std::string	*	arg = _args[CHANNEL].arg;
+	std::cout << "PART ARG =" << *arg << std::endl;
 	if (!arg)
 	{
 		serv->send_replies(_expeditor, "PART :Not enough parameters", ERR_NEEDMOREPARAMS);

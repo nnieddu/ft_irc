@@ -169,7 +169,14 @@ void	server::receive_data(size_t index)
 	{
 		std::cout << _users[index - 1]->getNickname() << " send : [" <<  _users[index - 1]->buf << "]" << std::endl;
 
-		ret = _interpret.launch(*_users[index - 1]);
+		if (tmp.find("PASS") <= 4 && _users[index - 1]->getisLogged() == false)
+		{
+			_interpret.launch(*_users[index - 1]);
+			_users[index - 1]->buf.clear();
+			return ;
+		}
+		if (_users[index - 1]->getisLogged() == true)
+			ret = _interpret.launch(*_users[index - 1]);
 		_users[index - 1]->buf.clear();
 		if (_users[index - 1]->getisLogged() == false)
 			close_user(index);
@@ -204,6 +211,7 @@ void	server::remove_user_from(user * usr, const std::string & name, const std::s
 				send((*it)->getSock(), quit.c_str(), quit.length(), 0);
 		}
 		channels[name]->removeUser(*usr);
+		usr->leave_channel(name);
 		if (channels[name]->getUsers().empty())	// <-- remove channel if its users vector is empty
 		{	
 			delete channels[name];

@@ -12,7 +12,7 @@ class user
 		std::string					_nickname;
 		std::string					_username;
 		std::string					_hostname;
-		std::string					_password;
+		// std::string					_password;
 		// std::string					_prefix;
 		std::string					_afkMessage;
 
@@ -25,7 +25,7 @@ class user
 		Socket						_socket;
 
 		std::map<std::string, unsigned int>	_channels;
-		std::string					_location;
+		// std::string					_location;
 
 		user();
 		user(const user & x);
@@ -40,19 +40,15 @@ class user
 
 		std::string	getNickname() const;
 		std::string	getUsername() const;
-		std::string	getPassword() const;
 		std::string	getHostname() const;
 		std::string	getPrefix() const;
 		Socket		getSocket() const;
 		int			getSock() const;
 		bool		getisLogged() const;
-		std::string	getLocation() const;
 		std::map<std::string, unsigned int>	getChannels() const;
 
-		void		setPassword(std::string psw);
 		void		setNickname(std::string nick);
 		void		setLogged(bool log);
-		void		setLocation(std::string & name);
 		// void		setPrefix(std::string & prefix);
 
 		bool		isOperator(const std::string & name) const;
