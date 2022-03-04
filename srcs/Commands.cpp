@@ -186,13 +186,17 @@ int	Join::execute()
 	{
 		std::cout << "Channel : " << name << " created" << std::endl;
 		serv->channels[name] = new Channel(*_expeditor, name);
+		serv->channels[name]->addUser(*_expeditor);
 		_expeditor->join_channel(name, true);
 		_expeditor->setLocation(name);
 		_expeditor->promote(name);
 		//Voir si d'autre prefix possible que @
 		std::string replies = ":" + _expeditor->getNickname() + " JOIN :" + name + "\r\n";
 		send(_expeditor->getSock(), replies.c_str(), replies.length(), 0);
+		serv->send_replies(_expeditor, ":" + serv->channels[name]->getTopic(), RPL_TOPIC);
 		serv->getChannel(name)->send_names_replies(_expeditor, name);
+		serv->send_replies(_expeditor, name + " :End of names list", RPL_ENDOFNAMES);
+
 	}
 	else if (_expeditor->getisLogged() && _expeditor->getLocation() != name)
 	{
