@@ -269,12 +269,3 @@ std::string&	nameCaseIns(std::string& name) {
 		name[index] = static_cast<char>(std::tolower(name[index]));
 	return name;
 }
-
-void	server::send_names_replies(user * usr, std::string chan_name)
-{
-	std::string usersInChan;
-	std::set<user *>::iterator it;
-	for(it = channels[chan_name]->getUsers().begin(); it != channels[chan_name]->getUsers().end(); ++it)
-		usersInChan += (*it)->getNickname() + " ";
-	send_replies(usr, "= " + chan_name + " :" + usersInChan, RPL_NAMREPLY);
-}

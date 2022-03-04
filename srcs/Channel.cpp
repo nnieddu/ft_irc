@@ -115,3 +115,14 @@ Channel &Channel::operator=(const Channel &old) {
 	}
 	return *this;
 }
+
+void	Channel::send_names_replies(user * usr, std::string chan_name)
+{
+	std::string usersInChan;
+	std::set<user *>::iterator it;
+	for(it = this->getUsers().begin(); it != this->getUsers().end(); ++it)
+		usersInChan += (*it)->getNickname() + " ";
+	std::string replies = ":" + usr->getUsername() +  " " + RPL_NAMREPLY + " " \
+		+ usr->getNickname() + " " +  "= " + chan_name + " :" + usersInChan + "\r\n";
+	send(usr->getSock(), replies.c_str(), replies.length(), 0);
+}
