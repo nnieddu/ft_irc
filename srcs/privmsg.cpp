@@ -1,6 +1,7 @@
 #include "../incs/Command.hpp"
 #include "../incs/Commands.hpp"
 #include "../incs/Server.hpp"
+#include "../incs/User.hpp"
 
 /*
 4.4.1 Private messages
@@ -196,9 +197,15 @@ int Names::execute()
 		for (std::map<std::string, Channel* >::iterator it(serv->channels.begin());
 				it != serv->channels.end(); it++)
 			output << getChannelNicks(it->second);
+		/*for (std::vector<user*>::iterator it(serv->getUsers().begin()); it != serv->getUsers().end(); it++)
+		{
+			if (it->getUsers())
+		}*/
 	}
 	// todo -> Envoyer les bonnes replies au bon format;
-	serv->send_replies(_expeditor, output.str(), RPL_NAMREPLY);
-	serv->send_replies(_expeditor, ":End of /NAMES", RPL_ENDOFNAMES);
+	//serv->send_replies(_expeditor, "= " + name + " :" + usersInChan, RPL_NAMREPLY);
+	//serv->send_replies(_expeditor, name + " :End of names list", RPL_ENDOFNAMES);
+//	serv->send_replies(_expeditor, "= " + output.str(), RPL_NAMREPLY);
+//	serv->send_replies(_expeditor, ":End of /NAMES", RPL_ENDOFNAMES);
 	return 0;
 }
