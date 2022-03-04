@@ -191,17 +191,17 @@ int Names::execute()
 
 		while (!list.empty())
 		{
-			std::set<user *>::iterator	it(serv->channels.find(list.front()));
-			if (serv->channels.find(list.front()) != serv->channels.end())
+			std::map<std::string, Channel*>::iterator	it(serv->channels.find(list.front()));
 
+			if (it != serv->channels.end())
+				it->second->send_names_replies(_expeditor);
 			list.pop_front();
 		}*/
 	}
 	else
 	{/*
-		for (std::map<std::string, Channel* >::iterator it(serv->channels.begin());
-				it != serv->channels.end(); it++)
-			output << getChannelNicks(it->second);
+		for (std::map<std::string, Channel* >::iterator it(serv->channels.begin()); it != serv->channels.end(); it++)
+			it->second->send_names_replies(_expeditor);
 		for (std::vector<user*>::iterator it(serv->getUsers().begin()); it != serv->getUsers().end(); it++)
 		{
 			if (it->getUsers())

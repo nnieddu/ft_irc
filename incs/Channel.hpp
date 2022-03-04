@@ -78,6 +78,6 @@ class Channel {
 		const std::set<user*>&	getUsers() const;
 		const std::string&		getBanMask() const;
 
-		void send_names_replies(user * usr, std::string chan_name);
+		void send_names_replies(user * usr) const;
 
 };
