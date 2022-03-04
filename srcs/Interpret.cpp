@@ -12,7 +12,7 @@ Interpret::Interpret(server * serv): _serv(serv)
 {
 	cmds_list["PASS"] = new Pass(_serv);
 	cmds_list["NICK"] = new Nick(_serv);
-	// cmds_list["USER"] = new User(_serv);
+	cmds_list["USER"] = new User(_serv);
 	// cmds_list["OPER"] = Oper(_serv);
 	cmds_list["QUIT"] = new Quit(_serv);
 	cmds_list["JOIN"] = new Join(_serv);
@@ -99,6 +99,7 @@ std::string Interpret::parseCmds(std::string * buf)
 		it = IsEOC(it, buf);
 	cmd.assign(buf->begin(), it);
 	buf->erase(buf->begin(), it);
+	//std::cout << "searching : [" << cmd << "]" << std::endl;
 	return (cmd);
 }
 
