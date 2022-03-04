@@ -27,7 +27,7 @@ Topic &Topic::operator=(const Topic &old) {
 	return *this;
 }
 
-int Topic::execute() {
+void Topic::execute() {
 	std::string	*	arg = _args[MESSAGE].arg;
 	std::string	*	channel = _args[CHANNEL].arg;
 
@@ -35,7 +35,7 @@ int Topic::execute() {
 		*channel = nameCaseIns(*channel);
 		if (serv->channels.find(*channel) == serv->channels.end()) {
 			send(_expeditor->getSock(), "Error: Channel doesn't exist\r\n", 30, 0);
-			return -1;
+			return ;
 		}
 		if (!(serv->channels[*channel]->getMod() & t) || \
 		_expeditor->getChannels()[*channel]) {
@@ -47,7 +47,7 @@ int Topic::execute() {
 		}
 		else {
 			send(_expeditor->getSock(), "Error: Need Op permission\r\n", 27, 0);
-			return -1;
+			return ;
 		}
 	}
 	else if (channel) {
@@ -57,5 +57,5 @@ int Topic::execute() {
 			serv->channels[*channel]->getTopic().length(), 0);
 		}
 	}
-	return 0;
+	return ;
 }

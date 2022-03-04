@@ -13,5 +13,5 @@ class Topic : public Command {
 		Topic(server*);
 		virtual ~Topic();
 		Topic&	operator=(const Topic&);
-		virtual int execute();
+		virtual void execute();
 };
