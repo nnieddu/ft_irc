@@ -287,3 +287,9 @@ int	server::send_msg_to_channel(user * expeditor, Channel * dest, std::string & 
 	}
 	return ret;
 }
+
+std::string&	nameCaseIns(std::string& name) {
+	for (int index = 0; name[index] ; ++index)
+		name[index] = static_cast<char>(std::tolower(name[index]));
+	return name;
+}

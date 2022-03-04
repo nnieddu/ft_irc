@@ -374,6 +374,7 @@ int Part::execute()
 		serv->send_replies(_expeditor, "PART :Not enough parameters", ERR_NEEDMOREPARAMS);
 		return 0;
 	}
+	*arg = nameCaseIns(*arg);
 	if (_expeditor->getChannels().find(*arg) == _expeditor->getChannels().end())
 	{
 		serv->send_replies(_expeditor, *arg + " :You're not on that channel", ERR_NOTONCHANNEL);

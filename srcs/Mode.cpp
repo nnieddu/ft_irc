@@ -210,12 +210,13 @@ int Mode::execute() {
 	std::string	*arg = _args[MESSAGE].arg;
 	std::string	*mod = _args[USER].arg;
 	std::string	*channel = _args[CHANNEL].arg;
+	std::string *users = _args[CHANNEL].arg;
 
 	if (channel) {
-		if (serv->channels.find(*channel) != serv->channels.end())
-			return modeChan(*serv->channels[*channel], *mod, *arg);
-		else if (serv->getUser(*channel) != NULL)
-			return modeUser(*serv->getUser(*channel), *mod, *arg);
+		if (serv->channels.find(nameCaseIns(*channel)) != serv->channels.end())
+			return modeChan(*serv->channels[nameCaseIns(*channel)], *mod, *arg);
+		else if (serv->getUser(*users) != NULL)
+			return modeUser(*serv->getUser(*users), *mod, *arg);
 	}
 	return 0;
 }

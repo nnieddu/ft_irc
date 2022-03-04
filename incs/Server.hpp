@@ -76,3 +76,5 @@ class server
 		int	send_msg_to_user(user * expeditor, user * dest, std::string & msg);
 		int	send_msg_to_channel(user * expeditor, Channel * dest, std::string & msg);
 };
+
+std::string&	nameCaseIns(std::string&);

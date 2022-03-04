@@ -13,15 +13,10 @@
 #include "../incs/Channel.hpp"
 #include "../incs/Server.hpp"
 
-Channel::Channel(user &users, std::string &newName) : users(), name(), id(),
+Channel::Channel(user &users, std::string &newName) : users(), name(nameCaseIns(newName)), id(),
 topic("No topic set for channel "), password("password"), limit_user(0), chanCrea(NULL) {
 	this->users.insert(&users);
 	id.clear();
-//	for the moment ame is not case-insensitive
-	name = newName;
-//	channel name are case-insensitive
-//	for (int index = 0; newName[index]; index++)
-//		name.push_back(static_cast<char>(std::tolower(newName[index])));
 	if (newName[0] == '&' || newName[0] == '#')
 		mod = o;
 	else if (newName[0] == '+')
@@ -38,7 +33,7 @@ topic("No topic set for channel "), password("password"), limit_user(0), chanCre
 			else
 				id.push_back(static_cast<char>(random + 87));
 		}
-		name = newName.substr(1);
+		name.erase(0, 1);
 	}
 	topic = topic + name[0] + id + name.substr(1);
 }

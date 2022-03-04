@@ -58,7 +58,7 @@ class user
 		void		demoteServ();
 		void		promote(const std::string & name);
 		void		demote(const std::string & name);
-		void		join_channel(const std::string & name, bool op);
+		void		join_channel(std::string & name, bool op);
 		void		leave_channel(const std::string & name);
 		bool		isMember(const std::string & name) const;
 		bool		isAway() const;
