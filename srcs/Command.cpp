@@ -64,6 +64,7 @@ bool	Command::cond(const std::vector<std::string *>* args) const
 
 void	Command::setArgs(std::vector<std::string *>* args)
 {
+	delete args->front();
 	args->erase(args->begin());
 
 	for (size_t st = 0; st <= PASS && cond(args); st++)
