@@ -57,14 +57,31 @@ void	Command::setExpeditor(user * expeditor)
 	_expeditor = expeditor;
 }
 
-void	Command::setArgs(std::vector<std::string *> args)
+bool	Command::cond(const std::vector<std::string *>* args) const
 {
-	for (size_t val = 0; val <= PASS; val++)
+	return args->front()->find('\n') == std::string::npos && args->front()->find('\r') == std::string::npos;
+}
+
+void	Command::setArgs(std::vector<std::string *>* args)
+{
+	args->erase(args->begin());
+
+	for (size_t st = 0; st <= PASS && cond(args); st++)
 	{
-		if (_args[val].isNeeded && args.empty() == false)
+		if (_args[st].isNeeded)
 		{
-			_args[val].arg = args[0];
-			args.erase(args.begin());
+			if (st == MESSAGE)
+			{
+				if (args->front()->front() != ':')
+				{
+					delete args->front();
+					args->front() = NULL;
+				}
+				else
+					args->front()->erase(args->front()->begin());
+			}
+			_args[st].arg = args->front();
+			args->erase(args->begin());
 		}
 	}
 }
