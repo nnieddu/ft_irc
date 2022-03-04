@@ -179,7 +179,10 @@ void	server::receive_data(size_t index)
 			ret = _interpret.launch(*_users[index - 1]);
 		_users[index - 1]->buf.clear();
 		if (_users[index - 1]->getisLogged() == false)
+		{
+			send_replies(_users[index - 1], "You need to be log (PASS command).", "");
 			close_user(index);
+		}
 	}
 }
 
