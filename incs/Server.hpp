@@ -48,10 +48,10 @@ class server
 		std::string			getName() const;
 		std::string			getPassword() const;
 		std::vector<user*>	getUsers() const;
-		user *				getUser(const std::string & nickname);
-		Channel *			getChannel(std::string & name);
+		user *				getUser(const std::string & nickname) const;
+		Channel *			getChannel(const std::string & name) const;
 
-		bool isUser(std::string nickname) const;
+		bool isUser(const std::string & nickname) const;
 
 		class quitexcept : public std::exception
 		{
@@ -65,13 +65,13 @@ class server
 		void	accept_user();
 		void	receive_data(size_t index);
 		void	close_user(size_t index);
-		void	remove_user_from(user * usr, const std::string & name, std::string msg);
-		void	remove_user_from_channels(user * usr, std::string msg);
-		void	send_replies(user * usr, std::string msg, const char* code);
+		void	remove_user_from(user * usr, const std::string & name, const std::string & msg);
+		void	remove_user_from_channels(user * usr, const std::string & msg);
+		void	send_replies(user * usr, const std::string & msg, const char* code) const;
 
 
-		int	send_msg_to_user(user * expeditor, user * dest, std::string & msg, std::string chan_name);
-		int	send_msg_to_channel(user * expeditor, Channel * dest, std::string & msg);
+		int	send_msg_to_user(user * expeditor, user * dest, const std::string & msg, const std::string & chan_name) const;
+		int	send_msg_to_channel(user * expeditor, Channel * dest, const std::string & msg) const;
 };
 
 std::string&	nameCaseIns(std::string&);

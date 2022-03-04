@@ -104,7 +104,11 @@ int Privmsg::execute()
 		}
 		else
 		{
-			if (serv->send_msg_to_user(_expeditor, serv->getUser(list[0]), *arg, ""))
+			user * usr = serv->getUser(list[0]);
+
+			if (usr->isAway())
+				serv->send_replies(_expeditor, "PRIVMSG :receiver is away", RPL_AWAY);
+			else if (serv->send_msg_to_user(_expeditor, usr, *arg, ""))
 				serv->send_replies(_expeditor, "PRIVMSG :No such nick", ERR_NOSUCHNICK);
 		}
 		list.erase(list.begin());
@@ -182,30 +186,26 @@ int Names::execute()
 	std::stringstream	output;
 
 	if (channel)
-	{
+	{/*
 		std::deque<std::string> list = _args[CHANNEL].parseList();
 
 		while (!list.empty())
 		{
+			std::set<user *>::iterator	it(serv->channels.find(list.front()));
 			if (serv->channels.find(list.front()) != serv->channels.end())
-				output << getChannelNicks(serv->channels[list.front()]);
+
 			list.pop_front();
-		}
+		}*/
 	}
 	else
-	{
+	{/*
 		for (std::map<std::string, Channel* >::iterator it(serv->channels.begin());
 				it != serv->channels.end(); it++)
 			output << getChannelNicks(it->second);
-		/*for (std::vector<user*>::iterator it(serv->getUsers().begin()); it != serv->getUsers().end(); it++)
+		for (std::vector<user*>::iterator it(serv->getUsers().begin()); it != serv->getUsers().end(); it++)
 		{
 			if (it->getUsers())
 		}*/
 	}
-	// todo -> Envoyer les bonnes replies au bon format;
-	//serv->send_replies(_expeditor, "= " + name + " :" + usersInChan, RPL_NAMREPLY);
-	//serv->send_replies(_expeditor, name + " :End of names list", RPL_ENDOFNAMES);
-//	serv->send_replies(_expeditor, "= " + output.str(), RPL_NAMREPLY);
-//	serv->send_replies(_expeditor, ":End of /NAMES", RPL_ENDOFNAMES);
 	return 0;
 }

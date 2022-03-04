@@ -37,9 +37,9 @@ std::string 		server::getName() const { return _name; }
 std::string 		server::getPassword() const { return _password; }
 std::vector<user*>	server::getUsers() const { return _users; }
 
-user *				server::getUser(const std::string & nickname)
+user *				server::getUser(const std::string & nickname) const
 {
-	for (std::vector<user*>::iterator it = _users.begin(); it != _users.end(); it++)
+	for (std::vector<user*>::const_iterator it = _users.begin(); it != _users.end(); it++)
 	{
 		if ((*it)->getNickname() == nickname)
 			return *it;
@@ -47,16 +47,16 @@ user *				server::getUser(const std::string & nickname)
 	return NULL;
 }
 
-Channel *	server::getChannel(std::string & name)
+Channel *	server::getChannel(const std::string & name) const
 {
-	std::map<std::string, Channel* >::iterator	it(channels.find(name));
+	std::map<std::string, Channel* >::const_iterator	it(channels.find(name));
 
 	if (it != channels.end())
 		return it->second;
 	return NULL;
 }
 
-bool		server::isUser(std::string nickname) const
+bool		server::isUser(const std::string & nickname) const
 { 
 	for (std::vector<user*>::const_iterator it = _users.begin() ; it != _users.end(); ++it)
 	{
@@ -187,15 +187,17 @@ void	server::close_user(size_t index)
 	_users.erase(_users.begin() + (index - 1));
 }
 
-void	server::remove_user_from(user * usr, const std::string & name, std::string msg)
+void	server::remove_user_from(user * usr, const std::string & name, const std::string & msg)
 {
+	std::string	str;
+
 	if (channels[name]->getUsers().find(usr) != channels[name]->getUsers().end())
 	{
 		if (msg == "QUIT")
-			msg = " QUIT :disconnected";
+			str = " QUIT :disconnected";
 		if (msg == "PART")
-			msg = " PART " + name;
-		std::string quit = ":" + usr->getNickname() + msg + "\r\n";
+			str = " PART " + name;
+		std::string quit = ":" + usr->getNickname() + str + "\r\n";
 		for(std::set<user *>::iterator it = channels[name]->getUsers().begin(); it != channels[name]->getUsers().end(); ++it)
 		{
 			if (usr->getNickname() != (*it)->getNickname())
@@ -210,7 +212,7 @@ void	server::remove_user_from(user * usr, const std::string & name, std::string 
 	}
 }
 
-void	server::remove_user_from_channels(user * usr, std::string msg)
+void	server::remove_user_from_channels(user * usr, const std::string & msg)
 {
 	while (!(usr->getChannels().empty()))
 	{
@@ -220,7 +222,7 @@ void	server::remove_user_from_channels(user * usr, std::string msg)
 	}
 }
 
-void	server::send_replies(user *usr, std::string msg, const char* code)
+void	server::send_replies(user *usr, const std::string & msg, const char* code) const
 {
 	std::string replies;
 	std::string prefix = ":" + usr->getUsername(); // usr->getUsername();
@@ -230,7 +232,7 @@ void	server::send_replies(user *usr, std::string msg, const char* code)
 	send(usr->getSock(), replies.c_str(), replies.length(), 0);
 }
 
-int	server::send_msg_to_user(user * expeditor, user * dest, std::string & msg, std::string chan_name)
+int	server::send_msg_to_user(user * expeditor, user * dest, const std::string & msg, const std::string & chan_name) const
 {
 	if (!dest)
 		return 1;
@@ -251,7 +253,7 @@ int	server::send_msg_to_user(user * expeditor, user * dest, std::string & msg, s
 	return 0;
 }
 
-int	server::send_msg_to_channel(user * expeditor, Channel * dest, std::string & msg)
+int	server::send_msg_to_channel(user * expeditor, Channel * dest, const std::string & msg) const
 {
 	if (!dest || !(expeditor->isMember(dest->getName())))
 		return 1;
