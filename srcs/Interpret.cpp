@@ -39,6 +39,8 @@ Interpret::Interpret(server * serv): _serv(serv)
 	// _cmds_list["pong"] = Pong(_serv);
 }
 
+/*----------------------------------------------------------------------------*/
+
 Interpret::~Interpret()
 {
 	for (std::map<std::string, Command *>::iterator	it(_cmds_list.begin()); it != _cmds_list.end(); it++)
@@ -66,6 +68,8 @@ int Interpret::treat_user_buffer(user & usr)
 	return ret;
 }
 
+/*----------------------------------------------------------------------------*/
+
 std::vector<std::string *>* Interpret::parseCmds(std::string * buf) const
 {
 	std::vector<std::string *>*	args = new std::vector<std::string *>;
@@ -82,6 +86,8 @@ std::vector<std::string *>* Interpret::parseCmds(std::string * buf) const
 	return (args);
 }
 
+/*----------------------------------------------------------------------------*/
+
 std::string *	Interpret::GetNextWord(std::string * buf) const
 {
 	std::string::iterator	it(buf->begin());
@@ -93,6 +99,8 @@ std::string *	Interpret::GetNextWord(std::string * buf) const
 		return NULL;
 	return buf;
 }
+
+/*----------------------------------------------------------------------------*/
 
 std::string *	Interpret::parseWord(std::string * buf) const
 {
@@ -108,6 +116,8 @@ std::string *	Interpret::parseWord(std::string * buf) const
 
 	return new std::string(arg);
 }
+
+/*----------------------------------------------------------------------------*/
 
 std::string *	Interpret::parseMessage(std::string * buf) const
 {
@@ -128,8 +138,7 @@ std::string *	Interpret::parseMessage(std::string * buf) const
 
 int	Interpret::cmd_found(Command* cmd, user & usr, std::vector<std::string *>* args)
 {
-	cmd->setExpeditor(&usr);
-	cmd->setArgs(args);
+	cmd->setArgs(&usr, args);
 	cmd->execute();
 	cmd->reset();
 	clearLeftover(args);
@@ -163,6 +172,8 @@ std::string *	Interpret::isEOC(std::string * buf) const
 
 	return new std::string(arg);
 }
+
+/*----------------------------------------------------------------------------*/
 
 void	Interpret::clearLeftover(std::vector<std::string *>* args) const
 {

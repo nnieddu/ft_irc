@@ -56,13 +56,9 @@ Command::~Command()
 
 /*----------------------------------------------------------------------------*/
 
-void	Command::setExpeditor(user * expeditor)
+void	Command::setArgs(user * expeditor, std::vector<std::string *>* args)
 {
 	_expeditor = expeditor;
-}
-
-void	Command::setArgs(std::vector<std::string *>* args)
-{
 	delete args->front();
 	args->erase(args->begin());
 

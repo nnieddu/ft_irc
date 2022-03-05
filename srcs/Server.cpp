@@ -20,6 +20,8 @@ server::server(const int & port, const std::string & password)
 	_fds.push_back(serv_fd);
 }
 
+/*----------------------------------------------------------------------------*/
+
 server::~server() 
 {
 	for (size_t index = 0; index < _users.size() + 1; index++)
@@ -49,6 +51,8 @@ static void	ft_exit(int sign)
 	else
 		throw(std::runtime_error("poll() failed"));
 }
+
+/*----------------------------------------------------------------------------*/
 
 void	server::run()
 {
@@ -110,6 +114,8 @@ void server::accept_user()
 	_users.push_back(new_user);
 	_fds.push_back(new_pollfd);
 }
+
+/*----------------------------------------------------------------------------*/
 
 void	server::close_user(size_t index)
 {
@@ -198,6 +204,8 @@ void	server::remove_user_from(user * usr, const std::string & name, const std::s
 	}
 }
 
+/*----------------------------------------------------------------------------*/
+
 void	server::remove_user_from_channels(user * usr, const std::string & msg)
 {
 	std::string name;
@@ -220,6 +228,8 @@ void	server::send_replies(user *usr, const std::string & msg, const char* code) 
 	send(usr->getSock(), replies.c_str(), replies.length(), 0);
 }
 
+/*----------------------------------------------------------------------------*/
+
 int	server::send_msg_to_user(const user * expeditor, const user * dest, const std::string & msg, const std::string & chan_name) const
 {
 	if (!dest)
@@ -240,6 +250,8 @@ int	server::send_msg_to_user(const user * expeditor, const user * dest, const st
 	send(dest->getSock(), fmsg.c_str(), fmsg.size(), 0);	// add error case
 	return 0;
 }
+
+/*----------------------------------------------------------------------------*/
 
 int	server::send_msg_to_channel(const user * expeditor, const Channel * dest, const std::string & msg) const
 {
@@ -284,6 +296,8 @@ user *				server::getUser(const std::string & nickname) const
 	}
 	return NULL;
 }
+
+/*----------------------------------------------------------------------------*/
 
 Channel *	server::getChannel(const std::string & name) const
 {

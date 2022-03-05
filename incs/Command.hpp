@@ -37,8 +37,7 @@ class Command
 		Command& operator=(const Command&);
 		virtual ~Command();
 
-		void			setExpeditor(user*);
-		void			setArgs(std::vector<std::string*>*);
+		void			setArgs(user *, std::vector<std::string*>*);
 		virtual void	execute();
 		void			reset();
 
