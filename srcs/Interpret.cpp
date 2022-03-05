@@ -1,4 +1,3 @@
-
 #include "../incs/Interpret.hpp"
 #include "../incs/Socket.hpp"
 #include "../incs/NumericReplies.hpp"
@@ -8,48 +7,47 @@
 
 #include <stdlib.h>
 
+/*----------------------------------------------------------------------------*/
+
 Interpret::Interpret(server * serv): _serv(serv)
 {
-	cmds_list["pass"] = new Pass(_serv);
-	cmds_list["nick"] = new Nick(_serv);
-	cmds_list["user"] = new User(_serv);
-	// cmds_list["oper"] = Oper(_serv);
-	cmds_list["quit"] = new Quit(_serv);
-	cmds_list["join"] = new Join(_serv);
-	cmds_list["part"] = new Part(_serv);
-	// cmds_list["mode"] = Mode(_serv);
-	cmds_list["topic"] = new Topic(_serv);
-	cmds_list["names"] = new Names(_serv); //
-	cmds_list["list"] = new List(_serv);
-	// cmds_list["invite"] = Invite(_serv);
-	// cmds_list["kick"] = Kick(_serv);
-	cmds_list["version"] = new Version(_serv);
-	// cmds_list["time"] = Time(_serv);
-	cmds_list["info"] = new Info(_serv);
-	cmds_list["privmsg"] = new Privmsg(_serv);
-	// cmds_list["notice"] = Notice(_serv);
-	cmds_list["whois"] = new Whois(_serv);
-	cmds_list["ping"] = new Ping(_serv);
-	// cmds_list["who"] = new Who(_serv);
-	//// cmds_list["stats"] = Stat(_serv);
-	//// cmds_list["admin"] = Admin(_serv); // maybe useless
-	//// cmds_list["whowas"] = Whowas(_serv); // a voir mais relou
-	//// cmds_list["kill"] = Kill(_serv);
-	// cmds_list["pong"] = Pong(_serv);
+	_cmds_list["pass"] = new Pass(_serv);
+	_cmds_list["nick"] = new Nick(_serv);
+	_cmds_list["user"] = new User(_serv);
+	// _cmds_list["oper"] = Oper(_serv);
+	_cmds_list["quit"] = new Quit(_serv);
+	_cmds_list["join"] = new Join(_serv);
+	_cmds_list["part"] = new Part(_serv);
+	// _cmds_list["mode"] = Mode(_serv);
+	_cmds_list["topic"] = new Topic(_serv);
+	_cmds_list["names"] = new Names(_serv); //
+	_cmds_list["list"] = new List(_serv);
+	// _cmds_list["invite"] = Invite(_serv);
+	// _cmds_list["kick"] = Kick(_serv);
+	_cmds_list["version"] = new Version(_serv);
+	// _cmds_list["time"] = Time(_serv);
+	_cmds_list["info"] = new Info(_serv);
+	_cmds_list["privmsg"] = new Privmsg(_serv);
+	// _cmds_list["notice"] = Notice(_serv);
+	_cmds_list["whois"] = new Whois(_serv);
+	_cmds_list["ping"] = new Ping(_serv);
+	// _cmds_list["who"] = new Who(_serv);
+	//// _cmds_list["stats"] = Stat(_serv);
+	//// _cmds_list["admin"] = Admin(_serv); // maybe useless
+	//// _cmds_list["whowas"] = Whowas(_serv); // a voir mais relou
+	//// _cmds_list["kill"] = Kill(_serv);
+	// _cmds_list["pong"] = Pong(_serv);
 }
 
 Interpret::~Interpret()
 {
-	for (std::map<std::string, Command *>::iterator	it(cmds_list.begin()); it != cmds_list.end(); it++)
+	for (std::map<std::string, Command *>::iterator	it(_cmds_list.begin()); it != _cmds_list.end(); it++)
 		delete it->second;
 }
 
-bool	Interpret::hasEOC(const std::string * buf) const
-{
-	return (buf->find('\n') != std::string::npos || buf->find('\r') != std::string::npos);
-}
+/*----------------------------------------------------------------------------*/
 
-int Interpret::launch(user & usr)
+int Interpret::treat_user_buffer(user & usr)
 {
 	std::vector<std::string *>*	args;
 	int							ret;
@@ -58,32 +56,14 @@ int Interpret::launch(user & usr)
 
 	while (!args->empty())
 	{
-		if (cmds_list.find(nameCaseIns(*args->front())) != cmds_list.end())
-			ret = cmd_found(cmds_list[*args->front()], usr, args);
+		if (_cmds_list.find(nameCaseIns(*args->front())) != _cmds_list.end())
+			ret = cmd_found(_cmds_list[*args->front()], usr, args);
 		else
 			ret = cmd_not_found(usr, args);
 	}
 
 	delete args;
 	return ret;
-}
-
-int	Interpret::cmd_found(Command* cmd, user & usr, std::vector<std::string *>* args)
-{
-	cmd->setExpeditor(&usr);
-	cmd->setArgs(args);
-	cmd->execute();
-	cmd->reset();
-	clearLeftover(args);
-	return 0;
-}
-
-int	Interpret::cmd_not_found(user & usr, std::vector<std::string *>* args) const
-{
-	std::cerr << *args->front() << ": Command not found" << std::endl;
-
-	clearLeftover(args);
-	return 1;
 }
 
 std::vector<std::string *>* Interpret::parseCmds(std::string * buf) const
@@ -114,19 +94,6 @@ std::string *	Interpret::GetNextWord(std::string * buf) const
 	return buf;
 }
 
-std::string *	Interpret::isEOC(std::string * buf) const
-{
-	std::string::iterator	it(buf->begin());
-	std::string				arg;
-
-	if (*(++it) == '\n')
-		++it;
-	arg.assign(buf->begin(), it);
-	buf->erase(buf->begin(), it);
-
-	return new std::string(arg);
-}
-
 std::string *	Interpret::parseWord(std::string * buf) const
 {
 	std::string::iterator	it(buf->begin());
@@ -151,6 +118,46 @@ std::string *	Interpret::parseMessage(std::string * buf) const
 		return isEOC(buf);
 	while(it != buf->end() && *it != '\r' && *it != '\n')
 		it++;
+	arg.assign(buf->begin(), it);
+	buf->erase(buf->begin(), it);
+
+	return new std::string(arg);
+}
+
+/*----------------------------------------------------------------------------*/
+
+int	Interpret::cmd_found(Command* cmd, user & usr, std::vector<std::string *>* args)
+{
+	cmd->setExpeditor(&usr);
+	cmd->setArgs(args);
+	cmd->execute();
+	cmd->reset();
+	clearLeftover(args);
+	return 0;
+}
+
+int	Interpret::cmd_not_found(user & usr, std::vector<std::string *>* args) const
+{
+	std::cerr << *args->front() << ": Command not found" << std::endl;
+
+	clearLeftover(args);
+	return 1;
+}
+
+/*----------------------------------------------------------------------------*/
+
+bool	Interpret::hasEOC(const std::string * buf) const
+{
+	return (buf->find('\n') != std::string::npos || buf->find('\r') != std::string::npos);
+}
+
+std::string *	Interpret::isEOC(std::string * buf) const
+{
+	std::string::iterator	it(buf->begin());
+	std::string				arg;
+
+	if (*(++it) == '\n')
+		++it;
 	arg.assign(buf->begin(), it);
 	buf->erase(buf->begin(), it);
 

@@ -45,6 +45,8 @@ class user;
 
 class Channel {
 	private:
+		Channel();
+
 		unsigned int		mod;
 		unsigned int		limit_user;
 		std::string			name;
@@ -58,6 +60,7 @@ class Channel {
 	public:
 		Channel(user&, std::string&);
 		Channel& operator=(const Channel&);
+		virtual	~Channel();
 
 		void	setMod(unsigned int);
 		void	removeMod(unsigned int);
@@ -78,6 +81,6 @@ class Channel {
 		const std::set<user*>&	getUsers() const;
 		const std::string&		getBanMask() const;
 
-		void send_names_replies(user * usr) const;
+		void send_names_replies(const user*) const;
 
 };

@@ -13,6 +13,8 @@
 #include "../incs/Channel.hpp"
 #include "../incs/Server.hpp"
 
+/*----------------------------------------------------------------------------*/
+
 Channel::Channel(user &users, std::string &newName) : users(), name(nameCaseIns(newName)), id(),
 topic("No topic set for channel "), password("password"), limit_user(0), chanCrea(NULL) {
 	this->users.insert(&users);
@@ -37,6 +39,24 @@ topic("No topic set for channel "), password("password"), limit_user(0), chanCre
 	}
 	topic = topic + name[0] + id + name.substr(1);
 }
+
+Channel &Channel::operator=(const Channel &old) {
+	if (this != &old) {
+		this->mod = old.mod;
+		this->limit_user = old.limit_user;
+		this->name = old.name;
+		this->id = old.id;
+		this->topic = old.topic;
+		this->password = old.password;
+		this->chanCrea = old.chanCrea;
+		this->users = old.users;
+	}
+	return *this;
+}
+
+Channel::~Channel(){}
+
+/*----------------------------------------------------------------------------*/
 
 void Channel::setMod(unsigned int newMod) {
 	mod = newMod | mod;
@@ -70,6 +90,8 @@ void Channel::removeUser(user &remUser) {
 	users.erase(users.find(&remUser));
 }
 
+/*----------------------------------------------------------------------------*/
+
 const unsigned int &Channel::getMod() const {
 	return mod;
 }
@@ -102,27 +124,18 @@ const std::set<user *> &Channel::getUsers() const {
 	return users;
 }
 
-Channel &Channel::operator=(const Channel &old) {
-	if (this != &old) {
-		this->mod = old.mod;
-		this->limit_user = old.limit_user;
-		this->name = old.name;
-		this->id = old.id;
-		this->topic = old.topic;
-		this->password = old.password;
-		this->chanCrea = old.chanCrea;
-		this->users = old.users;
-	}
-	return *this;
-}
+/*----------------------------------------------------------------------------*/
 
-void	Channel::send_names_replies(user * usr) const
+void	Channel::send_names_replies(const user * receiver) const
 {
 	std::string usersInChan;
 	std::set<user *>::iterator it;
+
 	for(it = this->getUsers().begin(); it != this->getUsers().end(); ++it)
 		usersInChan += (*it)->getNickname() + " ";
-	std::string replies = ":" + usr->getUsername() +  " " + RPL_NAMREPLY + " " \
-		+ usr->getNickname() + " " +  "= " + name + " :" + usersInChan + "\r\n";
-	send(usr->getSock(), replies.c_str(), replies.length(), 0);
+
+	std::string replies = ":" + receiver->getUsername() +  " " + RPL_NAMREPLY + " " \
+		+ receiver->getNickname() + " " +  "= " + name + " :" + usersInChan + "\r\n";
+
+	send(receiver->getSock(), replies.c_str(), replies.length(), 0);
 }

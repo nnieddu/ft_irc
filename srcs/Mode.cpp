@@ -4,6 +4,8 @@
 
 #include "../incs/Mode.hpp"
 
+/*----------------------------------------------------------------------------*/
+
 Mode::Mode() : Command() {
 	_args[MESSAGE].isNeeded	= true;
 	_args[USER].isNeeded		= true;
@@ -16,15 +18,15 @@ Mode::Mode(server *serv) : Command(serv){
 	_args[CHANNEL].isNeeded		= true;
 }
 
-Mode::~Mode() {
-
-}
+Mode::~Mode() {}
 
 Mode &Mode::operator=(const Mode &old) {
 	if (this != &old)
-		serv = old.serv;
+		_serv = old._serv;
 	return *this;
 }
+
+/*----------------------------------------------------------------------------*/
 
 void Mode::modeChan(Channel& chan, std::string &mod, std::string &arg) {
 	bool		addRule = false;
@@ -47,12 +49,12 @@ void Mode::modeChan(Channel& chan, std::string &mod, std::string &arg) {
 			}
 			else if (mod[0] == 'o' && num_o_b < 3) {
 				if (!addRule) {
-					serv->getUser(std::string(temp.substr(0, \
+					_serv->getUser(std::string(temp.substr(0, \
 					temp.find_first_of(" \n\r", 0))))->demote(chan.getName());
 					temp.erase(0, temp.find_first_of(" \n\r", 0));
 				}
 				else {
-					serv->getUser(std::string(temp.substr(0, \
+					_serv->getUser(std::string(temp.substr(0, \
 					temp.find_first_of(" \n\r", 0))))->promote(chan.getName());
 					temp.erase(0, temp.find_first_of(" \n\r", 0));
 				}
@@ -79,12 +81,12 @@ void Mode::modeChan(Channel& chan, std::string &mod, std::string &arg) {
 			}
 			else if (mod[0] == 'v') {
 				if (!addRule) {
-					serv->getUser(std::string(temp.substr(0, \
+					_serv->getUser(std::string(temp.substr(0, \
 					temp.find_first_of(" \n\r", 0))))->delVoice(chan.getName());
 					temp.erase(0, temp.find_first_of(" \n\r", 0));
 				}
 				else {
-					serv->getUser(std::string(temp.substr(0, \
+					_serv->getUser(std::string(temp.substr(0, \
 					temp.find_first_of(" \n\r", 0))))->setVoice(chan.getName());
 					temp.erase(0, temp.find_first_of(" \n\r", 0));
 				}
@@ -169,7 +171,7 @@ void Mode::modeChan(Channel& chan, std::string &mod, std::string &arg) {
 void Mode::modeUser(user& usr, std::string &mod, std::string &arg) {
 	bool		addRule = false;
 	std::string	temp = arg;
-	user*		target = serv->getUser(temp.substr(0, temp.find_first_of(" \n\r", 0)));
+	user*		target = _serv->getUser(temp.substr(0, temp.find_first_of(" \n\r", 0)));
 
 	temp.erase(0, temp.find_first_of(" \n\r", 0));
 	if (mod[0] == '+')
@@ -206,6 +208,8 @@ void Mode::modeUser(user& usr, std::string &mod, std::string &arg) {
 	return ;
 }
 
+/*----------------------------------------------------------------------------*/
+
 void Mode::execute() {
 	std::string	*arg = _args[MESSAGE].arg;
 	std::string	*mod = _args[USER].arg;
@@ -213,10 +217,10 @@ void Mode::execute() {
 	std::string *users = _args[CHANNEL].arg;
 
 	if (channel) {
-		if (serv->channels.find(nameCaseIns(*channel)) != serv->channels.end())
-			return modeChan(*serv->channels[nameCaseIns(*channel)], *mod, *arg);
-		else if (serv->getUser(*users) != NULL)
-			return modeUser(*serv->getUser(*users), *mod, *arg);
+		if (_serv->channels.find(nameCaseIns(*channel)) != _serv->channels.end())
+			return modeChan(*_serv->channels[nameCaseIns(*channel)], *mod, *arg);
+		else if (_serv->getUser(*users) != NULL)
+			return modeUser(*_serv->getUser(*users), *mod, *arg);
 	}
 	return ;
 }

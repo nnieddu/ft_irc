@@ -3,6 +3,71 @@
 #include "../incs/Server.hpp"
 #include "../incs/User.hpp"
 
+/*----------------------------------------------------------------------------*/
+
+Privmsg::Privmsg():Command()
+{
+	_args[RECEIVER].isNeeded	= true;
+	_args[MESSAGE].isNeeded	= true;
+}
+
+Privmsg::~Privmsg() {}
+
+Privmsg & Privmsg::operator=(const Privmsg & x)
+{
+	if (this != &x)
+		_serv = x.getServ();
+	return *this;
+}
+
+Privmsg::Privmsg(server * serv):Command(serv)
+{
+	_args[RECEIVER].isNeeded	= true;
+	_args[MESSAGE].isNeeded	= true;
+}
+
+/*----------------------------------------------------------------------------*/
+
+void Privmsg::execute()
+{
+	std::string	*			receiver = _args[RECEIVER].arg;
+	std::string	*			arg = _args[MESSAGE].arg;
+	std::deque<std::string>	list;
+
+	if (!receiver)
+		return _serv->send_replies(_expeditor, "PRIVMSG :No receiver specified", ERR_NORECIPIENT);
+	if (!arg)
+		return _serv->send_replies(_expeditor, "PRIVMSG :No text to send", ERR_NOTEXTTOSEND);
+
+	list = _args[RECEIVER].parseList();
+
+	while (!list.empty())
+	{
+		if (HasChannelPrefix(list[0]))
+		{
+			if (_serv->channels.find(nameCaseIns(list[0])) != _serv->channels.end())
+			{
+				if (_serv->send_msg_to_channel(_expeditor, _serv->getChannel(
+						nameCaseIns(list[0])), *arg))
+					_serv->send_replies(_expeditor, "PRIVMSG :cannot send to channel", ERR_CANNOTSENDTOCHAN);
+			}
+			else if (_serv->send_msg_to_user(_expeditor, _serv->getUser(list[0]), *arg, ""))
+				_serv->send_replies(_expeditor, "PRIVMSG :No such nick", ERR_NOSUCHNICK);
+		}
+		else
+		{
+			user * usr = _serv->getUser(list[0]);
+
+			if (usr->isAway())
+				_serv->send_replies(_expeditor, "PRIVMSG :receiver is away", RPL_AWAY);
+			else if (_serv->send_msg_to_user(_expeditor, usr, *arg, ""))
+				_serv->send_replies(_expeditor, "PRIVMSG :No such nick", ERR_NOSUCHNICK);
+		}
+		list.erase(list.begin());
+	}
+	return ;
+}
+
 /*
 4.4.1 Private messages
 
@@ -49,64 +114,65 @@ PRIVMSG #*.edu :NSFNet is undergoing work, expect interruptions;
 	Message to all users who come from a host which has a name matching *.edu.
 */
 
-Privmsg::Privmsg():Command()
+/*----------------------------------------------------------------------------*/
+
+Names::Names():Command()
 {
-	_args[RECEIVER].isNeeded	= true;
-	_args[MESSAGE].isNeeded	= true;
+	_args[CHANNEL].isNeeded = true;
 }
 
-Privmsg::~Privmsg() {}
+Names::~Names() {}
 
-Privmsg & Privmsg::operator=(const Privmsg & x)
+Names & Names::operator=(const Names & x)
 {
 	if (this != &x)
-		serv = x.serv;
+		_serv = x.getServ();
 	return *this;
 }
 
-Privmsg::Privmsg(server * serv):Command(serv)
+Names::Names(server * serv):Command(serv)
 {
-	_args[RECEIVER].isNeeded	= true;
-	_args[MESSAGE].isNeeded	= true;
+	_args[CHANNEL].isNeeded = true;
 }
 
-void Privmsg::execute()
+/*----------------------------------------------------------------------------*/
+
+void Names::execute()
 {
-	std::string	*			receiver = _args[RECEIVER].arg;
-	std::string	*			arg = _args[MESSAGE].arg;
-	std::deque<std::string>	list;
+	std::string	*		channel = _args[CHANNEL].arg;
+	std::stringstream	output;
 
-	if (!receiver)
-		return serv->send_replies(_expeditor, "PRIVMSG :No receiver specified", ERR_NORECIPIENT);
-	if (!arg)
-		return serv->send_replies(_expeditor, "PRIVMSG :No text to send", ERR_NOTEXTTOSEND);
-
-	list = _args[RECEIVER].parseList();
-
-	while (!list.empty())
+	if (channel)
 	{
-		if (HasChannelPrefix(list[0]))
-		{
-			if (serv->channels.find(nameCaseIns(list[0])) != serv->channels.end())
-			{
-				if (serv->send_msg_to_channel(_expeditor, serv->getChannel(
-						nameCaseIns(list[0])), *arg))
-					serv->send_replies(_expeditor, "PRIVMSG :cannot send to channel", ERR_CANNOTSENDTOCHAN);
-			}
-			else if (serv->send_msg_to_user(_expeditor, serv->getUser(list[0]), *arg, ""))
-				serv->send_replies(_expeditor, "PRIVMSG :No such nick", ERR_NOSUCHNICK);
-		}
-		else
-		{
-			user * usr = serv->getUser(list[0]);
+		std::deque<std::string> list = _args[CHANNEL].parseList();
 
-			if (usr->isAway())
-				serv->send_replies(_expeditor, "PRIVMSG :receiver is away", RPL_AWAY);
-			else if (serv->send_msg_to_user(_expeditor, usr, *arg, ""))
-				serv->send_replies(_expeditor, "PRIVMSG :No such nick", ERR_NOSUCHNICK);
+		while (!list.empty())
+		{
+			std::map<std::string, Channel*>::iterator	it(_serv->channels.find(list.front()));
+
+			if (it != _serv->channels.end())
+				it->second->send_names_replies(_expeditor);
+			list.pop_front();
 		}
-		list.erase(list.begin());
 	}
+	else
+	{
+		std::string	names;
+
+		for (std::map<std::string, Channel* >::iterator it(_serv->channels.begin()); it != _serv->channels.end(); it++)
+			it->second->send_names_replies(_expeditor);
+		for (std::vector<user*>::iterator it(_serv->getUsers().begin()); it != _serv->getUsers().end(); it++)
+		{
+			if ((*it)->getChannels().empty())
+				names += (*it)->getNickname() + " ";
+		}
+		if (!(names.empty()))
+		{
+			std::string replies = ":" + _expeditor->getUsername() +  " " + RPL_NAMREPLY + " " + _expeditor->getNickname() + " " +  "= * :" + names + "\r\n";
+			send(_expeditor->getSock(), replies.c_str(), replies.length(), 0);
+		}
+	}
+	_serv->send_replies(_expeditor, "* :End of names list", RPL_ENDOFNAMES);
 	return ;
 }
 
@@ -140,74 +206,3 @@ void Privmsg::execute()
 	NAMES;
 		list all visible channels and users
 */
-
-Names::Names():Command()
-{
-	_args[CHANNEL].isNeeded = true;
-}
-
-Names::~Names() {}
-
-Names & Names::operator=(const Names & x)
-{
-	if (this != &x)
-		serv = x.serv;
-	return *this;
-}
-
-Names::Names(server * serv):Command(serv)
-{
-	_args[CHANNEL].isNeeded = true;
-}
-
-static std::string	getChannelNicks(Channel * chan)
-{
-	std::stringstream	output;
-
-	output << "Nicks " << chan->getName();
-	for (std::set<user *>::iterator	it(chan->getUsers().begin()); it != chan->getUsers().end(); it++)
-	{
-		output << " " << (*it)->getNickname();
-	}
-	output << std::endl;
-	return output.str();
-}
-
-void Names::execute()
-{
-	std::string	*		channel = _args[CHANNEL].arg;
-	std::stringstream	output;
-
-	if (channel)
-	{
-		std::deque<std::string> list = _args[CHANNEL].parseList();
-
-		while (!list.empty())
-		{
-			std::map<std::string, Channel*>::iterator	it(serv->channels.find(list.front()));
-
-			if (it != serv->channels.end())
-				it->second->send_names_replies(_expeditor);
-			list.pop_front();
-		}
-	}
-	else
-	{
-		std::string	names;
-
-		for (std::map<std::string, Channel* >::iterator it(serv->channels.begin()); it != serv->channels.end(); it++)
-			it->second->send_names_replies(_expeditor);
-		for (std::vector<user*>::iterator it(serv->getUsers().begin()); it != serv->getUsers().end(); it++)
-		{
-			if ((*it)->getChannels().empty())
-				names += (*it)->getNickname() + " ";
-		}
-		if (!(names.empty()))
-		{
-			std::string replies = ":" + _expeditor->getUsername() +  " " + RPL_NAMREPLY + " " + _expeditor->getNickname() + " " +  "= * :" + names + "\r\n";
-			send(_expeditor->getSock(), replies.c_str(), replies.length(), 0);
-		}
-	}
-	serv->send_replies(_expeditor, "* :End of names list", RPL_ENDOFNAMES);
-	return ;
-}

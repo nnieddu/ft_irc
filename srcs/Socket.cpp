@@ -1,5 +1,6 @@
-
 #include "../incs/Socket.hpp"
+
+/*----------------------------------------------------------------------------*/
 
 Socket::Socket(): fd(-1), address(sockaddr_in()), len(socklen_t())
 {}
@@ -24,6 +25,8 @@ Socket& Socket::operator=(const Socket& x)
 
 Socket::~Socket()
 {}
+
+/*----------------------------------------------------------------------------*/
 
 void	Socket::server_socket(int port)
 {

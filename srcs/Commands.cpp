@@ -4,7 +4,7 @@
 #include "../incs/NumericReplies.hpp"
 #include "../incs/Server.hpp"
 
-#include <stdlib.h>
+#include <cstdlib>
 
 /*	PASS	*/
 
@@ -18,7 +18,7 @@ Pass::~Pass() {}
 Pass & Pass::operator=(const Pass & x)
 {
 	if (this != &x)
-		serv = x.serv;
+		_serv = x.getServ();
 	return *this;
 }
 
@@ -31,15 +31,15 @@ void Pass::execute()
 {
 	std::string	*	pass = _args[PASS].arg;
 	// if (usr->isRegister == true) // voir si on garde un historic pas sur de capter voir 4.1.1
-	// 	 serv->send_replies(usr, NULL, ERR_ALREADYREGISTRED);
+	// 	 _serv->send_replies(usr, NULL, ERR_ALREADYREGISTRED);
 	if (!pass)
 	{
-		serv->send_replies(_expeditor, "PASS :Not enough parameters", ERR_NEEDMOREPARAMS);
+		_serv->send_replies(_expeditor, "PASS :Not enough parameters", ERR_NEEDMOREPARAMS);
 		return ;
 	}
-	else if (pass->compare(serv->getPassword()) != 0)
+	else if (pass->compare(_serv->getPassword()) != 0)
 	{
-		serv->send_replies(_expeditor, ":Password incorrect", ERR_PASSWDMISMATCH); // pas dans la rfc au loggin maybe a remove
+		_serv->send_replies(_expeditor, ":Password incorrect", ERR_PASSWDMISMATCH); // pas dans la rfc au loggin maybe a remove
 		return ;
 	}
 	if (_expeditor->getisLogged() == false)
@@ -59,7 +59,7 @@ Nick::~Nick() {}
 Nick & Nick::operator=(const Nick & x)
 {
 	if (this != &x)
-		serv = x.serv;
+		_serv = x.getServ();
 	return *this;
 }
 
@@ -73,10 +73,10 @@ void Nick::execute()
 	std::string	*	arg = _args[NICK].arg;
 
 	if (!arg)
-		serv->send_replies(_expeditor, " :No nickname given", ERR_NONICKNAMEGIVEN);
+		_serv->send_replies(_expeditor, " :No nickname given", ERR_NONICKNAMEGIVEN);
 	if (*arg == "anonymous") //// check char spe/grammar protocol rfc
-		serv->send_replies(_expeditor, " :Erroneus nickname", ERR_ERRONEUSNICKNAME);
-	if (serv->isUser(*arg) == false)
+		_serv->send_replies(_expeditor, " :Erroneus nickname", ERR_ERRONEUSNICKNAME);
+	if (_serv->isUser(*arg) == false)
 	{
 		std::string str = ":" + _expeditor->getNickname() + " NICK " + ":" + *arg + "\r\n";
 	    send(_expeditor->getSock(), str.c_str(), strlen(str.c_str()), 0);
@@ -84,7 +84,7 @@ void Nick::execute()
 		return ;
 	}
 	else
-		serv->send_replies(_expeditor, *arg + " :Nickname is already in use", ERR_NICKNAMEINUSE);
+		_serv->send_replies(_expeditor, *arg + " :Nickname is already in use", ERR_NICKNAMEINUSE);
 	return ;
 }
 // ERR_NICKCOLLISION osef ?
@@ -102,7 +102,7 @@ User::~User(){}
 User & User::operator=(const User & x)
 {
 	if (this != &x)
-		serv = x.serv;
+		_serv = x.getServ();
 	return *this;
 }
 
@@ -117,7 +117,7 @@ void User::execute()
 
 	if (!arg) 
 	{
-		serv->send_replies(_expeditor, "USER :Not enough parameters", ERR_NEEDMOREPARAMS);
+		_serv->send_replies(_expeditor, "USER :Not enough parameters", ERR_NEEDMOREPARAMS);
 		return ;
 	}
 	// if (_expeditor->getisLogged() != true)
@@ -129,7 +129,7 @@ void User::execute()
 	// 	return ;
 	// }
 	// if (_expeditor->getisLogged() == true)
-	// 	serv->send_replies(_expeditor, " :You may not reregister", ERR_ALREADYREGISTRED);
+	// 	_serv->send_replies(_expeditor, " :You may not reregister", ERR_ALREADYREGISTRED);
 	return ;
 }
 
@@ -146,7 +146,7 @@ Join::~Join(){}
 Join & Join::operator=(const Join & x)
 {
 	if (this != &x)
-		serv = x.serv;
+		_serv = x.getServ();
 	return *this;
 }
 
@@ -161,7 +161,7 @@ void	Join::execute()
 
 	if (!channel)
 	{
-		serv->send_replies(_expeditor, "JOIN :Not enough parameters", ERR_NEEDMOREPARAMS);
+		_serv->send_replies(_expeditor, "JOIN :Not enough parameters", ERR_NEEDMOREPARAMS);
 		return ;
 	}
 	std::string	name(nameCaseIns(*channel));
@@ -169,44 +169,44 @@ void	Join::execute()
 	if (name.find('#') && name.find('&') == std::string::npos && name.find('+') == std::string::npos
 	&& name.find('!') == std::string::npos)
 	{
-		serv->send_replies(_expeditor, "No such channel (need a chan mask)", ERR_BADCHANMASK);
+		_serv->send_replies(_expeditor, "No such channel (need a chan mask)", ERR_BADCHANMASK);
 		return ;
 	}
 	if (_expeditor->getChannels().size() == 10)
 	{
-		serv->send_replies(_expeditor, name + " :You have joined too many channels (10 max)", ERR_TOOMANYCHANNELS);
+		_serv->send_replies(_expeditor, name + " :You have joined too many channels (10 max)", ERR_TOOMANYCHANNELS);
 		return ;
 	}
-	if (!_expeditor->isMember(name) && serv->channels.find(name) == serv->channels.end())
+	if (!_expeditor->isMember(name) && _serv->channels.find(name) == _serv->channels.end())
 	{
 		std::cout << "Channel : " << name << " created" << std::endl;
-		serv->channels[name] = new Channel(*_expeditor, name);
-		serv->channels[name]->addUser(*_expeditor);
+		_serv->channels[name] = new Channel(*_expeditor, name);
+		_serv->channels[name]->addUser(*_expeditor);
 		_expeditor->join_channel(name, true);
 		// _expeditor->setLocation(name);
 		_expeditor->promote(name);
 		//Voir si d'autre prefix possible que @
 		std::string replies = ":" + _expeditor->getNickname() + " JOIN :" + name + "\r\n";
 		send(_expeditor->getSock(), replies.c_str(), replies.length(), 0);
-		serv->getChannel(name)->send_names_replies(_expeditor);
-		serv->send_replies(_expeditor, name + " :End of names list", RPL_ENDOFNAMES);
+		_serv->getChannel(name)->send_names_replies(_expeditor);
+		_serv->send_replies(_expeditor, name + " :End of names list", RPL_ENDOFNAMES);
 	}
 	else if (_expeditor->getChannels().find(name) == _expeditor->getChannels().end())
 	{
 		std::string msg;
 		std::set<user *>::iterator it;
-		for(it = serv->channels[name]->getUsers().begin(); it != serv->channels[name]->getUsers().end(); ++it)
+		for(it = _serv->channels[name]->getUsers().begin(); it != _serv->channels[name]->getUsers().end(); ++it)
 		{
 			msg = ":" + _expeditor->getNickname() + " JOIN :" + name + "\r\n";
 			send((*it)->getSock(), msg.c_str(), msg.length(), 0);
 		}
 		msg = ":" + _expeditor->getNickname() + " JOIN :" + name + "\r\n";
 		send(_expeditor->getSock(), msg.c_str(), msg.length(), 0);
-		serv->send_replies(_expeditor, + " " + name + " :" + serv->channels[name]->getTopic(), RPL_TOPIC);
-		serv->getChannel(name)->send_names_replies(_expeditor);
-		serv->send_replies(_expeditor, name + " :End of names list", RPL_ENDOFNAMES);
+		_serv->send_replies(_expeditor, + " " + name + " :" + _serv->channels[name]->getTopic(), RPL_TOPIC);
+		_serv->getChannel(name)->send_names_replies(_expeditor);
+		_serv->send_replies(_expeditor, name + " :End of names list", RPL_ENDOFNAMES);
 		_expeditor->join_channel(name, true);
-		serv->channels[name]->addUser(*_expeditor);
+		_serv->channels[name]->addUser(*_expeditor);
 		// _expeditor->setLocation(name);
 	}
 	return ;
@@ -230,7 +230,7 @@ List::~List(){}
 List & List::operator=(const List & x)
 {
 	if (this != &x)
-		serv = x.serv;
+		_serv = x.getServ();
 	return *this;
 }
 
@@ -245,21 +245,21 @@ void List::execute()
 
 	std::string list_msg;
 	std::map<std::string, Channel*>::iterator it;
-	serv->send_replies(_expeditor, "Channel :Users  Name", RPL_LISTSTART);
+	_serv->send_replies(_expeditor, "Channel :Users  Name", RPL_LISTSTART);
 	if (!arg)
 	{
-		for (it = serv->channels.begin(); it != serv->channels.end(); ++it)
+		for (it = _serv->channels.begin(); it != _serv->channels.end(); ++it)
 		{
-			// serv->send_replies(_expeditor, it->first + " <# visible> :" + it->second->getTopic() , RPL_LIST);
-			serv->send_replies(_expeditor, it->first + ":" + it->second->getTopic() , RPL_LIST);
+			// _serv->send_replies(_expeditor, it->first + " <# visible> :" + it->second->getTopic() , RPL_LIST);
+			_serv->send_replies(_expeditor, it->first + ":" + it->second->getTopic() , RPL_LIST);
 		}
 	}
-	if (arg && (serv->channels.find(*arg) != serv->channels.end()))
+	if (arg && (_serv->channels.find(*arg) != _serv->channels.end()))
 	{
-		it = serv->channels.find(*arg);
-		serv->send_replies(_expeditor, it->first + " <# visible> :" + it->second->getTopic() , RPL_LIST);
+		it = _serv->channels.find(*arg);
+		_serv->send_replies(_expeditor, it->first + " <# visible> :" + it->second->getTopic() , RPL_LIST);
 	}
-	serv->send_replies(_expeditor, ":End of /LIST", RPL_LISTEND);
+	_serv->send_replies(_expeditor, ":End of /LIST", RPL_LISTEND);
 
 	return ;
 }
@@ -276,7 +276,7 @@ Ping::~Ping(){}
 Ping & Ping::operator=(const Ping & x)
 {
 	if (this != &x)
-		serv = x.serv;
+		_serv = x.getServ();
 	return *this;
 }
 
@@ -291,14 +291,14 @@ void Ping::execute()
 
 	if (!arg)
 	{
-		serv->send_replies(_expeditor, ":No origin specified", ERR_NOORIGIN);
+		_serv->send_replies(_expeditor, ":No origin specified", ERR_NOORIGIN);
 		return ;
 	}
-	if (arg->compare(serv->getName()) != 0)
-		serv->send_replies(_expeditor, serv->getName() + ":No such server", ERR_NOSUCHSERVER);
+	if (arg->compare(_serv->getName()) != 0)
+		_serv->send_replies(_expeditor, _serv->getName() + ":No such server", ERR_NOSUCHSERVER);
 	else
 	{
-		std::string reply = (":" + _expeditor->getUsername() + " PONG " + serv->getName() + " \r\n");
+		std::string reply = (":" + _expeditor->getUsername() + " PONG " + _serv->getName() + " \r\n");
 		send(_expeditor->getSock(), reply.c_str(), reply.length(), 0);
 	}
 	return ;
@@ -317,7 +317,7 @@ Quit::~Quit(){}
 Quit & Quit::operator=(const Quit & x)
 {
 	if (this != &x)
-		serv = x.serv;
+		_serv = x.getServ();
 	return *this;
 }
 
@@ -334,7 +334,7 @@ void Quit::execute()
 		_expeditor->setLogged(false);
 		return ;
 	}
-	serv->remove_user_from_channels(_expeditor, " QUIT :" + *arg);
+	_serv->remove_user_from_channels(_expeditor, " QUIT :" + *arg);
 	_expeditor->setLogged(false);
 	return ;
 }
@@ -352,7 +352,7 @@ Part::~Part(){}
 Part & Part::operator=(const Part & x)
 {
 	if (this != &x)
-		serv = x.serv;
+		_serv = x.getServ();
 	return *this;
 }
 
@@ -368,23 +368,23 @@ void Part::execute()
 	std::cout << "PART ARG =" << *arg << std::endl;
 	if (!arg)
 	{
-		serv->send_replies(_expeditor, "PART :Not enough parameters", ERR_NEEDMOREPARAMS);
+		_serv->send_replies(_expeditor, "PART :Not enough parameters", ERR_NEEDMOREPARAMS);
 		return ;
 	}
 	*arg = nameCaseIns(*arg);
 	if (_expeditor->getChannels().find(*arg) == _expeditor->getChannels().end())
 	{
-		serv->send_replies(_expeditor, *arg + " :You're not on that channel", ERR_NOTONCHANNEL);
+		_serv->send_replies(_expeditor, *arg + " :You're not on that channel", ERR_NOTONCHANNEL);
 		return ;
 	}
-	if (serv->channels.find(*arg) == serv->channels.end())
+	if (_serv->channels.find(*arg) == _serv->channels.end())
 	{
-		serv->send_replies(_expeditor, *arg + " :No such channel", ERR_NOSUCHCHANNEL);
+		_serv->send_replies(_expeditor, *arg + " :No such channel", ERR_NOSUCHCHANNEL);
 		return ;
 	}
 	std::string quit = ":" + _expeditor->getNickname() + " PART " + *arg + "\r\n";
 	send(_expeditor->getSock(), quit.c_str(), quit.length(), 0);
-	serv->remove_user_from(_expeditor, *arg, "PART");
+	_serv->remove_user_from(_expeditor, *arg, "PART");
 	return ;
 }
 
@@ -396,14 +396,14 @@ Version::~Version(){}
 Version & Version::operator=(const Version & x)
 {
 	if (this != &x)
-		serv = x.serv;
+		_serv = x.getServ();
 	return *this;
 }
 
 Version::Version(server * serv):Command(serv) {}
 void Version::execute()
 {
-	serv->send_replies(_expeditor, " : " + serv->getName() + " running version 1.42", RPL_VERSION);
+	_serv->send_replies(_expeditor, " : " + _serv->getName() + " running version 1.42", RPL_VERSION);
 	return ;
 }
 
@@ -415,15 +415,15 @@ Info::~Info(){}
 Info & Info::operator=(const Info & x)
 {
 	if (this != &x)
-		serv = x.serv;
+		_serv = x.getServ();
 	return *this;
 }
 
 Info::Info(server * serv):Command(serv) {}
 void Info::execute()
 {
-	serv->send_replies(_expeditor, " : " + serv->getName() + " running 1.42", RPL_INFO);
-	serv->send_replies(_expeditor, " :End of /INFO list", RPL_ENDOFINFO);
+	_serv->send_replies(_expeditor, " : " + _serv->getName() + " running 1.42", RPL_INFO);
+	_serv->send_replies(_expeditor, " :End of /INFO list", RPL_ENDOFINFO);
 	return ;
 }
 
@@ -438,7 +438,7 @@ Whois::~Whois(){}
 Whois & Whois::operator=(const Whois & x)
 {
 	if (this != &x)
-		serv = x.serv;
+		_serv = x.getServ();
 	return *this;
 }
 
@@ -459,10 +459,10 @@ void Whois::execute()
 
 	if (!arg)
 	{
-		serv->send_replies(_expeditor, " :No nickname given", ERR_NONICKNAMEGIVEN);
+		_serv->send_replies(_expeditor, " :No nickname given", ERR_NONICKNAMEGIVEN);
 		return ;
 	}
-	if (serv->isUser(*arg) != false)
+	if (_serv->isUser(*arg) != false)
 	{
 		std::string str = ": " + _expeditor->getNickname() + " " + _expeditor->getUsername() + 
 			+ " " + _expeditor->getHostname() + "\r\n";
@@ -479,7 +479,7 @@ void Whois::execute()
 // Who & Who::operator=(const Who & x)
 // {
 // 	if (this != &x)
-// 		serv = x.serv;
+// 		_serv = x.getServ();
 // 	return *this;
 // }
 

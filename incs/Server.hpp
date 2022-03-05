@@ -25,6 +25,15 @@
 
 class server
 {
+	public:
+		class quitexcept : public std::exception
+		{
+			public:
+
+				virtual const char *	what() const throw()
+				{ return "Closing server..."; }
+		};
+
 	private:
 		server();
 		server(const server& x);
@@ -39,39 +48,33 @@ class server
 		std::vector<user*>							_users;
 
 	public:
-		server(const int & port, const std::string & password);
-		~server();
-		
 		std::map<std::string, Channel* > channels;
 
-		int					getSock() const;
+		server(const int & port, const std::string & password);
+		~server();
+
+		void	run();
+
+		void	accept_user();
+		void	close_user(size_t);
+
+		void	receive_data(size_t);
+
+		void	remove_user_from(user*, const std::string&, const std::string&);
+		void	remove_user_from_channels(user*, const std::string&);
+
+		void	send_replies(user*, const std::string&, const char*) const;
+		int		send_msg_to_user(const user*, const user*, const std::string&, const std::string&) const;
+		int		send_msg_to_channel(const user*, const Channel*, const std::string&) const;
+
+		bool 	isUser(const std::string&) const;
+
 		std::string			getName() const;
 		std::string			getPassword() const;
 		std::vector<user*>	getUsers() const;
-		user *				getUser(const std::string & nickname) const;
-		Channel *			getChannel(const std::string & name) const;
-
-		bool isUser(const std::string & nickname) const;
-
-		class quitexcept : public std::exception
-		{
-			public:
-
-				virtual const char *	what() const throw()
-				{ return "Closing program..."; }
-		};
-
-		void	run();
-		void	accept_user();
-		void	receive_data(size_t index);
-		void	close_user(size_t index);
-		void	remove_user_from(user * usr, const std::string & name, const std::string & msg);
-		void	remove_user_from_channels(user * usr, const std::string & msg);
-		void	send_replies(user * usr, const std::string & msg, const char* code) const;
-
-
-		int	send_msg_to_user(user * expeditor, user * dest, const std::string & msg, const std::string & chan_name) const;
-		int	send_msg_to_channel(user * expeditor, Channel * dest, const std::string & msg) const;
+		int					getSock() const;
+		user *				getUser(const std::string&) const;
+		Channel *			getChannel(const std::string&) const;
 };
 
 std::string&	nameCaseIns(std::string&);

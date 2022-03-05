@@ -1,5 +1,6 @@
-
 #include "../incs/Server.hpp"
+
+/*----------------------------------------------------------------------------*/
 
 server::server(const int & port, const std::string & password)
 : _name("ft_irc.ircserv"), _port(port), _password(password), _interpret(this)
@@ -32,39 +33,7 @@ server::~server()
 		delete itc->second;
 }
 
-int 				server::getSock() const { return _socket.fd; }
-std::string 		server::getName() const { return _name; }
-std::string 		server::getPassword() const { return _password; }
-std::vector<user*>	server::getUsers() const { return _users; }
-
-user *				server::getUser(const std::string & nickname) const
-{
-	for (std::vector<user*>::const_iterator it = _users.begin(); it != _users.end(); it++)
-	{
-		if ((*it)->getNickname() == nickname)
-			return *it;
-	}
-	return NULL;
-}
-
-Channel *	server::getChannel(const std::string & name) const
-{
-	std::map<std::string, Channel* >::const_iterator	it(channels.find(name));
-
-	if (it != channels.end())
-		return it->second;
-	return NULL;
-}
-
-bool		server::isUser(const std::string & nickname) const
-{ 
-	for (std::vector<user*>::const_iterator it = _users.begin() ; it != _users.end(); ++it)
-	{
-		if ((*it)->getNickname() == nickname)
-			return true; 
-	}
-	return false;
-}
+/*----------------------------------------------------------------------------*/
 
 static void	ft_exit(int sign)
 {
@@ -107,6 +76,8 @@ void	server::run()
 	}
 }
 
+/*----------------------------------------------------------------------------*/
+
 void server::accept_user()
 {
 	struct pollfd		new_pollfd;
@@ -140,6 +111,19 @@ void server::accept_user()
 	_fds.push_back(new_pollfd);
 }
 
+void	server::close_user(size_t index)
+{
+	std::vector<user*>::iterator it = (_users.begin() + (index - 1));
+	remove_user_from_channels(*it, "QUIT");
+	std::cout << (*it)->getNickname() << " deconnexion" << std::endl; 
+	delete *it;
+	close(_fds[index].fd);
+	_fds.erase(_fds.begin() + index);
+	_users.erase(_users.begin() + (index - 1));
+}
+
+/*----------------------------------------------------------------------------*/
+
 void	server::receive_data(size_t index)
 {
 	char	buf[512];
@@ -171,12 +155,12 @@ void	server::receive_data(size_t index)
 
 		if (tmp.find("PASS") <= 4 && _users[index - 1]->getisLogged() == false)
 		{
-			_interpret.launch(*_users[index - 1]);
+			_interpret.treat_user_buffer(*_users[index - 1]);
 			_users[index - 1]->buf.clear();
 			return ;
 		}
 		if (_users[index - 1]->getisLogged() == true)
-			ret = _interpret.launch(*_users[index - 1]);
+			ret = _interpret.treat_user_buffer(*_users[index - 1]);
 		_users[index - 1]->buf.clear();
 		if (_users[index - 1]->getisLogged() == false)
 		{
@@ -186,16 +170,7 @@ void	server::receive_data(size_t index)
 	}
 }
 
-void	server::close_user(size_t index)
-{
-	std::vector<user*>::iterator it = (_users.begin() + (index - 1));
-	remove_user_from_channels(*it, "QUIT");
-	std::cout << (*it)->getNickname() << " deconnexion" << std::endl; 
-	delete *it;
-	close(_fds[index].fd);
-	_fds.erase(_fds.begin() + index);
-	_users.erase(_users.begin() + (index - 1));
-}
+/*----------------------------------------------------------------------------*/
 
 void	server::remove_user_from(user * usr, const std::string & name, const std::string & msg)
 {
@@ -233,6 +208,8 @@ void	server::remove_user_from_channels(user * usr, const std::string & msg)
 	}
 }
 
+/*----------------------------------------------------------------------------*/
+
 void	server::send_replies(user *usr, const std::string & msg, const char* code) const
 {
 	std::string replies;
@@ -243,7 +220,7 @@ void	server::send_replies(user *usr, const std::string & msg, const char* code) 
 	send(usr->getSock(), replies.c_str(), replies.length(), 0);
 }
 
-int	server::send_msg_to_user(user * expeditor, user * dest, const std::string & msg, const std::string & chan_name) const
+int	server::send_msg_to_user(const user * expeditor, const user * dest, const std::string & msg, const std::string & chan_name) const
 {
 	if (!dest)
 		return 1;
@@ -264,7 +241,7 @@ int	server::send_msg_to_user(user * expeditor, user * dest, const std::string & 
 	return 0;
 }
 
-int	server::send_msg_to_channel(user * expeditor, Channel * dest, const std::string & msg) const
+int	server::send_msg_to_channel(const user * expeditor, const Channel * dest, const std::string & msg) const
 {
 	if (!dest || !(expeditor->isMember(dest->getName())))
 		return 1;
@@ -278,6 +255,46 @@ int	server::send_msg_to_channel(user * expeditor, Channel * dest, const std::str
 	}
 	return ret;
 }
+
+/*----------------------------------------------------------------------------*/
+
+bool		server::isUser(const std::string & nickname) const
+{ 
+	for (std::vector<user*>::const_iterator it = _users.begin() ; it != _users.end(); ++it)
+	{
+		if ((*it)->getNickname() == nickname)
+			return true; 
+	}
+	return false;
+}
+
+/*----------------------------------------------------------------------------*/
+
+int 				server::getSock() const { return _socket.fd; }
+std::string 		server::getName() const { return _name; }
+std::string 		server::getPassword() const { return _password; }
+std::vector<user*>	server::getUsers() const { return _users; }
+
+user *				server::getUser(const std::string & nickname) const
+{
+	for (std::vector<user*>::const_iterator it = _users.begin(); it != _users.end(); it++)
+	{
+		if ((*it)->getNickname() == nickname)
+			return *it;
+	}
+	return NULL;
+}
+
+Channel *	server::getChannel(const std::string & name) const
+{
+	std::map<std::string, Channel* >::const_iterator	it(channels.find(name));
+
+	if (it != channels.end())
+		return it->second;
+	return NULL;
+}
+
+/*----------------------------------------------------------------------------*/
 
 std::string&	nameCaseIns(std::string& name) {
 	for (int index = 0; name[index] ; ++index)

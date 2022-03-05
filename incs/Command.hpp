@@ -29,33 +29,22 @@ class Command
 
 		user *					_expeditor;
 		std::map<int, Argument>	_args;
-
-		int				_reply;
+		server *				_serv;
 
 	public:
-
-		server *		serv;
-
 		Command();
 		Command(server * serv);
-		Command& operator=(const Command& x);
+		Command& operator=(const Command&);
 		virtual ~Command();
 
-		virtual void execute();
-
-		void			setExpeditor(user * expeditor);
-		bool			cond(const std::vector<std::string *>* args) const;
-		virtual void	setArgs(std::vector<std::string *>* args);
-
-		int				getReply() const;
-
-		bool			needReceiver() const;
-		bool			needNick() const;
-		bool			needChannel() const;
-		bool			needUser() const;
-		bool			needArg() const;
-		bool			needPass() const;
-		bool			HasChannelPrefix(const std::string & str) const;
-
+		void			setExpeditor(user*);
+		void			setArgs(std::vector<std::string*>*);
+		virtual void	execute();
 		void			reset();
+
+		server *		getServ() const;
+
 };
+
+bool	HasChannelPrefix(const std::string&);
+bool	cond(const std::vector<std::string*>*);

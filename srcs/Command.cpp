@@ -6,6 +6,8 @@
 
 #include <cstdlib>
 
+/*----------------------------------------------------------------------------*/
+
 std::deque<std::string>		Argument::parseList()
 {
 	std::deque<std::string>	lst;
@@ -23,9 +25,11 @@ std::deque<std::string>		Argument::parseList()
 	return lst;
 }
 
+/*----------------------------------------------------------------------------*/
+
 Command::Command() {}
 
-Command::Command(server * serv):serv(serv)
+Command::Command(server * serv):_serv(serv)
 {
 	for (size_t elem = 0; elem <= PASS; elem++)
 	{
@@ -37,7 +41,7 @@ Command::Command(server * serv):serv(serv)
 Command &	Command::operator=(const Command & x)
 {
 	if (this != &x)
-		serv = x.serv;
+		_serv = x.getServ();
 	return *this;
 }
 
@@ -50,16 +54,11 @@ Command::~Command()
 	}
 }
 
-void	Command::execute() { return ; }
+/*----------------------------------------------------------------------------*/
 
 void	Command::setExpeditor(user * expeditor)
 {
 	_expeditor = expeditor;
-}
-
-bool	Command::cond(const std::vector<std::string *>* args) const
-{
-	return args->front()->find('\n') == std::string::npos && args->front()->find('\r') == std::string::npos;
 }
 
 void	Command::setArgs(std::vector<std::string *>* args)
@@ -87,21 +86,7 @@ void	Command::setArgs(std::vector<std::string *>* args)
 	}
 }
 
-int	Command::getReply() const{ return _reply; }
-
-bool	Command::needReceiver() const { return _args.find(RECEIVER)->second.isNeeded; }
-
-bool	Command::needNick() const { return _args.find(NICK)->second.isNeeded; }
-
-bool	Command::needChannel() const { return _args.find(CHANNEL)->second.isNeeded; }
-
-bool	Command::needUser() const { return _args.find(USER)->second.isNeeded; }
-
-bool	Command::needArg() const { return _args.find(MESSAGE)->second.isNeeded; }
-
-bool	Command::needPass() const { return _args.find(PASS)->second.isNeeded; }
-
-bool	Command::HasChannelPrefix(const std::string & str) const { return (str[0] == '#' || str[0] == '&' || str[0] == '+' || str[0] == '!'); }
+void	Command::execute() { return ; }
 
 void	Command::reset()
 {
@@ -113,4 +98,22 @@ void	Command::reset()
 			_args[val].arg = NULL;
 		}
 	}
+}
+/*----------------------------------------------------------------------------*/
+
+server*	Command::getServ() const
+{
+	return _serv;
+}
+
+/*----------------------------------------------------------------------------*/
+
+bool	cond(const std::vector<std::string *>* args)
+{
+	return args->front()->find('\n') == std::string::npos && args->front()->find('\r') == std::string::npos;
+}
+
+bool	HasChannelPrefix(const std::string & str)
+{
+	return (str[0] == '#' || str[0] == '&' || str[0] == '+' || str[0] == '!');
 }

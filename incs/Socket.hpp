@@ -19,10 +19,10 @@ class Socket
 		socklen_t			len;
 
 		Socket();
-		Socket(const Socket & x);
-		Socket& operator=(const Socket& x);
-		Socket(const int xfd, const struct sockaddr_in & xaddress, const socklen_t & xlen);
+		Socket(const Socket&);
+		Socket& operator=(const Socket&);
+		Socket(const int xfd, const struct sockaddr_in&, const socklen_t&);
 		virtual	~Socket();
 
-		void	server_socket(int port);
+		void	server_socket(int);
 };

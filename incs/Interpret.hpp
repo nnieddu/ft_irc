@@ -11,34 +11,29 @@ class server;
 
 class Interpret
 {
+
 	private:
 		Interpret();
 		Interpret(const Interpret& x);
 		Interpret& operator=(const Interpret& x);
 
-		server *	_serv;
+		server *							_serv;
+		std::map<std::string, Command *>	_cmds_list;
 
 	public:
 		Interpret(server * serv);
-		~Interpret();
+		virtual ~Interpret();
 
-		typedef int (Interpret::*ft_ptr)(user *, std::string);
-		ft_ptr ptr;
+		int 						treat_user_buffer(user&);
+		std::vector<std::string *>* parseCmds(std::string*) const;
+		std::string *				GetNextWord(std::string*) const;
+		std::string *				parseWord(std::string*) const;
+		std::string *				parseMessage(std::string*) const;
 
-		std::map<std::string, Command *> cmds_list;
+		int	cmd_found(Command*, user&, std::vector<std::string*>*);
+		int	cmd_not_found(user&, std::vector<std::string*>*) const;
 
-		bool			hasEOC(const std::string * buf) const;
-		std::string *	isEOC(std::string * buf) const;
-
-		int launch(user & usr);
-		int	cmd_found(Command* cmd, user & usr, std::vector<std::string *>* args);
-		int	cmd_not_found(user & usr, std::vector<std::string *>* args) const;
-	
-		std::vector<std::string *>* parseCmds(std::string * buf) const;
-
-		std::string *	GetNextWord(std::string * buf) const;
-		std::string *	parseWord(std::string * buf) const;
-		std::string *	parseMessage(std::string * buf) const;
-
-		void	clearLeftover(std::vector<std::string *>* args) const;
+		bool			hasEOC(const std::string*) const;
+		std::string *	isEOC(std::string*) const;
+		void			clearLeftover(std::vector<std::string*>*) const;
 };

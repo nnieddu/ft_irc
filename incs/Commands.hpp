@@ -10,7 +10,7 @@ class Pass : public Command
 		Pass();
 		virtual ~Pass();
 		Pass&	operator=(const Pass & x);
-		Pass(server * serv);
+		Pass(server*);
 		virtual void execute();
 };
 
@@ -21,7 +21,7 @@ class Nick : public Command
 		Nick();
 		virtual ~Nick();
 		Nick&	operator=(const Nick & x);
-		Nick(server * serv);
+		Nick(server*);
 		virtual void execute();
 };
 
@@ -32,7 +32,7 @@ class User : public Command
 		User();
 		virtual ~User();
 		User&	operator=(const User & x);
-		User(server * serv);
+		User(server*);
 		virtual void execute();
 };
 
@@ -43,7 +43,7 @@ class Join : public Command
 		Join();
 		virtual ~Join();
 		Join&	operator=(const Join & x);
-		Join(server * serv);
+		Join(server*);
 		virtual void execute();
 };
 
@@ -54,7 +54,7 @@ class List : public Command
 		List();
 		virtual ~List();
 		List&	operator=(const List & x);
-		List(server * serv);
+		List(server*);
 		virtual void execute();
 };
 
@@ -65,7 +65,7 @@ class Oper : public Command
 		Oper();
 		virtual ~Oper();
 		Oper&	operator=(const Oper & x);
-		Oper(server * serv);
+		Oper(server*);
 		virtual void execute();
 };
 
@@ -76,7 +76,7 @@ class Quit : public Command
 		Quit();
 		virtual ~Quit();
 		Quit&	operator=(const Quit & x);
-		Quit(server * serv);
+		Quit(server*);
 		virtual void execute();
 };
 
@@ -87,7 +87,7 @@ class Mode : public Command
 		Mode();
 		virtual ~Mode();
 		Mode&	operator=(const Mode & x);
-		Mode(server * serv);
+		Mode(server*);
 		virtual void execute();
 };
 
@@ -98,7 +98,7 @@ class Topic : public Command
 		Topic();
 		virtual ~Topic();
 		Topic&	operator=(const Topic & x);
-		Topic(server * serv);
+		Topic(server*);
 		virtual void execute();
 };
 
@@ -109,7 +109,7 @@ class Names : public Command
 		Names();
 		virtual ~Names();
 		Names&	operator=(const Names & x);
-		Names(server * serv);
+		Names(server*);
 		virtual void execute();
 };
 
@@ -120,7 +120,7 @@ class Invite : public Command
 		Invite();
 		virtual ~Invite();
 		Invite&	operator=(const Invite & x);
-		Invite(server * serv);
+		Invite(server*);
 		virtual void execute();
 };
 
@@ -131,7 +131,7 @@ class Kick : public Command
 		Kick();
 		virtual ~Kick();
 		Kick&	operator=(const Kick & x);
-		Kick(server * serv);
+		Kick(server*);
 		virtual void execute();
 };
 
@@ -142,7 +142,7 @@ class Privmsg : public Command
 		Privmsg();
 		virtual ~Privmsg();
 		Privmsg&	operator=(const Privmsg & x);
-		Privmsg(server * serv);
+		Privmsg(server*);
 		virtual void execute();
 };
 
@@ -154,7 +154,7 @@ class Ping : public Command
 		Ping();
 		virtual ~Ping();
 		Ping&	operator=(const Ping & x);
-		Ping(server * serv);
+		Ping(server*);
 		virtual void execute();
 };
 
@@ -165,7 +165,7 @@ class Part : public Command
 		Part();
 		virtual ~Part();
 		Part&	operator=(const Part & x);
-		Part(server * serv);
+		Part(server*);
 		virtual void execute();
 };
 
@@ -176,7 +176,7 @@ class Version : public Command
 		Version();
 		virtual ~Version();
 		Version&	operator=(const Version & x);
-		Version(server * serv);
+		Version(server*);
 		virtual void execute();
 };
 
@@ -187,7 +187,7 @@ class Info : public Command
 		Info();
 		virtual ~Info();
 		Info&	operator=(const Info & x);
-		Info(server * serv);
+		Info(server*);
 		virtual void execute();
 };
 
@@ -198,7 +198,7 @@ class Whois : public Command
 		Whois();
 		virtual ~Whois();
 		Whois&	operator=(const Whois & x);
-		Whois(server * serv);
+		Whois(server*);
 		virtual void execute();
 };
 
@@ -209,6 +209,6 @@ class Whois : public Command
 // 		Who();
 // 		virtual ~Who();
 // 		Who&	operator=(const Who & x);
-// 		Who(server * serv);
+// 		Who(server*);
 // 		virtual void execute();
 // };
