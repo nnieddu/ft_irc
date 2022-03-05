@@ -10,10 +10,6 @@ SRCS	=	main.cpp	\
 			Socket.cpp	\
 			User.cpp	\
 			Command.cpp	\
-			Commands.cpp\
-			privmsg.cpp	\
-			Mode.cpp	\
-			Topic.cpp	\
 			Interpret.cpp
 
 INCS	=	incs/Server.hpp		\
@@ -30,15 +26,19 @@ SRCS_DIR=	./srcs/
 OBJ_DIR	=	./srcs/obj/
 OBJ		=	$(addprefix $(OBJ_DIR),$(SRCS:.cpp=.o))
 
+CMD_DIR	=	./srcs/Commands/
+CMDLIB	=	$(addprefix $(CMD_DIR),cmdlib.a)
+
 all :
 	mkdir -p $(OBJ_DIR)
+	$(MAKE) -C $(CMD_DIR) --no-print-directory
 	$(MAKE) $(NAME)
 
 $(OBJ_DIR)%.o:$(SRCS_DIR)%.cpp $(INC)
 	$(COMP) $(CFLAGS) -c $< -o $@
 
 $(NAME) : $(OBJ) $(INCS)
-	$(COMP) $(FLAG) $(OBJ) -o $(NAME)
+	$(COMP) $(FLAG) $(OBJ) $(CMDLIB) -o $(NAME)
 
 run : all
 	./$(NAME) 7005 password
@@ -51,9 +51,11 @@ runv : re
 #| cat -e
 
 clean :
+	$(MAKE) clean -C $(CMD_DIR) --no-print-directory
 	rm -rf $(OBJ_DIR)
 
 fclean :
+	$(MAKE) fclean -C $(CMD_DIR) --no-print-directory
 	rm -rf $(OBJ_DIR)
 	rm -f $(NAME)
 

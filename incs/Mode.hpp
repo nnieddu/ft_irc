@@ -12,6 +12,7 @@ class Mode : public Command {
 
 	private:
 		void	modeChan(Channel&, std::string&, std::string&);
+
 		void	modeUser(user&, std::string&, std::string&);
 
 	public:

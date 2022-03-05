@@ -2,7 +2,7 @@
 // Created by fenrir on 02/03/2022.
 //
 
-#include "../incs/Mode.hpp"
+#include "../../incs/Commands.hpp"
 
 /*----------------------------------------------------------------------------*/
 
@@ -167,6 +167,8 @@ void Mode::modeChan(Channel& chan, std::string &mod, std::string &arg) {
 	}
 	return ;
 }
+
+/*----------------------------------------------------------------------------*/
 
 void Mode::modeUser(user& usr, std::string &mod, std::string &arg) {
 	bool		addRule = false;

@@ -2,8 +2,7 @@
 // Created by Maximilien Rozniecki on 3/1/22.
 //
 
-#include "../incs/Topic.hpp"
-#include "../incs/Server.hpp"
+#include "../../incs/Commands.hpp"
 
 //demander comment sont gerer les deux points
 //exemple: TOPIC #test :
