@@ -23,7 +23,7 @@ Interpret::Interpret(server * serv): _serv(serv)
 	_cmds_list["names"] = new Names(_serv); //
 	_cmds_list["list"] = new List(_serv);
 	_cmds_list["invite"] = new Invite(_serv);
-	// _cmds_list["kick"] = Kick(_serv);
+	_cmds_list["kick"] = new Kick(_serv);
 	_cmds_list["version"] = new Version(_serv);
 	// _cmds_list["time"] = Time(_serv);
 	_cmds_list["info"] = new Info(_serv);

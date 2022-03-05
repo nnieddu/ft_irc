@@ -8,6 +8,7 @@ FLAG	=	-Wall -Wextra -Werror -std=c++98 -g
 SRCS	=	Info.cpp	\
 			Invite.cpp	\
 			Join.cpp	\
+			Kick.cpp	\
 			List.cpp	\
 			Mode.cpp	\
 			Names.cpp	\

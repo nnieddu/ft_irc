@@ -26,7 +26,7 @@ void Invite::execute()
 
 	if (!nick || !channel)
 		return _serv->send_replies(_expeditor, "INVITE :Not enough parameters", ERR_NEEDMOREPARAMS);
-	if (!_serv->isUser(*usr))
+	if (!_serv->isUser(*nick))
 		return _serv->send_replies(_expeditor, "INVITE :No such nick", ERR_NOSUCHNICK);
 	//ERR_NOTONCHANNEL	?
 	if (_serv->channels.find(*channel) != _serv->channels.end())
