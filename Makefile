@@ -37,7 +37,7 @@ all :
 $(OBJ_DIR)%.o:$(SRCS_DIR)%.cpp $(INC)
 	$(COMP) $(CFLAGS) -c $< -o $@
 
-$(NAME) : $(OBJ) $(INCS)
+$(NAME) : $(OBJ) $(INCS) $(CMDLIB)
 	$(COMP) $(FLAG) $(OBJ) $(CMDLIB) -o $(NAME)
 
 run : all
