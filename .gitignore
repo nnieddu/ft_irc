@@ -1,6 +1,7 @@
 .vscode
 .idea
 
+*.a
 *.o
 
 vgcore.*
