@@ -167,7 +167,6 @@ void	server::receive_data(size_t index)
 		}
 		if (_users[index - 1]->getisLogged() == true)
 			ret = _interpret.treat_user_buffer(*_users[index - 1]);
-	//	_users[index - 1]->buf.clear();
 		if (_users[index - 1]->getisLogged() == false)
 		{
 			if (_users[index - 1]->getWasLogged() == false)
