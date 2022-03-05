@@ -9,11 +9,6 @@
 
 /*----------------------------------------------------------------------------*/
 
-Topic::Topic() : Command() {
-	_args[MESSAGE].isNeeded	= true;
-	_args[CHANNEL].isNeeded	= true;
-}
-
 Topic::Topic(server *serv) : Command(serv) {
 	_args[MESSAGE].isNeeded	= true;
 	_args[CHANNEL].isNeeded	= true;

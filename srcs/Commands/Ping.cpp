@@ -2,11 +2,6 @@
 
 /*----------------------------------------------------------------------------*/
 
-Ping::Ping():Command()
-{
-	_args[HOSTNAME].isNeeded = true;
-}
-
 Ping::~Ping(){}
 
 Ping & Ping::operator=(const Ping & x)

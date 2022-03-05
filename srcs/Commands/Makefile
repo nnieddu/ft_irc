@@ -6,6 +6,7 @@ AR	 	=	ar rc
 FLAG	=	-Wall -Wextra -Werror -std=c++98 -g
 
 SRCS	=	Info.cpp	\
+			Invite.cpp	\
 			Join.cpp	\
 			List.cpp	\
 			Mode.cpp	\
@@ -16,6 +17,7 @@ SRCS	=	Info.cpp	\
 			Ping.cpp	\
 			Privmsg.cpp	\
 			Quit.cpp	\
+			Oper.cpp	\
 			Topic.cpp	\
 			User.cpp	\
 			Version.cpp	\

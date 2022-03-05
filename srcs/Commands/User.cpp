@@ -2,11 +2,6 @@
 
 /*----------------------------------------------------------------------------*/
 
-User::User():Command()
-{
-	_args[NICK].isNeeded = true;
-}
-
 User::~User(){}
 
 User & User::operator=(const User & x)

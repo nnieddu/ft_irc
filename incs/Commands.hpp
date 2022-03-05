@@ -11,8 +11,6 @@
 class Pass : public Command
 {
 	public:
-
-		Pass();
 		virtual ~Pass();
 		Pass&	operator=(const Pass&);
 		Pass(server*);
@@ -22,8 +20,6 @@ class Pass : public Command
 class Nick : public Command
 {
 	public:
-
-		Nick();
 		virtual ~Nick();
 		Nick&	operator=(const Nick&);
 		Nick(server*);
@@ -33,8 +29,6 @@ class Nick : public Command
 class User : public Command
 {
 	public:
-
-		User();
 		virtual ~User();
 		User&	operator=(const User&);
 		User(server*);
@@ -44,8 +38,6 @@ class User : public Command
 class Join : public Command
 {
 	public:
-
-		Join();
 		virtual ~Join();
 		Join&	operator=(const Join&);
 		Join(server*);
@@ -55,8 +47,6 @@ class Join : public Command
 class List : public Command
 {
 	public:
-
-		List();
 		virtual ~List();
 		List&	operator=(const List&);
 		List(server*);
@@ -66,8 +56,6 @@ class List : public Command
 class Oper : public Command
 {
 	public:
-
-		Oper();
 		virtual ~Oper();
 		Oper&	operator=(const Oper&);
 		Oper(server*);
@@ -77,8 +65,6 @@ class Oper : public Command
 class Quit : public Command
 {
 	public:
-
-		Quit();
 		virtual ~Quit();
 		Quit&	operator=(const Quit&);
 		Quit(server*);
@@ -93,8 +79,6 @@ class Mode : public Command {
 		void	modeUser(user&, std::string&, std::string&);
 
 	public:
-
-		Mode();
 		Mode(server*);
 		virtual ~Mode();
 		Mode&	operator=(const Mode&);
@@ -104,8 +88,6 @@ class Mode : public Command {
 class Topic : public Command
 {
 	public:
-
-		Topic();
 		virtual ~Topic();
 		Topic&	operator=(const Topic&);
 		Topic(server*);
@@ -115,8 +97,6 @@ class Topic : public Command
 class Names : public Command
 {
 	public:
-
-		Names();
 		virtual ~Names();
 		Names&	operator=(const Names&);
 		Names(server*);
@@ -126,8 +106,6 @@ class Names : public Command
 class Invite : public Command
 {
 	public:
-
-		Invite();
 		virtual ~Invite();
 		Invite&	operator=(const Invite&);
 		Invite(server*);
@@ -137,8 +115,6 @@ class Invite : public Command
 class Kick : public Command
 {
 	public:
-
-		Kick();
 		virtual ~Kick();
 		Kick&	operator=(const Kick&);
 		Kick(server*);
@@ -148,8 +124,6 @@ class Kick : public Command
 class Privmsg : public Command
 {
 	public:
-
-		Privmsg();
 		virtual ~Privmsg();
 		Privmsg&	operator=(const Privmsg&);
 		Privmsg(server*);
@@ -160,8 +134,6 @@ class Privmsg : public Command
 class Ping : public Command
 {
 	public:
-
-		Ping();
 		virtual ~Ping();
 		Ping&	operator=(const Ping&);
 		Ping(server*);
@@ -171,8 +143,6 @@ class Ping : public Command
 class Part : public Command
 {
 	public:
-
-		Part();
 		virtual ~Part();
 		Part&	operator=(const Part&);
 		Part(server*);
@@ -182,8 +152,6 @@ class Part : public Command
 class Version : public Command
 {
 	public:
-
-		Version();
 		virtual ~Version();
 		Version&	operator=(const Version&);
 		Version(server*);
@@ -193,8 +161,6 @@ class Version : public Command
 class Info : public Command
 {
 	public:
-
-		Info();
 		virtual ~Info();
 		Info&	operator=(const Info&);
 		Info(server*);
@@ -204,8 +170,6 @@ class Info : public Command
 class Whois : public Command
 {
 	public:
-
-		Whois();
 		virtual ~Whois();
 		Whois&	operator=(const Whois&);
 		Whois(server*);
@@ -215,8 +179,6 @@ class Whois : public Command
 // class Who : public Command
 // {
 // 	public:
-
-// 		Who();
 // 		virtual ~Who();
 // 		Who&	operator=(const Who&);
 // 		Who(server*);

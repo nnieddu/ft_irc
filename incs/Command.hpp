@@ -26,13 +26,13 @@ class Command
 {
 	protected:
 		Command(const Command& x);
+		Command();
 
 		user *					_expeditor;
 		std::map<int, Argument>	_args;
 		server *				_serv;
 
 	public:
-		Command();
 		Command(server * serv);
 		Command& operator=(const Command&);
 		virtual ~Command();

@@ -2,11 +2,6 @@
 
 /*----------------------------------------------------------------------------*/
 
-Quit::Quit():Command()
-{
-	_args[MESSAGE].isNeeded = true;
-}
-
 Quit::~Quit(){}
 
 Quit & Quit::operator=(const Quit & x)

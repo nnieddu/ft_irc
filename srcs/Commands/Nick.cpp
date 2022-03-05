@@ -2,11 +2,6 @@
 
 /*----------------------------------------------------------------------------*/
 
-Nick::Nick():Command()
-{
-	_args[NICK].isNeeded = true;
-}
-
 Nick::~Nick() {}
 
 Nick & Nick::operator=(const Nick & x)

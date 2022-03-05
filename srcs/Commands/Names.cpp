@@ -2,11 +2,6 @@
 
 /*----------------------------------------------------------------------------*/
 
-Names::Names():Command()
-{
-	_args[CHANNEL].isNeeded = true;
-}
-
 Names::~Names() {}
 
 Names & Names::operator=(const Names & x)

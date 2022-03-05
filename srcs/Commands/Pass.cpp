@@ -2,11 +2,6 @@
 
 /*----------------------------------------------------------------------------*/
 
-Pass::Pass():Command()
-{
-	_args[PASS].isNeeded = true;
-}
-
 Pass::~Pass() {}
 
 Pass & Pass::operator=(const Pass & x)

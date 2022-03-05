@@ -6,12 +6,6 @@
 
 /*----------------------------------------------------------------------------*/
 
-Mode::Mode() : Command() {
-	_args[MESSAGE].isNeeded	= true;
-	_args[USER].isNeeded		= true;
-	_args[CHANNEL].isNeeded		= true;
-}
-
 Mode::Mode(server *serv) : Command(serv){
 	_args[MESSAGE].isNeeded	= true;
 	_args[USER].isNeeded		= true;

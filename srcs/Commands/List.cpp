@@ -2,11 +2,6 @@
 
 /*----------------------------------------------------------------------------*/
 
-List::List():Command()
-{
-	_args[CHANNEL].isNeeded = true;
-}
-
 List::~List(){}
 
 List & List::operator=(const List & x)

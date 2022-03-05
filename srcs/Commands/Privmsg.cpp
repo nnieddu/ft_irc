@@ -2,12 +2,6 @@
 
 /*----------------------------------------------------------------------------*/
 
-Privmsg::Privmsg():Command()
-{
-	_args[RECEIVER].isNeeded	= true;
-	_args[MESSAGE].isNeeded	= true;
-}
-
 Privmsg::~Privmsg() {}
 
 Privmsg & Privmsg::operator=(const Privmsg & x)

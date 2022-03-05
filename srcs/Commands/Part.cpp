@@ -2,11 +2,6 @@
 
 /*----------------------------------------------------------------------------*/
 
-Part::Part():Command()
-{
-	_args[CHANNEL].isNeeded = true;
-}
-
 Part::~Part(){}
 
 Part & Part::operator=(const Part & x)

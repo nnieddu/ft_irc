@@ -2,10 +2,6 @@
 
 /*----------------------------------------------------------------------------*/
 
-Whois::Whois():Command() 
-{
-	_args[NICK].isNeeded = true;
-}
 Whois::~Whois(){}
 Whois & Whois::operator=(const Whois & x)
 {

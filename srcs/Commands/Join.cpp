@@ -2,11 +2,6 @@
 
 /*----------------------------------------------------------------------------*/
 
-Join::Join():Command()
-{
-	_args[CHANNEL].isNeeded = true;
-}
-
 Join::~Join(){}
 
 Join & Join::operator=(const Join & x)

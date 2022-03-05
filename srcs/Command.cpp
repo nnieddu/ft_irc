@@ -27,8 +27,6 @@ std::deque<std::string>		Argument::parseList()
 
 /*----------------------------------------------------------------------------*/
 
-Command::Command() {}
-
 Command::Command(server * serv):_serv(serv)
 {
 	for (size_t elem = 0; elem <= PASS; elem++)
