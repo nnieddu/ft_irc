@@ -23,6 +23,7 @@ class user
 		bool			_invisible;
 		bool			_wallOp;
 		bool			_isLogged;
+		bool			_wasLogged;
 		Socket			_socket;
 
 		std::map<std::string, unsigned int>	_channels;
@@ -75,5 +76,6 @@ class user
 		Socket								getSocket() const;
 		int									getSock() const;
 		bool								getisLogged() const;
+		bool								getWasLogged() const;
 		std::map<std::string, unsigned int>	getChannels() const;
 };

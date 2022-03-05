@@ -167,10 +167,11 @@ void	server::receive_data(size_t index)
 		}
 		if (_users[index - 1]->getisLogged() == true)
 			ret = _interpret.treat_user_buffer(*_users[index - 1]);
-		_users[index - 1]->buf.clear();
+	//	_users[index - 1]->buf.clear();
 		if (_users[index - 1]->getisLogged() == false)
 		{
-			send_replies(_users[index - 1], "You need to be log (PASS command).", "");
+			if (_users[index - 1]->getWasLogged() == false)
+				send_replies(_users[index - 1], "You need to be log (PASS command).", "");
 			close_user(index);
 		}
 	}

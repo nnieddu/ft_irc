@@ -8,7 +8,7 @@
 /*----------------------------------------------------------------------------*/
 
 user::user(const std::string & hostname, const std::string & nickname, const std::string & username, const Socket & socket, bool server_operator)
-: _hostname(hostname), _nickname(nickname), _username(username), _socket(socket), _server_operator(server_operator), _isLogged(false)
+: _hostname(hostname), _nickname(nickname), _username(username), _socket(socket), _server_operator(server_operator), _isLogged(false), _wasLogged(false)
 {}
 
 user::~user() {}
@@ -26,6 +26,7 @@ void		user::setLogged(bool log)
 		std::string logged = prefix +  " " + RPL_WELCOME + " " + getNickname() + \
 			" Welcome to the Internet Relay Network :" + getUsername() + "\r\n";
 		send(getSock(), logged.c_str(), logged.length(), 0);
+		_wasLogged = true;
 	}
 }
 
@@ -182,6 +183,7 @@ std::string							user::getNickname() const { return _nickname; }
 std::string							user::getUsername() const { return _username; }
 std::string							user::getHostname() const { return _hostname; }
 bool								user::getisLogged() const { return _isLogged; }
+bool								user::getWasLogged() const { return _wasLogged; }
 int 								user::getSock() const { return _socket.fd; }
 Socket								user::getSocket() const { return _socket; }
 std::map<std::string, unsigned int>	user::getChannels() const { return _channels; }
