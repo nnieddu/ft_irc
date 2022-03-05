@@ -18,8 +18,6 @@ INCS	=	incs/Server.hpp		\
 			incs/User.hpp		\
 			incs/Command.hpp	\
 			incs/Commands.hpp	\
-			incs/Mode.hpp		\
-			incs/Topic.hpp		\
 			incs/Interpret.hpp
 
 SRCS_DIR=	./srcs/
@@ -34,7 +32,7 @@ all :
 	$(MAKE) -C $(CMD_DIR) --no-print-directory
 	$(MAKE) $(NAME)
 
-$(OBJ_DIR)%.o:$(SRCS_DIR)%.cpp $(INC)
+$(OBJ_DIR)%.o:$(SRCS_DIR)%.cpp $(INCS)
 	$(COMP) $(CFLAGS) -c $< -o $@
 
 $(NAME) : $(OBJ) $(INCS) $(CMDLIB)
