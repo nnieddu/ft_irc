@@ -12,6 +12,7 @@
 Interpret::Interpret(server * serv): _serv(serv)
 {
 	_cmds_list["pass"] = new Pass(_serv);
+	_cmds_list["cap"] = new Cap(_serv);
 	_cmds_list["nick"] = new Nick(_serv);
 	_cmds_list["user"] = new User(_serv);
 	_cmds_list["oper"] = new Oper(_serv);

@@ -17,6 +17,15 @@ class Pass : public Command
 		virtual void execute();
 };
 
+class Cap : public Command
+{
+	public:
+		virtual ~Cap();
+		Cap&	operator=(const Cap&);
+		Cap(server*);
+		virtual void execute();
+};
+
 class Nick : public Command
 {
 	public:

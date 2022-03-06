@@ -5,7 +5,8 @@ AR	 	=	ar rc
 
 FLAG	=	-Wall -Wextra -Werror -std=c++98 -g
 
-SRCS	=	Info.cpp	\
+SRCS	=	Cap.cpp		\
+			Info.cpp	\
 			Invite.cpp	\
 			Join.cpp	\
 			Kick.cpp	\
