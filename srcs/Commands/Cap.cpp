@@ -24,6 +24,6 @@ void Cap::execute()
 	std::string		replie("CAP * LS\n\r");
 
 	if (arg && arg->compare("LS"))
-		send(_expeditor->getSock(), replie.c_str(), replie.size(), 0);
+		_serv->send_replies(_expeditor, replie, "");
 	return ;
 }
