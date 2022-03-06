@@ -21,8 +21,9 @@ Cap::Cap(server * serv):Command(serv)
 void Cap::execute()
 {
 	std::string	*	arg = _args[CHANNEL].arg;
+	std::string		replie("CAP * LS\n\r");
 
 	if (arg && arg->compare("LS"))
-		send(_expeditor->getSock(), "CAP * LS", 8, 0);
+		send(_expeditor->getSock(), replie.c_str(), replie.size(), 0);
 	return ;
 }
