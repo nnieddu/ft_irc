@@ -29,10 +29,7 @@ INCS	=	../../incs/Server.hpp	\
 			../../incs/Socket.hpp	\
 			../../incs/User.hpp		\
 			../../incs/Command.hpp	\
-			../../incs/Commands.hpp	\
-			../../incs/Mode.hpp		\
-			../../incs/Topic.hpp	\
-			../../incs/Interpret.hpp
+			../../incs/Commands.hpp
 
 OBJ_DIR	=	./obj/
 OBJ		=	$(addprefix $(OBJ_DIR),$(SRCS:.cpp=.o))

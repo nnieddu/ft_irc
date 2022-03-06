@@ -17,7 +17,6 @@ INCS	=	incs/Server.hpp		\
 			incs/Socket.hpp		\
 			incs/User.hpp		\
 			incs/Command.hpp	\
-			incs/Commands.hpp	\
 			incs/Interpret.hpp
 
 SRCS_DIR=	./srcs/
