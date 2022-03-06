@@ -16,6 +16,7 @@ class user
 		std::string		_nickname;
 		std::string		_username;
 		std::string		_hostname;
+		// std::string		_realname;
 		std::string		_afkMessage;
 
 		bool			_server_operator;
@@ -39,6 +40,7 @@ class user
 		virtual ~user();
 
 		void				setNickname(std::string nick);
+		void				setUsername(std::string usrname);
 		void				setLogged(bool log);
 
 		bool				isServOp() const;

@@ -23,18 +23,25 @@ void Nick::execute()
 	std::string	*	arg = _args[NICK].arg;
 
 	if (!arg)
+	{
 		_serv->send_replies(_expeditor, " :No nickname given", ERR_NONICKNAMEGIVEN);
-	if (*arg == "anonymous") //// check char spe/grammar protocol rfc
+		return ;
+	}
+	if (*arg == "anonymous" || arg->size() > 9) //// check char spe/grammar protocol rfc
+	{
 		_serv->send_replies(_expeditor, " :Erroneus nickname", ERR_ERRONEUSNICKNAME);
+		return ;
+	}
 	if (_serv->isUser(*arg) == false)
 	{
-		std::string str = ":" + _expeditor->getNickname() + " NICK " + ":" + *arg + "\r\n";
-	    send(_expeditor->getSock(), str.c_str(), strlen(str.c_str()), 0);
+		if (_expeditor->getisLogged() == true)
+		{
+			std::string str = ":" + _expeditor->getNickname() + " NICK " + ":" + *arg + "\r\n";
+			send(_expeditor->getSock(), str.c_str(), strlen(str.c_str()), 0);
+		}
 		_expeditor->setNickname(*arg);
-		return ;
 	}
 	else
 		_serv->send_replies(_expeditor, *arg + " :Nickname is already in use", ERR_NICKNAMEINUSE);
-	return ;
 }
 // ERR_NICKCOLLISION osef ?

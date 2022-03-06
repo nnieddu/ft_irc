@@ -15,6 +15,6 @@ Version::Version(server * serv):Command(serv) {}
 
 void Version::execute()
 {
-	_serv->send_replies(_expeditor, " : " + _serv->getName() + " running version 1.42", RPL_VERSION);
+	_serv->send_replies(_expeditor, " :ircserv (" + _serv->getName() + ") running version 1.42", RPL_VERSION);
 	return ;
 }

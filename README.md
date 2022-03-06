@@ -75,67 +75,38 @@ The commands which may only be used by channel operators are:
 | PASS | `<password>` | used to set up a 'password connection'. a password must be set before any attempt. |
 | NICK | `<nickname>` | used to assign an nickname to the user or change the previous one. there can be no two identical nicknames on the server. |
 | USER | `<username>` `<hostname>` `<servername>` `<realname>` | used at the beginning of a connection to specify the username, hostname, server name and real name of the new user. |
-|SERVER| |  X | not implemented (this server don't manage server to server communication) |
 | OPER | `<user>` `<password>` | used to take operator rights. parameters are used to identify the user. |
 | QUIT | `[<quit message>]` | used to terminate the connection to the server. the server should end the connection with the client when it sees the sent message. |
-| SQUIT | X | not implemented (this server don't manage server to server communication) |
 | JOIN | `<channel>{,<channel>}` `[<key>{,<key>}]` | used by the client to enter the channel. if a password is set, it must be correct. when users enter a channel, they will receive a notification about all users on the channel. if there was no group before, then the group is created. |
 | PART | `<channel>{,<channel>}` | used by the user to leave the channels that he will specify in the parameters. |
-| MODE | | idk |
+| MODE | | . |
 | TOPIC | `<channel>` `[<topic>]` | used to edit or view a channel topic. the channel topic will remain the same unless a new topic is set. |
 | NAMES | `[<channel>{,<channel>}]` | used by a user can get a list of all users in the channel. |
 | LIST | `[<channel>{,<channel>}` `[<server>]]` | used to display a list of channels and their topics. if the channel parameter is used, then only the status of this channel is displayed. |
 | INVITE | `<nickname>` `<channel>` | used to invite users to the channel. if the channel is open, then only the channel operator can invite to it. |
 | KICK | `<channel>` `<user>` `[<comment>]` | used to exclude a user from a channel can only be used by the channel operator. |
-| VERSION | | idk |
-| STATS | | idk |
-| LINKS | X | not implemented (this server don't manage server to server communication) |
-| TIME | `<server>`  | The time message is used to query local time from the specified server. |
-| CONNECT | X | not implemented (this server don't manage server to server communication) |
-| TRACE | X | not implemented (this server don't manage server to server communication) |
-| ADMIN |  | idk |
-| INFO |  | idk |
+| VERSION | | Display information on the server version |
+| TIME | `<server>`  | The time message is used to query local time from the specified server.|
+| INFO |  | Display informations of the server |
 | PRIVMSG | `<receiver>{,<receiver>}` `<text to be sent>` | used for private correspondence between users. also exists the ability to send messages to channels. |
 | NOTICE | `<nickname>` `<text>` | works the same as PRIVMSG, except that no response is sent in response to a message. |
-| WHO | `<name> [<o>]`| idk |
-| WHOIS | | idk |
-| WHOWAS | | idk |
+| WHO | `<name> [<o>]`| . |
+| WHOIS | | . |
+| WHOWAS | | . |
 | KILL | `<user>` `<comment>` | disconnects the user from the server. |
 | PING / PONG | `<server1>` `[<server2>]` | used to check for client activity on the other end of the connection. this message is sent at regular intervals unless other activity is noticed from the connection. if the client does not send PONG in response to PING, the connection is closed. |
-| ERROR | X | not implemented (this server don't manage server to server communication) |
 
 
 ### Useful infos :
 ##### Ports :
 1-65535 are available, and ports in range 1-1023 are the privileged ones: an application needs to be run as root in order to listen to these ports.
 
-
-[TODO]
-- recuperer correctement les args pr creation des users
-- parsing propre (si plusieurs commandes en un buffer et si plusieurs arg pr une meme cmd)
-- implementer les commandes et les replies correspondantes
-- implementer les topics (RFC 4.2.4)
-- implementer les modes selon la rfc 4.2.3.2 a 4.2.3.1 
-- check tous ce qui peu etre passe en const et private
-
-Probleme avec NICK (set pas directement le nom tt le temp)
-
-
-Parsing :
-- JOIN un channel avec espace tronque le nom ex "JOIN #chan el" donne "chan" sur weechat
-(weechat parse tous seul linput user mais on doit le parser dans notre stockage)
-
-   Channels names are strings (beginning with a '&' or '#' character) of
-   length up to 200 characters.  Apart from the the requirement that the
-   first character being either '&' or '#'; the only restriction on a
-   channel name is that it may not contain any spaces (' '), a control G
-   (^G or ASCII 7), or a comma (',' which is used as a list item
-   separator by the protocol).
-
-
-
-
 Check prefix etc : RFC 2.3 Messages
+
+Voir avc groupe :
+Interet du realname ?
+Process de connection, rpl welcome nc ?
+Pong marche pas ?
 
 #### Modes : 
 4.2.3.2 User modes
