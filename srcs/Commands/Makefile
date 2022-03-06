@@ -16,6 +16,7 @@ SRCS	=	Info.cpp	\
 			Part.cpp	\
 			Pass.cpp	\
 			Ping.cpp	\
+			Pong.cpp	\
 			Privmsg.cpp	\
 			Quit.cpp	\
 			Oper.cpp	\

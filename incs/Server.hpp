@@ -10,6 +10,7 @@
 #include <cstring>
 #include <cerrno>
 #include <cstdlib>
+#include <ctime>
 #include <sstream>
 
 #include <poll.h>
@@ -22,6 +23,8 @@
 #include "Interpret.hpp"
 #include "NumericReplies.hpp"
 #include "Channel.hpp"
+
+#define INACTIVE_SEC	15
 
 class server
 {
@@ -66,6 +69,9 @@ class server
 		void	send_replies(user*, const std::string&, const char*) const;
 		int		send_msg_to_user(const user*, const user*, const std::string&, const std::string&) const;
 		int		send_msg_to_channel(const user*, const Channel*, const std::string&) const;
+
+		void	ping(user *, int);
+		void	pong(const std::string&);
 
 		bool 	isUser(const std::string&) const;
 

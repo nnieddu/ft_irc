@@ -8,7 +8,17 @@
 /*----------------------------------------------------------------------------*/
 
 user::user(const std::string & hostname, const std::string & nickname, const std::string & username, const Socket & socket, bool server_operator)
-: _hostname(hostname), _nickname(nickname), _username(username), _socket(socket), _server_operator(server_operator), _isLogged(false), _wasLogged(false)
+:
+	_hostname(hostname),
+	_nickname(nickname),
+	_username(username),
+	_socket(socket),
+	_server_operator(server_operator),
+	_afk(false),
+	_isLogged(false),
+	_wasLogged(false),
+	_last_event(time(NULL)),
+	_has_to_pong(false)
 {}
 
 user::~user() {}
@@ -175,6 +185,34 @@ void user::delAfk() {
 
 const std::string &user::getAfkString() const{
 	return _afkMessage;
+}
+
+/*----------------------------------------------------------------------------*/
+
+void	user::setLastEvent(const std::time_t & now)
+{
+	_last_event = now;
+}
+
+void	user::setHasToPong(const std::time_t & now)
+{
+	_last_event = now;
+	_has_to_pong = true;
+}
+
+std::time_t	user::getLastEvent() const
+{
+	return _last_event;
+}
+
+bool	user::getHasToPong() const
+{
+	return _has_to_pong;
+}
+
+void	user::pong()
+{
+	_has_to_pong = false;
 }
 
 /*----------------------------------------------------------------------------*/

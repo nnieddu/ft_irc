@@ -43,7 +43,7 @@ run : all
 runl : all
 	leaks -atExit -- ./$(NAME) 7005 password 
 
-runv : re 
+runv : all
 	valgrind --leak-check=full ./$(NAME) 7005 password
 #| cat -e
 

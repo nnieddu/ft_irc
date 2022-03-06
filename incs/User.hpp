@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <map>
+#include <ctime>
 
 #include "Socket.hpp"
 
@@ -25,6 +26,9 @@ class user
 		bool			_isLogged;
 		bool			_wasLogged;
 		Socket			_socket;
+
+		std::time_t		_last_event;
+		bool			_has_to_pong;
 
 		std::map<std::string, unsigned int>	_channels;
 
@@ -68,6 +72,12 @@ class user
 		void				setAfk(const std::string&);
 		void				delAfk();
 		const std::string&	getAfkString() const;
+
+		void				setLastEvent(const std::time_t &);
+		void				setHasToPong(const std::time_t &);
+		std::time_t			getLastEvent() const;
+		bool				getHasToPong() const;
+		void				pong();
 
 		std::string							getNickname() const;
 		std::string							getUsername() const;

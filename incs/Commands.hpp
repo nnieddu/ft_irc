@@ -130,13 +130,21 @@ class Privmsg : public Command
 		virtual void execute();
 };
 
-
 class Ping : public Command
 {
 	public:
 		virtual ~Ping();
 		Ping&	operator=(const Ping&);
 		Ping(server*);
+		virtual void execute();
+};
+
+class Pong : public Command
+{
+	public:
+		virtual ~Pong();
+		Pong&	operator=(const Pong&);
+		Pong(server*);
 		virtual void execute();
 };
 

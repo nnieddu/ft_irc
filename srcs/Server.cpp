@@ -3,7 +3,7 @@
 /*----------------------------------------------------------------------------*/
 
 server::server(const int & port, const std::string & password)
-: _name("ft_irc.ircserv"), _port(port), _password(password), _interpret(this)
+: _name("127.0.0.1"), _port(port), _password(password), _interpret(this)
 {
 	if (_port <= 1023 || _port > 65535)
 		throw(std::invalid_argument(std::string("port number")));
@@ -75,7 +75,9 @@ void	server::run()
 					accept_user();
 				else
 					receive_data(index);
-			}								// /!\ revent_error ?
+			}
+			else if (index != 0)
+				ping(_users[index - 1], index);
 		}
 	}
 }
@@ -137,6 +139,7 @@ void	server::receive_data(size_t index)
 	std::string tmp;
 	int ret = 0;
 
+	_users[index - 1]->setLastEvent(time(NULL));
 	memset(&buf, 0, sizeof(buf));
 	if((ret = recv(_fds[index].fd, buf, sizeof(buf), 0)) <= 0)
 	{
@@ -266,6 +269,37 @@ int	server::send_msg_to_channel(const user * expeditor, const Channel * dest, co
 		ret = send_msg_to_user(expeditor, *it, msg, dest->getName());
 	}
 	return ret;
+}
+
+/*----------------------------------------------------------------------------*/
+
+void	server::ping(user * usr, int index)
+{
+	double	timediff = difftime(time(NULL), usr->getLastEvent());
+
+	if (timediff  > static_cast<double>(INACTIVE_SEC))
+	{
+		if (usr->getHasToPong())
+		{
+			return close_user(index);
+		}
+		else
+		{
+			std::string reply = (":" + _name + " PING " + usr->getUsername() + " \r\n");
+			send(usr->getSock(), reply.c_str(), reply.length(), 0);
+			usr->setHasToPong(time(NULL));
+		}
+	}
+	return ;
+}
+
+void	server::pong(const std::string& username)
+{
+	for (std::vector<user*>::iterator it(_users.begin()); it != _users.end(); it++)
+	{
+		if ((*it)->getUsername() == username)
+			return (*it)->pong();
+	}
 }
 
 /*----------------------------------------------------------------------------*/

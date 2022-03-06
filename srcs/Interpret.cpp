@@ -31,6 +31,7 @@ Interpret::Interpret(server * serv): _serv(serv)
 	// _cmds_list["notice"] = Notice(_serv);
 	_cmds_list["whois"] = new Whois(_serv);
 	_cmds_list["ping"] = new Ping(_serv);
+	_cmds_list["pong"] = new Pong(_serv);
 	// _cmds_list["who"] = new Who(_serv);
 	//// _cmds_list["stats"] = Stat(_serv);
 	//// _cmds_list["admin"] = Admin(_serv); // maybe useless
