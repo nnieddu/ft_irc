@@ -247,11 +247,13 @@ int	server::send_msg_to_user(const user * expeditor, const user * dest, const st
 
 int	server::send_msg_to_channel(const user * expeditor, const Channel * dest, const std::string & msg) const
 {
-	if (!dest || !(expeditor->isMember(dest->getName())))
-		return 1;
-
 	std::set<user*>	userlist(dest->getUsers());
 	int	ret = 0;
+
+	if (!dest ||
+	(dest->getn() && !(expeditor->isMember(dest->getName()))) ||
+	(dest->getm() && (!expeditor->isOperator(dest->getName())) || !expeditor->isVoice(dest->getName())))
+		return 1;
 
 	for	(std::set<user*>::iterator it = userlist.begin(); ret == 0 && it != userlist.end(); it++)
 	{
