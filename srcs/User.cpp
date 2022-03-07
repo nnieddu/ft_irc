@@ -188,7 +188,7 @@ void	user::setLastEvent(const std::time_t & now)
 void	user::setHasToPong(const std::time_t & now)
 {
 	_last_event = now;
-	_has_to_pong = true;
+	_has_to_pong *= -1;
 }
 
 std::time_t	user::getLastEvent() const

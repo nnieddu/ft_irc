@@ -64,7 +64,7 @@ void	server::run()
 	for (;;)
 	{
 		it = _fds.begin();
-		if (poll(&(*it), _fds.size(), REFRESH_TIME_MS) < 0)
+		if (poll(&(*it), _fds.size(), 1) < 0)
 			ft_exit(0);
 		size_t nfd = _fds.size();
 		for (size_t index = 0; index < nfd; index++)
