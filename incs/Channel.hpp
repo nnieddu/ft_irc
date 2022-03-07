@@ -6,7 +6,7 @@
 /*   By: mrozniec <mrozniec@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/27 18:15:52 by mrozniec          #+#    #+#             */
-/*   Updated: 2022/03/02 22:02:28 by mrozniec         ###   ########.fr       */
+/*   Updated: 2022/03/07 17:11:24 by mrozniec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,4 +83,14 @@ class Channel {
 
 		void send_names_replies(const user*) const;
 
+		bool	geta() const;
+		bool	geti() const;
+		bool	getm() const;
+		bool	getn() const;
+		bool	getq() const;
+		bool	getp() const;
+		bool	getr() const;
+		bool	gett() const;
+		bool	getk() const;
+		bool	getl() const;
 };

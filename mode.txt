@@ -22,8 +22,8 @@
 `m`	mode channel, seul les operateurs du channel ou les membres possedant
 	le flag `v` peuvent envoyer des message via PRIVMSG sur un channel
 
-`n`	les personnes exterieur au channel ne peuvent pas envoyer de messages sur
-	le channel qui a ce flag de mis
+`n`	mode channel, les personnes exterieur au channel ne peuvent pas envoyer de
+	messages sur le channel qui a ce flag de mis
 
 `q`	pas compris
 

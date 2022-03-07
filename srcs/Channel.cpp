@@ -139,3 +139,63 @@ void	Channel::send_names_replies(const user * receiver) const
 
 	send(receiver->getSock(), replies.c_str(), replies.length(), 0);
 }
+
+bool Channel::geta() const {
+	if (mod & a)
+		return true;
+	return false;
+}
+
+bool Channel::geti() const {
+	if (mod & i)
+		return true;
+	return false;
+}
+
+bool Channel::getm() const {
+	if (mod & m)
+		return true;
+	return false;
+}
+
+bool Channel::getn() const {
+	if (mod & n)
+		return true;
+	return false;
+}
+
+bool Channel::getq() const {
+	if (mod & q)
+		return true;
+	return false;
+}
+
+bool Channel::getp() const {
+	if (mod & p)
+		return true;
+	return false;
+}
+
+bool Channel::getr() const {
+	if (mod & r)
+		return true;
+	return false;
+}
+
+bool Channel::gett() const {
+	if (mod & t)
+		return true;
+	return false;
+}
+
+bool Channel::getk() const {
+	if (mod & k)
+		return true;
+	return false;
+}
+
+bool Channel::getl() const {
+	if (mod & l)
+		return true;
+	return false;
+}
