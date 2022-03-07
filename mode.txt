@@ -6,7 +6,7 @@
 `a` en mode utilisateur, est utilez quand on lui envoie un PRIVMSG, renvoie
 	a l'expediteur le message set par l'utilisateur afk (set par la commande AWAY)
 
-	en mode server, permet au utilisateur d'etre anonyme en metant comme
+	en mode channel, permet au utilisateur d'etre anonyme en metant comme
 	nickname anonymous, username anonymous et host anonymous au message.
 	le server ne dois pas renvoyer de QUIT message pour les utilisateur quitant
 	ce type de channel mais celui de PART a la place
