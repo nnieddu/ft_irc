@@ -22,7 +22,7 @@ void Time::execute()
 {
 	std::string	*	arg = _args[HOSTNAME].arg;
 
-	if (!arg || arg->compare(_serv->getName()) != 0 || arg->compare("ircserv") != 0 )
+	if (!arg || arg->compare(_serv->getName()) == 0 || arg->compare("ircserv") == 0)
 	{
 		time_t now = time(0);
 		std::string time = ctime(&now);
