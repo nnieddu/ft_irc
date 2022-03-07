@@ -137,16 +137,14 @@ void	server::receive_data(size_t index)
 	char	buf[512];
 	std::string err;
 	std::string tmp;
-	int ret = 0;
+	int ret;
 
-	_users[index - 1]->setLastEvent(time(NULL));
 	memset(&buf, 0, sizeof(buf));
 	if((ret = recv(_fds[index].fd, buf, sizeof(buf), 0)) <= 0)
 	{
 		if (ret < 0)
 		std::cerr << "recv() failed" << std::endl; 
-		close_user(index);
-		return ;
+		return close_user(index);
 	}
 	if (ret >= 512) 
 	{
@@ -162,21 +160,13 @@ void	server::receive_data(size_t index)
 	{
 		std::cout << _users[index - 1]->getNickname() << " send : [" <<  _users[index - 1]->buf << "]" << std::endl;
 
-		if (_users[index - 1]->buf.find("PASS") <= 4 && _users[index - 1]->getisLogged() == false)
-		{
+		if (_users[index - 1]->getisLogged() == true || _users[index - 1]->buf.find("PASS") <= 4)
 			_interpret.treat_user_buffer(*_users[index - 1]);
-			_users[index - 1]->buf.clear();
-			return ;
-		}
-		if (_users[index - 1]->getisLogged() == true)
-			ret = _interpret.treat_user_buffer(*_users[index - 1]);
 		if (_users[index - 1]->getisLogged() == false)
-		{
-			if (_users[index - 1]->getWasLogged() == false)
-				send_replies(_users[index - 1], "You need to be log (PASS command).", "");
-			close_user(index);
-		}
+			return close_user(index);
 	}
+	_users[index - 1]->setLastEvent(time(NULL));
+	return ;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -296,7 +286,7 @@ void	server::pong(const std::string& username)
 {
 	for (std::vector<user*>::iterator it(_users.begin()); it != _users.end(); it++)
 	{
-		if ((*it)->getUsername() == username)
+		if (!(*it)->getUsername().compare(username))
 			return (*it)->pong();
 	}
 }

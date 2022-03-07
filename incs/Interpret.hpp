@@ -24,14 +24,14 @@ class Interpret
 		Interpret(server * serv);
 		virtual ~Interpret();
 
-		int 						treat_user_buffer(user&);
+		void 						treat_user_buffer(user&);
 		std::vector<std::string *>* parseCmds(std::string*) const;
 		std::string *				GetNextWord(std::string*) const;
 		std::string *				parseWord(std::string*) const;
 		std::string *				parseMessage(std::string*) const;
 
-		int	cmd_found(Command*, user&, std::vector<std::string*>*);
-		int	cmd_not_found(user&, std::vector<std::string*>*) const;
+		void	cmd_found(Command*, user&, std::vector<std::string*>*);
+		void	cmd_not_found(user&, std::vector<std::string*>*) const;
 
 		bool			hasEOC(const std::string*) const;
 		std::string *	isEOC(std::string*) const;

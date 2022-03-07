@@ -50,23 +50,22 @@ Interpret::~Interpret()
 
 /*----------------------------------------------------------------------------*/
 
-int Interpret::treat_user_buffer(user & usr)
+void Interpret::treat_user_buffer(user & usr)
 {
 	std::vector<std::string *>*	args;
-	int							ret;
 
 	args = parseCmds(&usr.buf);
 
 	while (!args->empty())
 	{
 		if (_cmds_list.find(nameCaseIns(*args->front())) != _cmds_list.end())
-			ret = cmd_found(_cmds_list[*args->front()], usr, args);
+			cmd_found(_cmds_list[*args->front()], usr, args);
 		else
-			ret = cmd_not_found(usr, args);
+			cmd_not_found(usr, args);
 	}
 
 	delete args;
-	return ret;
+	return;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -137,21 +136,21 @@ std::string *	Interpret::parseMessage(std::string * buf) const
 
 /*----------------------------------------------------------------------------*/
 
-int	Interpret::cmd_found(Command* cmd, user & usr, std::vector<std::string *>* args)
+void	Interpret::cmd_found(Command* cmd, user & usr, std::vector<std::string *>* args)
 {
 	cmd->setArgs(&usr, args);
 	cmd->execute();
 	cmd->reset();
 	clearLeftover(args);
-	return 0;
+	return;
 }
 
-int	Interpret::cmd_not_found(user & usr, std::vector<std::string *>* args) const
+void	Interpret::cmd_not_found(user & usr, std::vector<std::string *>* args) const
 {
 	std::cerr << *args->front() << ": Command not found" << std::endl;
 
 	clearLeftover(args);
-	return 1;
+	return;
 }
 
 /*----------------------------------------------------------------------------*/
