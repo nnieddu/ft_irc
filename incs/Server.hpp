@@ -24,6 +24,7 @@
 #include "NumericReplies.hpp"
 #include "Channel.hpp"
 
+#define	REFRESH_TIME_MS	1000
 #define INACTIVE_SEC	15
 
 class server
