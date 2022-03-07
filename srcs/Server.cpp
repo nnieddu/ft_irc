@@ -2,8 +2,8 @@
 
 /*----------------------------------------------------------------------------*/
 
-server::server(const int & port, const std::string & password)
-: _name("127.0.0.1"), _port(port), _password(password), _interpret(this)
+server::server(const int & port, const std::string & strport, const std::string & password)
+: _name("127.0.0.1"), _port(port), _strport(strport), _password(password), _interpret(this)
 {
 	if (_port <= 1023 || _port > 65535)
 		throw(std::invalid_argument(std::string("port number")));
@@ -158,11 +158,11 @@ void	server::receive_data(size_t index)
 
 	tmp = buf;
 	_users[index - 1]->buf += tmp;
-	if (tmp.find("\n") != std::string::npos)
+	if (tmp.find("\n"))
 	{
 		std::cout << _users[index - 1]->getNickname() << " send : [" <<  _users[index - 1]->buf << "]" << std::endl;
 
-		if (tmp.find("PASS") <= 4 && _users[index - 1]->getisLogged() == false)
+		if (_users[index - 1]->buf.find("PASS") <= 4 && _users[index - 1]->getisLogged() == false)
 		{
 			_interpret.treat_user_buffer(*_users[index - 1]);
 			_users[index - 1]->buf.clear();
@@ -224,8 +224,7 @@ void	server::remove_user_from_channels(user * usr, const std::string & msg)
 void	server::send_replies(user *usr, const std::string & msg, const char* code) const
 {
 	std::string replies;
-	std::string prefix = ":" + usr->getUsername(); // usr->getUsername();
-	// msg += prefix;
+	std::string prefix = ":" + usr->getUsername();
 
 	replies += (prefix +  " " + code + " " + usr->getNickname() + " " + msg + "\r\n");
 	send(usr->getSock(), replies.c_str(), replies.length(), 0);
@@ -318,6 +317,7 @@ bool		server::isUser(const std::string & nickname) const
 
 int 				server::getSock() const { return _socket.fd; }
 std::string 		server::getName() const { return _name; }
+std::string	 		server::getPort() const { return _strport; }
 std::string 		server::getPassword() const { return _password; }
 std::vector<user*>	server::getUsers() const { return _users; }
 
@@ -348,4 +348,26 @@ std::string&	nameCaseIns(std::string& name) {
 	for (int index = 0; name[index] ; ++index)
 		name[index] = static_cast<char>(std::tolower(name[index]));
 	return name;
+}
+
+/*----------------------------------------------------------------------------*/
+
+void	server::welcomeNewUser(user * usr) 
+{
+	if (usr->getisLogged() == true)
+	{
+		std::string str = ":" + usr->getUsername() +  " " + RPL_WELCOME + " " + usr->getNickname() + \
+			" Welcome to the Internet Relay Network " + usr->getUsername() + "\r\n";
+		send(usr->getSock(), str.c_str(), str.length(), 0);
+		
+		str = ":" + usr->getUsername() +  " " + RPL_YOURHOST + " Your host is ircserv (" + this->getName() + \
+			") running on port " + getPort() + "\r\n";
+		send(usr->getSock(), str.c_str(), str.length(), 0);
+
+		// str = ":" + usr->getUsername() +  " " + RPL_CREATED + " This server was created " + "" + "\r\n"; ////
+		// send(usr->getSock(), str.c_str(), str.length(), 0);
+
+		// str = ":" + usr->getUsername() +  " " + RPL_MYINFO + "ircserv has " "\r\n"; ////
+		// send(usr->getSock(), str.c_str(), str.length(), 0);
+	}
 }

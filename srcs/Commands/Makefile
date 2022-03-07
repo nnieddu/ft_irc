@@ -22,6 +22,7 @@ SRCS	=	Cap.cpp		\
 			Quit.cpp	\
 			Oper.cpp	\
 			Topic.cpp	\
+			Time.cpp	\
 			User.cpp	\
 			Version.cpp	\
 			Whois.cpp

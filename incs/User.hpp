@@ -16,7 +16,6 @@ class user
 		std::string		_nickname;
 		std::string		_username;
 		std::string		_hostname;
-		// std::string		_realname;
 		std::string		_afkMessage;
 
 		bool			_server_operator;

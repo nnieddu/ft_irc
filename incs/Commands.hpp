@@ -193,11 +193,20 @@ class Whois : public Command
 		virtual void execute();
 };
 
-// class Who : public Command
-// {
-// 	public:
-// 		virtual ~Who();
-// 		Who&	operator=(const Who&);
-// 		Who(server*);
-// 		virtual void execute();
-// };
+class Who : public Command
+{
+	public:
+		virtual ~Who();
+		Who&	operator=(const Who&);
+		Who(server*);
+		virtual void execute();
+};
+
+class Time : public Command
+{
+	public:
+		virtual ~Time();
+		Time&	operator=(const Time&);
+		Time(server*);
+		virtual void execute();
+};

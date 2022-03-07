@@ -15,7 +15,7 @@ Info & Info::operator=(const Info & x)
 Info::Info(server * serv):Command(serv) {}
 void Info::execute()
 {
-	_serv->send_replies(_expeditor, " :SERVER INFORMATIONS :", RPL_INFO);
+	_serv->send_replies(_expeditor, " :", RPL_INFO);
 	_serv->send_replies(_expeditor, " :ircserv (" + _serv->getName() + ") running 1.42", RPL_INFO);
 	_serv->send_replies(_expeditor, " :", RPL_INFO);
 	_serv->send_replies(_expeditor, " :This server was created and maintained by :", RPL_INFO);
@@ -25,6 +25,6 @@ void Info::execute()
 	_serv->send_replies(_expeditor, " :", RPL_INFO);
 	_serv->send_replies(_expeditor, " :Hope you enjoy it !", RPL_INFO);
 	_serv->send_replies(_expeditor, " :", RPL_INFO);
-	_serv->send_replies(_expeditor, " :End of /INFO list", RPL_ENDOFINFO);
+	_serv->send_replies(_expeditor, " :", RPL_ENDOFINFO);
 	return ;
 }

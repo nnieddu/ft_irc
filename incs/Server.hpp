@@ -44,6 +44,7 @@ class server
 
 		std::string									_name;
 		int											_port;
+		std::string									_strport;
 		std::string									_password;
 		Socket										_socket;
 		Interpret									_interpret;
@@ -53,7 +54,7 @@ class server
 	public:
 		std::map<std::string, Channel* > channels;
 
-		server(const int & port, const std::string & password);
+		server(const int & port, const std::string & strport, const std::string & password);
 		~server();
 
 		void	run();
@@ -76,11 +77,14 @@ class server
 		bool 	isUser(const std::string&) const;
 
 		std::string			getName() const;
+		std::string			getPort() const;
 		std::string			getPassword() const;
 		std::vector<user*>	getUsers() const;
 		int					getSock() const;
 		user *				getUser(const std::string&) const;
 		Channel *			getChannel(const std::string&) const;
+		void				welcomeNewUser(user * usr);
+
 };
 
 std::string&	nameCaseIns(std::string&);

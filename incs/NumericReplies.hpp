@@ -18,6 +18,9 @@
 #pragma once
 
 #define RPL_WELCOME				"001"
+#define RPL_YOURHOST			"002"
+#define RPL_CREATED				"003"
+#define RPL_MYINFO				"004"
 
 #define RPL_AWAY				"301"
 #define RPL_LISTSTART			"321"
@@ -31,6 +34,8 @@
 #define RPL_INFO				"371"
 #define RPL_ENDOFINFO			"374"
 #define RPL_YOUREOPER			"381"
+
+#define RPL_TIME    			"391"
 
 #define ERR_NOSUCHNICK			"401"
 #define ERR_NOSUCHSERVER		"402"

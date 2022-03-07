@@ -10,7 +10,7 @@ int main(int ac, char **av)
 	}
 	try
 	{
-		server	serv(atoi(av[1]), std::string(av[2]));
+		server	serv(atoi(av[1]), av[1], std::string(av[2]));
 		serv.run();
 	}
 	catch (server::quitexcept er)

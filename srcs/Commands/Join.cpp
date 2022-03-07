@@ -45,10 +45,8 @@ void	Join::execute()
 		std::cout << "Channel : " << name << " created" << std::endl;
 		_serv->channels[name] = new Channel(*_expeditor, name);
 		_serv->channels[name]->addUser(*_expeditor);
-		_expeditor->join_channel(name, true);
-		// _expeditor->setLocation(name);
 		_expeditor->promote(name);
-		//Voir si d'autre prefix possible que @
+		_expeditor->join_channel(name, true);
 		std::string replies = ":" + _expeditor->getNickname() + " JOIN :" + name + "\r\n";
 		send(_expeditor->getSock(), replies.c_str(), replies.length(), 0);
 		_serv->getChannel(name)->send_names_replies(_expeditor);
@@ -70,7 +68,6 @@ void	Join::execute()
 		_serv->send_replies(_expeditor, name + " :End of names list", RPL_ENDOFNAMES);
 		_expeditor->join_channel(name, true);
 		_serv->channels[name]->addUser(*_expeditor);
-		// _expeditor->setLocation(name);
 	}
 	return ;
 }

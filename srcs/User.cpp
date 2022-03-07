@@ -29,18 +29,7 @@ void		user::setNickname(std::string nick) { _nickname = nick; }
 
 void		user::setUsername(std::string usrname) { _username = usrname; }
 
-void		user::setLogged(bool log) 
-{ 
-	_isLogged = log; 
-	if (log == true)
-	{
-		std::string prefix = ":" + getUsername();
-		std::string logged = prefix +  " " + RPL_WELCOME + " " + getNickname() + \
-			" Welcome to the Internet Relay Network " + getUsername() + "\r\n";
-		send(getSock(), logged.c_str(), logged.length(), 0);
-		_wasLogged = true;
-	}
-}
+void		user::setLogged(bool log) { _isLogged = log; _wasLogged = true; }
 
 /*----------------------------------------------------------------------------*/
 

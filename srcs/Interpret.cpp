@@ -19,14 +19,14 @@ Interpret::Interpret(server * serv): _serv(serv)
 	_cmds_list["quit"] = new Quit(_serv);
 	_cmds_list["join"] = new Join(_serv);
 	_cmds_list["part"] = new Part(_serv);
-	// _cmds_list["mode"] = Mode(_serv);
+	// _cmds_list["mode"] = new Mode(_serv);
 	_cmds_list["topic"] = new Topic(_serv);
 	_cmds_list["names"] = new Names(_serv); //
 	_cmds_list["list"] = new List(_serv);
 	_cmds_list["invite"] = new Invite(_serv);
 	_cmds_list["kick"] = new Kick(_serv);
 	_cmds_list["version"] = new Version(_serv);
-	// _cmds_list["time"] = Time(_serv);
+	_cmds_list["time"] = new Time(_serv);
 	_cmds_list["info"] = new Info(_serv);
 	_cmds_list["privmsg"] = new Privmsg(_serv);
 	// _cmds_list["notice"] = Notice(_serv);
@@ -38,7 +38,6 @@ Interpret::Interpret(server * serv): _serv(serv)
 	//// _cmds_list["admin"] = Admin(_serv); // maybe useless
 	//// _cmds_list["whowas"] = Whowas(_serv); // a voir mais relou
 	//// _cmds_list["kill"] = Kill(_serv);
-	// _cmds_list["pong"] = Pong(_serv);
 }
 
 /*----------------------------------------------------------------------------*/

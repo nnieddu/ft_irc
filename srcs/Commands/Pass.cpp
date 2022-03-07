@@ -33,7 +33,10 @@ void Pass::execute()
 		_serv->send_replies(_expeditor, ":Password incorrect", ERR_PASSWDMISMATCH); // pas dans la rfc au loggin maybe a remove
 		return ;
 	}
-	if (_expeditor->getisLogged() == false) //&& !pass->find("USER") && !pass->find("NICK"))
+	if (_expeditor->getisLogged() == false)// && !_expeditor->buf.find("USER")) ////
+	{
 		_expeditor->setLogged(true);
+		// _serv->welcomeNewUser(_expeditor);
+	}
 	return ;
 }
