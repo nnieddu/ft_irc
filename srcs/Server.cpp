@@ -2,8 +2,8 @@
 
 /*----------------------------------------------------------------------------*/
 
-server::server(const int & port, const std::string & strport, const std::string & password)
-: _name("127.0.0.1"), _port(port), _strport(strport), _password(password), _interpret(this)
+server::server(const int & port, const std::string & password)
+: _name("127.0.0.1"), _port(port), _password(password), _interpret(this)
 {
 	if (_port <= 1023 || _port > 65535)
 		throw(std::invalid_argument(std::string("port number")));
@@ -317,7 +317,7 @@ bool		server::isUser(const std::string & nickname) const
 
 int 				server::getSock() const { return _socket.fd; }
 std::string 		server::getName() const { return _name; }
-std::string	 		server::getPort() const { return _strport; }
+int			 		server::getPort() const { return _port; }
 std::string 		server::getPassword() const { return _password; }
 std::vector<user*>	server::getUsers() const { return _users; }
 
@@ -352,6 +352,23 @@ std::string&	nameCaseIns(std::string& name) {
 
 /*----------------------------------------------------------------------------*/
 
+std::string ft_itoa(int nbr)
+{
+	std::string str;
+	size_t index;
+
+	if (nbr == 0)
+		return (std::string("0"));
+	index = nbr;
+	while (index)
+	{
+		str.insert(str.begin(), (index % 10) + 48);
+		index /= 10;
+	}
+	return (str);
+}
+/*----------------------------------------------------------------------------*/
+
 void	server::welcomeNewUser(user * usr) 
 {
 	if (usr->getisLogged() == true)
@@ -361,7 +378,7 @@ void	server::welcomeNewUser(user * usr)
 		send(usr->getSock(), str.c_str(), str.length(), 0);
 		
 		str = ":" + usr->getUsername() +  " " + RPL_YOURHOST + " Your host is ircserv (" + this->getName() + \
-			") running on port " + getPort() + "\r\n";
+			") running on port " + ft_itoa(getPort()) + "\r\n";
 		send(usr->getSock(), str.c_str(), str.length(), 0);
 
 		// str = ":" + usr->getUsername() +  " " + RPL_CREATED + " This server was created " + "" + "\r\n"; ////

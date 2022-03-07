@@ -44,7 +44,6 @@ class server
 
 		std::string									_name;
 		int											_port;
-		std::string									_strport;
 		std::string									_password;
 		Socket										_socket;
 		Interpret									_interpret;
@@ -54,7 +53,7 @@ class server
 	public:
 		std::map<std::string, Channel* > channels;
 
-		server(const int & port, const std::string & strport, const std::string & password);
+		server(const int & port, const std::string & password);
 		~server();
 
 		void	run();
@@ -77,7 +76,7 @@ class server
 		bool 	isUser(const std::string&) const;
 
 		std::string			getName() const;
-		std::string			getPort() const;
+		int					getPort() const;
 		std::string			getPassword() const;
 		std::vector<user*>	getUsers() const;
 		int					getSock() const;
@@ -88,3 +87,4 @@ class server
 };
 
 std::string&	nameCaseIns(std::string&);
+std::string 	ft_itoa(int nbr);
