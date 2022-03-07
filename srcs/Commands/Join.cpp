@@ -52,7 +52,7 @@ void	Join::execute()
 		_serv->getChannel(name)->send_names_replies(_expeditor);
 		_serv->send_replies(_expeditor, name + " :End of names list", RPL_ENDOFNAMES);
 	}
-	else if (_expeditor->getChannels().find(name) == _expeditor->getChannels().end())
+	else if (!_expeditor->isMember(name))
 	{
 		std::string msg;
 		std::set<user *>::iterator it;
