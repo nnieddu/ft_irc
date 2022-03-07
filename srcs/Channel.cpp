@@ -16,7 +16,7 @@
 /*----------------------------------------------------------------------------*/
 
 Channel::Channel(user &users, std::string &newName) : users(), name(nameCaseIns(newName)), id(),
-topic("No topic set for channel "), password("password"), limit_user(0), chanCrea(NULL) {
+topic("No topic set for channel "), password("password"), limit_user(0), chanCrea(NULL), hasop(true), rtime(time(NULL)) {
 	this->users.insert(&users);
 	id.clear();
 	if (newName[0] == '&' || newName[0] == '#')
@@ -86,7 +86,15 @@ void Channel::addUser(user &newUser) {
 	users.insert(&newUser);
 }
 
-void Channel::removeUser(user &remUser) {
+void Channel::removeUser(user &remUser)
+{
+	if (remUser.isOperator(name))
+	{
+		hasop = false;
+		for (std::set<user*>::iterator it(users.begin()); hasop == false && it != users.end(); it++)
+			hasop = (*it)->isOperator(name);
+		rtime = time(NULL);
+	}
 	users.erase(users.find(&remUser));
 }
 
@@ -139,6 +147,27 @@ void	Channel::send_names_replies(const user * receiver) const
 
 	send(receiver->getSock(), replies.c_str(), replies.length(), 0);
 }
+
+/*----------------------------------------------------------------------------*/
+
+
+bool	Channel::mustAddOp(const std::time_t & now) const
+{
+	return !hasop && difftime(now, rtime) > RFLAG_TIME_SEC;
+}
+
+void	Channel::rdmOp(const std::time_t &)
+{
+	std::set<user*>::iterator	it(users.begin());
+	size_t						index(std::rand() % users.size());
+
+	for (size_t	index(std::rand() % users.size()); index > 0; index--)
+		it++;
+	(*it)->promote(name);
+	return;
+}
+
+/*----------------------------------------------------------------------------*/
 
 bool Channel::geta() const {
 	if (mod & a)

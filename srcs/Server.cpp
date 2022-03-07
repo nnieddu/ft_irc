@@ -18,6 +18,7 @@ server::server(const int & port, const std::string & password)
 	serv_fd.events = POLLIN;
 
 	_fds.push_back(serv_fd);
+	srand(time(NULL));
 }
 
 /*----------------------------------------------------------------------------*/
@@ -63,6 +64,8 @@ void	server::run()
 
 	for (;;)
 	{
+		if (!channels.empty())
+			check_channels(time(NULL));
 		it = _fds.begin();
 		if (poll(&(*it), _fds.size(), 1) < 0)
 			ft_exit(0);
@@ -290,6 +293,17 @@ void	server::pong(const std::string& username)
 	{
 		if (!(*it)->getUsername().compare(username))
 			return (*it)->pong();
+	}
+}
+
+/*----------------------------------------------------------------------------*/
+
+void	server::check_channels(const std::time_t & now)
+{
+	for (std::map<std::string, Channel* >::iterator	it(channels.begin()); it != channels.end(); it++)
+	{
+		if (it->second->getr() && it->second->mustAddOp(now))
+			it->second->rdmOp(now);
 	}
 }
 

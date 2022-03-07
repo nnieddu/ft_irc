@@ -16,6 +16,7 @@
 #include <set>
 #include "User.hpp"
 #include <exception>
+#include <ctime>
 
 //MOD:
 //member status
@@ -40,6 +41,8 @@
 #define I 0x10000	// set/remove an invit mask to automatically override TODO?
 					// the invite only flag
 
+#define RFLAG_TIME_SEC	5	// time in sec before a channel with -r flag will chose a random new operator amongst its users
+
 
 class user;
 
@@ -56,6 +59,8 @@ class Channel {
 		std::string			password;
 		user*				chanCrea;
 		std::set<user *>	users;
+		bool				hasop;
+		std::time_t			rtime;
 
 	public:
 		Channel(user&, std::string&);
@@ -82,6 +87,9 @@ class Channel {
 		const std::string&		getBanMask() const;
 
 		void send_names_replies(const user*) const;
+
+		bool	mustAddOp(const std::time_t &) const;
+		void	rdmOp(const std::time_t &);
 
 		bool	geta() const;
 		bool	geti() const;

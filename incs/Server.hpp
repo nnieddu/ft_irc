@@ -73,6 +73,8 @@ class server
 		void	ping(user *, int);
 		void	pong(const std::string&);
 
+		void	check_channels(const std::time_t &);
+
 		bool 	isUser(const std::string&) const;
 
 		std::string			getName() const;
