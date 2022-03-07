@@ -21,39 +21,37 @@ Part::Part(server * serv):Command(serv)
 void Part::execute()
 {
 	std::string	*		channel = _args[CHANNEL].arg;
+	std::deque<std::string>	lst;
 
 	if (!channel)
 	{
 		_serv->send_replies(_expeditor, "PART :Not enough parameters", ERR_NEEDMOREPARAMS);
 		return ;
 	}
-	if (channel)
-	{
-		std::deque<std::string> list = _args[CHANNEL].parseList();
 
-		while (!list.empty())
+	std::deque<std::string> list = _args[CHANNEL].parseList();
+
+	while (!list.empty())
+	{
+		std::deque<std::string>::iterator	it = list.begin();
+		
+		*it = nameCaseIns(*it);
+		if (_serv->channels.find(*it) == _serv->channels.end())
 		{
-			std::deque<std::string>::iterator	it = list.begin();
-			
-			*it = nameCaseIns(*it);
-			std::cout << "PART ARG=" << *it << std::endl;
-			if (_serv->channels.find(*it) == _serv->channels.end())
-			{
-				_serv->send_replies(_expeditor, *it + " :No such channel", ERR_NOSUCHCHANNEL);
-				list.pop_front();
-				continue ;
-			}
-			if (!_expeditor->isMember(*it))
-			{
-				_serv->send_replies(_expeditor, *it + " :You're not on that channel", ERR_NOTONCHANNEL);
-				list.pop_front();
-				continue ;
-			}
-			std::string quit = ":" + _expeditor->getNickname() + " PART " + *it + "\r\n";
-			send(_expeditor->getSock(), quit.c_str(), quit.length(), 0);
-			_serv->remove_user_from(_expeditor, *it, "PART");
+			_serv->send_replies(_expeditor, *it + " :No such channel", ERR_NOSUCHCHANNEL);
 			list.pop_front();
+			continue ;
 		}
+		if (!_expeditor->isMember(*it))
+		{
+			_serv->send_replies(_expeditor, *it + " :You're not on that channel", ERR_NOTONCHANNEL);
+			list.pop_front();
+			continue ;
+		}
+		std::string quit = ":" + _expeditor->getNickname() + " PART " + *it + "\r\n";
+		send(_expeditor->getSock(), quit.c_str(), quit.length(), 0);
+		_serv->remove_user_from(_expeditor, *it, "PART");
+		list.pop_front();
 	}
 	// std::string	*	arg = _args[CHANNEL].arg;
 	// std::cout << "PART ARG =" << *arg << std::endl;
