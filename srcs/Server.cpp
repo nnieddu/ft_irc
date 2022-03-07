@@ -156,7 +156,7 @@ void	server::receive_data(size_t index)
 
 	tmp = buf;
 	_users[index - 1]->buf += tmp;
-	if (tmp.find("\n"))
+	if (tmp.find("\n") != std::string::npos)
 	{
 		std::cout << _users[index - 1]->getNickname() << " send : [" <<  _users[index - 1]->buf << "]" << std::endl;
 
