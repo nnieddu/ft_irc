@@ -29,14 +29,14 @@ void Part::execute()
 		return ;
 	}
 	*arg = nameCaseIns(*arg);
-	if (_expeditor->getChannels().find(*arg) == _expeditor->getChannels().end())
-	{
-		_serv->send_replies(_expeditor, *arg + " :You're not on that channel", ERR_NOTONCHANNEL);
-		return ;
-	}
 	if (_serv->channels.find(*arg) == _serv->channels.end())
 	{
 		_serv->send_replies(_expeditor, *arg + " :No such channel", ERR_NOSUCHCHANNEL);
+		return ;
+	}
+	if (!_expeditor->isMember(*arg))
+	{
+		_serv->send_replies(_expeditor, *arg + " :You're not on that channel", ERR_NOTONCHANNEL);
 		return ;
 	}
 	std::string quit = ":" + _expeditor->getNickname() + " PART " + *arg + "\r\n";
