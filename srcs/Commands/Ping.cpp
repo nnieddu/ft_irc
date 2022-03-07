@@ -29,11 +29,10 @@ void Ping::execute()
 	}
 	if (arg->compare(_serv->getName()) != 0)
 		_serv->send_replies(_expeditor, *arg + ":No such server", ERR_NOSUCHSERVER);
-/*	else
+	else
 	{
 		std::string reply = (":" + _expeditor->getUsername() + " PONG " + _serv->getName() + " \r\n");
 		send(_expeditor->getSock(), reply.c_str(), reply.length(), 0);
-	}*/
-	// Le serveur ne doit pas repondre aux pings je laisse juste ca en comment au cas ou j ai mal compris
+	}
 	return ;
 }
