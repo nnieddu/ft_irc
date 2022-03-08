@@ -34,9 +34,6 @@ void Pass::execute()
 		return ;
 	}
 	if (_expeditor->getisLogged() == false && _expeditor->getLogLvl() == 0)
-	{
-		// _expeditor->setLogged(true);
 		_expeditor->incLogLvl();
-	}
 	return ;
 }
