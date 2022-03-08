@@ -151,8 +151,7 @@ void	server::receive_data(size_t index)
 	}
 	if (ret >= 512) 
 	{
-		err =  "Error : too long message.";
-		send(_users[index - 1]->getSock(), err.c_str(), err.length(), 0);
+		send_replies(_users[index - 1] ,_users[index - 1]->getNickname() + ":Input line was too long" , ERR_INPUTTOOLONG);
 		_users[index - 1]->buf.clear();
 		return ;
 	}
@@ -192,7 +191,7 @@ void	server::remove_user_from(user * usr, const std::string & name, const std::s
 		}
 		channels[name]->removeUser(*usr);
 		usr->leave_channel(name);
-		if (channels[name]->getUsers().empty())	// <-- remove channel if its users vector is empty
+		if (channels[name]->getUsers().empty())
 		{	
 			delete channels[name];
 			channels.erase(name);
