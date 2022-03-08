@@ -27,16 +27,17 @@ void Invite::execute()
 	if (!nick || !channel)
 		return _serv->send_replies(_expeditor, "INVITE :Not enough parameters", ERR_NEEDMOREPARAMS);
 	if (!_serv->isUser(*nick))
-		return _serv->send_replies(_expeditor, "INVITE :No such nick", ERR_NOSUCHNICK);
-	//ERR_NOTONCHANNEL	?
+		return _serv->send_replies(_expeditor, "INVITE :No such nick/channe", ERR_NOSUCHNICK);
+	if (!_expeditor->isMember(*channel))
+		return _serv->send_replies(_expeditor, *channel + " :You're not on that channel", ERR_NOTONCHANNEL);
+	if (_serv->getUser(*nick)->isAway())
+		return _serv->send_replies(_expeditor, ":" + _serv->getUser(*nick)->getAfkString(), RPL_AWAY);
 	if (_serv->channels.find(*channel) != _serv->channels.end())
 	{
-		//if (_serv->getUser(*nick)->isMember(*channel))
-		//	return _serv->send_replies(_expeditor, "INVITE :User already on channel", ERR_USERONCHANNEL);
-		//if (/* channel has +i mode*/ && !(_serv->getUser(*nick)->isOperator(*channel)))
-		//	return _serv->send_replies(_expeditor, "INVITE :Channel operator privilege is needed", ERR_CHANOPRIVSNEEDED);
+		if (_serv->getUser(*nick)->isMember(*channel))
+			return _serv->send_replies(_expeditor, *nick + " " + *channel + " :is already on channel", ERR_USERONCHANNEL);
+		if (_serv->getChannel(*channel)->geti() && !_expeditor->isOperator(*channel))
+			return _serv->send_replies(_expeditor, *channel + " :You're not channel operator", ERR_CHANOPRIVSNEEDED);
+		_serv->send_replies(_serv->getUser(*nick), *channel + " " + *nick, RPL_INVITING);
 	}
-	if (_serv->getUser(*nick)->isAway())
-		return _serv->send_replies(_expeditor, "INVITE :user is away", RPL_AWAY);
-	//	return send RPL_INVITING apres tests pck je comprend pas
 }

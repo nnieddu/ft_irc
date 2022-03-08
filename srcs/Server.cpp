@@ -90,12 +90,10 @@ void	server::first_auth(user * usr)
 {
 	if ((usr->buf.find("PASS") <= 4 && usr->getLogLvl() == 0) || \
 		(usr->buf.find("CAP") <= 3 && usr->getLogLvl() == 1) ||  \
-		(usr->buf.find("NICK") <= 4 && usr->getLogLvl() == 1) || \
-		(usr->buf.find("USER") <= 4 && usr->getLogLvl() == 2) || \
-			usr->buf.find("QUIT") <= 4)
-	{
+			(usr->buf.find("NICK") <= 4 && usr->getLogLvl() == 1) || \
+				(usr->buf.find("USER") <= 4 && usr->getLogLvl() == 2) || \
+					usr->buf.find("QUIT") <= 4)
 		_interpret.treat_user_buffer(*usr);
-	}
 	if (usr->buf.empty() == false)
 	{
 		std::string replies = usr->getNickname() + \
