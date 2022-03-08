@@ -18,7 +18,8 @@ user::user(const std::string & hostname, const std::string & nickname, const std
 	_isLogged(false),
 	_wasLogged(false),
 	_last_event(time(NULL)),
-	_has_to_pong(false)
+	_has_to_pong(false),
+	_logLvl(0)
 {}
 
 user::~user() {}
@@ -30,6 +31,8 @@ void		user::setNickname(std::string nick) { _nickname = nick; }
 void		user::setUsername(std::string usrname) { _username = usrname; }
 
 void		user::setLogged(bool log) { _isLogged = log; _wasLogged = true; }
+
+void		user::incLogLvl() { _logLvl++; }
 
 /*----------------------------------------------------------------------------*/
 
@@ -211,6 +214,7 @@ void	user::pong()
 std::string							user::getNickname() const { return _nickname; }
 std::string							user::getUsername() const { return _username; }
 std::string							user::getHostname() const { return _hostname; }
+unsigned int						user::getLogLvl() const { return _logLvl; }
 bool								user::getisLogged() const { return _isLogged; }
 bool								user::getWasLogged() const { return _wasLogged; }
 int 								user::getSock() const { return _socket.fd; }

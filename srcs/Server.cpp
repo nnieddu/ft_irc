@@ -86,6 +86,26 @@ void	server::run()
 }
 
 /*----------------------------------------------------------------------------*/
+void	server::first_auth(user * usr)
+{
+	if (usr->buf.find("PASS") <= 4 && usr->getLogLvl() == 0)
+		_interpret.treat_user_buffer(*usr);
+	if (usr->buf.find("CAP") <= 3 && usr->getLogLvl() == 1)
+		_interpret.treat_user_buffer(*usr);	
+	if (usr->buf.find("NICK") <= 4 && usr->getLogLvl() == 1)
+		_interpret.treat_user_buffer(*usr);
+	if (usr->buf.find("USER") <= 4 && usr->getLogLvl() == 2)
+		_interpret.treat_user_buffer(*usr);
+	if (usr->buf.empty() == false)
+	{
+		std::string replies = usr->getNickname() + \
+			" :You need to be fully authentified before using other commands.\r\n";
+		send(usr->getSock(), replies.c_str(), replies.length(), 0);
+		usr->buf.clear();
+	}
+}
+
+/*----------------------------------------------------------------------------*/
 
 void server::accept_user()
 {
@@ -162,10 +182,10 @@ void	server::receive_data(size_t index)
 	{
 		std::cout << _users[index - 1]->getNickname() << " send : [" <<  _users[index - 1]->buf << "]" << std::endl;
 
-		if (_users[index - 1]->getisLogged() == true || _users[index - 1]->buf.find("PASS") <= 4)
+		if (_users[index - 1]->getisLogged() == true)
 			_interpret.treat_user_buffer(*_users[index - 1]);
-		if (_users[index - 1]->getisLogged() == false)
-			return close_user(index);
+		else
+			first_auth(_users[index - 1]);
 	}
 	_users[index - 1]->setLastEvent(time(NULL));
 	return ;

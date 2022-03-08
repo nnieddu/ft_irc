@@ -89,7 +89,7 @@ void	Join::execute()
 			_serv->send_replies(_expeditor, + " " + name + " :" + _serv->channels[name]->getTopic(), RPL_TOPIC);
 			_serv->getChannel(name)->send_names_replies(_expeditor);
 			_serv->send_replies(_expeditor, name + " :End of names list", RPL_ENDOFNAMES);
-			_expeditor->join_channel(name, true);
+			_expeditor->join_channel(name, false);
 			_serv->channels[name]->addUser(*_expeditor);
 		}
 		if (_serv->getChannel(name)->geti() == true)
@@ -99,3 +99,4 @@ void	Join::execute()
 	}
 }
 //ERR_BANNEDFROMCHAN
+// add operator replies when created/promote

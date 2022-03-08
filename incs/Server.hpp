@@ -59,6 +59,7 @@ class server
 		void	run();
 
 		void	accept_user();
+		void	first_auth(user *);
 		void	close_user(size_t);
 
 		void	receive_data(size_t);
