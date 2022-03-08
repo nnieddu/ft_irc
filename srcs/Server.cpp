@@ -201,8 +201,8 @@ void	server::remove_user_from(user * usr, const std::string & name, const std::s
 	{
 		if (msg == "QUIT")
 			str = " QUIT :disconnected";
-		if (msg == "PART")
-			str = " PART " + name;
+		else if (msg == "PART" || msg == "KICK")
+			str = " " + msg + " " + name;
 		std::string quit = ":" + usr->getNickname() + str + "\r\n";
 		for(std::set<user *>::iterator it = channels[name]->getUsers().begin(); it != channels[name]->getUsers().end(); ++it)
 		{

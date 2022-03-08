@@ -36,7 +36,7 @@ void	Kick::execute()
 
 		for (std::deque<std::string>::iterator	it(user_list.begin()); out == false && it != user_list.end(); it++)
 		{
-			if (!(_serv->channels.find(chan_list.front()) == _serv->channels.end()))
+			if (_serv->channels.find(nameCaseIns(chan_list.front())) == _serv->channels.end())
 				return _serv->send_replies(_expeditor, "KICK :No such channel", ERR_NOSUCHCHANNEL);
 			if (!(_expeditor->isOperator(chan_list.front())))
 			{
@@ -48,9 +48,14 @@ void	Kick::execute()
 				_serv->send_replies(_expeditor, "KICK :You are not on channel", ERR_NOTONCHANNEL);
 				out = true;
 			}
-		//	if (!out)
-				// copier PART ->
+			if (!out)
+			{
+				user *	target = _serv->getUser(*it);
+				std::string kick = ":" + _expeditor->getNickname() + " KICK " + target->getNickname() + "\r\n";
+				send(_expeditor->getSock(), kick.c_str(), kick.length(), 0);
+				_serv->remove_user_from(target, chan_list.front(), "KICK");
+			}
 		}
-		chan_list.erase(chan_list.begin());
+		chan_list.pop_front();
 	}
 }

@@ -73,15 +73,23 @@ void Interpret::treat_user_buffer(user & usr)
 std::vector<std::string *>* Interpret::parseCmds(std::string * buf) const
 {
 	std::vector<std::string *>*	args = new std::vector<std::string *>;
+	bool	isMode = false;
 
 	while (hasEOC(buf))
 	{
 		buf = GetNextWord(buf);
 
-		if (buf->front() != ':')
+		if (buf->front() != ':' && (!isMode || args->size() < 3))
 			args->push_back(parseWord(buf));
 		else
 			args->push_back(parseMessage(buf));
+		if (args->size() == 1)
+		{
+			std::string	tmp(nameCaseIns(*args->front()));
+
+			if (!tmp.compare("mode"))
+				isMode = true;
+		}
 	}
 	return (args);
 }
