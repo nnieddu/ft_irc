@@ -233,13 +233,14 @@ void	server::remove_user_from_channels(user * usr, const std::string & msg)
 
 /*----------------------------------------------------------------------------*/
 
-void	server::send_replies(user *usr, const std::string & msg, const char* code) const
+void	server::send_replies(const user *usr, const std::string & msg, const char* code) const
 {
 	std::string replies;
 	std::string prefix = ":" + usr->getUsername();
 
 	replies += (prefix +  " " + code + " " + usr->getNickname() + " " + msg + "\r\n");
-	send(usr->getSock(), replies.c_str(), replies.length(), 0);
+	if (send(usr->getSock(), replies.c_str(), replies.length(), 0) == -1)
+		std::cerr << strerror(errno) << std::endl;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -247,10 +248,16 @@ void	server::send_replies(user *usr, const std::string & msg, const char* code) 
 int	server::send_msg_to_user(const user * expeditor, const user * dest, const std::string & msg, const std::string & chan_name) const
 {
 	if (!dest)
-		return 1;
+	{
+		send_replies(expeditor, "PRIVMSG :No such nick", ERR_NOSUCHNICK);
+		return 0;
+	}
 
 	if (dest->isAway())
-		send(expeditor->getSock(), &dest->getAfkString(), dest->getAfkString().size(), 0);
+	{
+		send_replies(expeditor, std::string( "PRIVMSG :" + dest->getAfkString()), RPL_AWAY);
+		return 0;
+	}
 
 	std::string fmsg; 
 	if (expeditor->getNickname() != dest->getNickname())
@@ -261,8 +268,7 @@ int	server::send_msg_to_user(const user * expeditor, const user * dest, const st
 			fmsg = ":" + expeditor->getNickname() + " PRIVMSG " + chan_name + " :" + msg + "\r\n";
 	}
 
-	send(dest->getSock(), fmsg.c_str(), fmsg.size(), 0);	// add error case
-	return 0;
+	return send(dest->getSock(), fmsg.c_str(), fmsg.size(), 0);
 }
 
 /*----------------------------------------------------------------------------*/
@@ -270,18 +276,21 @@ int	server::send_msg_to_user(const user * expeditor, const user * dest, const st
 int	server::send_msg_to_channel(const user * expeditor, const Channel * dest, const std::string & msg) const
 {
 	std::set<user*>	userlist(dest->getUsers());
-	int	ret = 0;
 
 	if (!dest ||
 	(dest->getn() && !(expeditor->isMember(dest->getName()))) ||
-	(dest->getm() && (!expeditor->isOperator(dest->getName())) || !expeditor->isVoice(dest->getName())))
-		return 1;
-
-	for	(std::set<user*>::iterator it = userlist.begin(); ret == 0 && it != userlist.end(); it++)
+	(dest->getm() && !expeditor->isOperator(dest->getName()) && !expeditor->isVoice(dest->getName())))
 	{
-		ret = send_msg_to_user(expeditor, *it, msg, dest->getName());
+		send_replies(expeditor, "PRIVMSG :cannot send to channel", ERR_CANNOTSENDTOCHAN);
+		return 1;
 	}
-	return ret;
+
+	for	(std::set<user*>::iterator it = userlist.begin(); it != userlist.end(); it++)
+	{
+		if (send_msg_to_user(expeditor, *it, msg, dest->getName()) == -1)
+			return -1;
+	}
+	return 0;
 }
 
 /*----------------------------------------------------------------------------*/

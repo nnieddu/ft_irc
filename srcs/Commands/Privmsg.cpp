@@ -38,23 +38,21 @@ void Privmsg::execute()
 		{
 			if (_serv->channels.find(nameCaseIns(list[0])) != _serv->channels.end())
 			{
-				if (_serv->send_msg_to_channel(_expeditor, _serv->getChannel(
-						nameCaseIns(list[0])), *arg))
-					_serv->send_replies(_expeditor, "PRIVMSG :cannot send to channel", ERR_CANNOTSENDTOCHAN);
+				if (_serv->send_msg_to_channel(_expeditor, _serv->getChannel(nameCaseIns(list[0])), *arg) == -1)
+					std::cerr << strerror(errno) << std::endl;
 			}
-			else if (_serv->send_msg_to_user(_expeditor, _serv->getUser(list[0]), *arg, ""))
-				_serv->send_replies(_expeditor, "PRIVMSG :No such nick", ERR_NOSUCHNICK);
+			else if (_serv->send_msg_to_user(_expeditor, _serv->getUser(list[0]), *arg, "") == -1)
+				std::cerr << strerror(errno) << std::endl;
+			
 		}
 		else
 		{
 			user * usr = _serv->getUser(list[0]);
 
-			if (usr->isAway())
-				_serv->send_replies(_expeditor, "PRIVMSG :receiver is away", RPL_AWAY);
-			else if (_serv->send_msg_to_user(_expeditor, usr, *arg, ""))
-				_serv->send_replies(_expeditor, "PRIVMSG :No such nick", ERR_NOSUCHNICK);
+			if (_serv->send_msg_to_user(_expeditor, usr, *arg, "") == -1)
+				std::cerr << strerror(errno) << std::endl;
 		}
-		list.erase(list.begin());
+		list.pop_front();
 	}
 	return ;
 }

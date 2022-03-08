@@ -67,7 +67,7 @@ class server
 		void	remove_user_from(user*, const std::string&, const std::string&);
 		void	remove_user_from_channels(user*, const std::string&);
 
-		void	send_replies(user*, const std::string&, const char*) const;
+		void	send_replies(const user*, const std::string&, const char*) const;
 		int		send_msg_to_user(const user*, const user*, const std::string&, const std::string&) const;
 		int		send_msg_to_channel(const user*, const Channel*, const std::string&) const;
 
