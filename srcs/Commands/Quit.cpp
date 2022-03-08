@@ -23,10 +23,10 @@ void Quit::execute()
 	std::string	*	arg = _args[MESSAGE].arg;
 	if (!arg)
 	{
-		_expeditor->setLogged(false);
+		_expeditor->setLogLvl(-1);
 		return ;
 	}
 	_serv->remove_user_from_channels(_expeditor, " QUIT :" + *arg);
-	_expeditor->setLogged(false);
+	_expeditor->setLogLvl(-1);
 	return ;
 }

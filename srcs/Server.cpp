@@ -188,6 +188,8 @@ void	server::receive_data(size_t index)
 			first_auth(_users[index - 1]);
 	}
 	_users[index - 1]->setLastEvent(time(NULL));
+	if (_users[index - 1]->getLogLvl() == -1)
+		close_user(index);
 	return ;
 }
 

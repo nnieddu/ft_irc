@@ -43,7 +43,7 @@ void Nick::execute()
 		else if (_expeditor->getisLogged() == false && _expeditor->getLogLvl() == 1)
 		{
 			_expeditor->setNickname(*arg);
-			_expeditor->incLogLvl();
+			_expeditor->setLogLvl(2);
 		}
 
 		if (!_expeditor->getChannels().empty())

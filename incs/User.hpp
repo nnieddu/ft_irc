@@ -18,7 +18,7 @@ class user
 		std::string		_hostname;
 		std::string		_afkMessage;
 
-		unsigned int	_logLvl;
+		int				_logLvl;
 
 		bool			_server_operator;
 		bool			_afk;
@@ -44,8 +44,8 @@ class user
 		void				setUsername(std::string usrname);
 		void				setLogged(bool log);
 
-		void				incLogLvl();
-		unsigned int		getLogLvl() const;
+		void				setLogLvl(int loglvl);
+		int					getLogLvl() const;
 
 		bool				isServOp() const;
 		void				promoteServ();
