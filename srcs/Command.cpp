@@ -29,7 +29,7 @@ std::deque<std::string>		Argument::parseList()
 
 Command::Command(server * serv):_serv(serv)
 {
-	for (size_t elem = 0; elem <= PASS; elem++)
+	for (size_t elem = 0; elem <= REST; elem++)
 	{
 		_args[elem].arg = NULL;
 		_args[elem].isNeeded = false;
@@ -45,7 +45,7 @@ Command &	Command::operator=(const Command & x)
 
 Command::~Command()
 {
-	for (size_t val = 0; val <= PASS; val++)
+	for (size_t val = 0; val <= REST; val++)
 	{
 		if (_args[val].arg)
 			delete _args[val].arg;
@@ -60,7 +60,7 @@ void	Command::setArgs(user * expeditor, std::vector<std::string *>* args)
 	delete args->front();
 	args->erase(args->begin());
 
-	for (size_t st = 0; st <= PASS && cond(args); st++)
+	for (size_t st = 0; st <= REST && cond(args); st++)
 	{
 		if (_args[st].isNeeded)
 		{
@@ -84,7 +84,7 @@ void	Command::execute() { return ; }
 
 void	Command::reset()
 {
-	for (size_t val = 0; val <= PASS; val++)
+	for (size_t val = 0; val <= REST; val++)
 	{
 		if (_args[val].arg)
 		{

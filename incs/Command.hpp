@@ -12,6 +12,7 @@
 #define USER		4
 #define MESSAGE		5
 #define PASS		6
+#define	REST		7
 
 class server;
 

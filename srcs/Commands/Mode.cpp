@@ -7,7 +7,7 @@
 /*----------------------------------------------------------------------------*/
 
 Mode::Mode(server *serv) : Command(serv){
-	_args[MESSAGE].isNeeded	= true;
+	_args[REST].isNeeded	= true;
 	_args[USER].isNeeded		= true;
 	_args[RECEIVER].isNeeded		= true;
 }
@@ -264,7 +264,7 @@ void Mode::modeUser(user& usr, std::string &mod, std::string &arg) {
 /*----------------------------------------------------------------------------*/
 
 void Mode::execute() {
-	std::string	*arg = _args[MESSAGE].arg;
+	std::string	*arg = _args[REST].arg;
 	std::string	*mod = _args[USER].arg;
 	std::string	*receiver = _args[RECEIVER].arg;
 	std::string emptyArg;
