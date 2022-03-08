@@ -10,9 +10,8 @@
 #define HOSTNAME	1
 #define CHANNEL		2
 #define USER		4
-#define LIST		5
-#define MESSAGE		6
-#define PASS		7
+#define MESSAGE		5
+#define PASS		6
 
 class server;
 

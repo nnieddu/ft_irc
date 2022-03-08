@@ -14,7 +14,6 @@ Join & Join::operator=(const Join & x)
 Join::Join(server * serv):Command(serv)
 {
 	_args[CHANNEL].isNeeded = true;
-	_args[LIST].isNeeded = true;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -22,7 +21,6 @@ Join::Join(server * serv):Command(serv)
 void	Join::execute()
 {
 	std::string	*			channel = _args[CHANNEL].arg;
-	std::string	*			list = _args[LIST].arg;
 	std::deque<std::string>	lst;
 
 	if (!channel)
@@ -30,13 +28,7 @@ void	Join::execute()
 		_serv->send_replies(_expeditor, "JOIN :Not enough parameters", ERR_NEEDMOREPARAMS);
 		return ;
 	}
-	if (list)
-	{
-		lst = _args[LIST].parseList();
-		lst.push_front(*channel);
-	}
-	else
-		lst = _args[CHANNEL].parseList();
+	lst = _args[CHANNEL].parseList();
 
 	while (!lst.empty())
 	{
