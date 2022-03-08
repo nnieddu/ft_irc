@@ -50,10 +50,16 @@ void	Kick::execute()
 			}
 			if (!out)
 			{
-				user *	target = _serv->getUser(*it);
-				std::string kick = ":" + _expeditor->getNickname() + " KICK " + target->getNickname() + "\r\n";
-				send(_expeditor->getSock(), kick.c_str(), kick.length(), 0);
+				std::set<user *>	chan_userlist = _serv->channels.find(nameCaseIns(chan_list.front()))->second->getUsers();
+				user *				target = _serv->getUser(*it);
+
 				_serv->remove_user_from(target, chan_list.front(), "KICK");
+
+				std::string kick = ":" + _expeditor->getNickname() + " KICK " + chan_list.front() + " " + target->getNickname() + ":" + (msg != NULL ? *msg : "") + "\r\n";
+				for (std::set<user *>::iterator it(chan_userlist.begin()); it != chan_userlist.end(); it++)
+				{
+					send((*it)->getSock(), kick.c_str(), kick.length(), 0);
+				}
 			}
 		}
 		chan_list.pop_front();
