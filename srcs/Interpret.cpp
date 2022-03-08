@@ -92,7 +92,7 @@ std::string *	Interpret::GetNextWord(std::string * buf) const
 {
 	std::string::iterator	it(buf->begin());
 
-	while (*it == ' ')
+	while (*it == ' ' || *it == 7)
 		it++;
 	buf->erase(buf->begin(), it);
 	if (buf->empty())
