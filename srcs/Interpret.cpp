@@ -16,12 +16,13 @@ Interpret::Interpret(server * serv): _serv(serv)
 	_cmds_list["nick"] = new Nick(_serv);
 	_cmds_list["user"] = new User(_serv);
 	_cmds_list["oper"] = new Oper(_serv);
+	_cmds_list["admin"] = new Admin(_serv);
 	_cmds_list["quit"] = new Quit(_serv);
 	_cmds_list["join"] = new Join(_serv);
 	_cmds_list["part"] = new Part(_serv);
 	_cmds_list["mode"] = new Mode(_serv);
 	_cmds_list["topic"] = new Topic(_serv);
-	_cmds_list["names"] = new Names(_serv); //
+	_cmds_list["names"] = new Names(_serv);
 	_cmds_list["list"] = new List(_serv);
 	_cmds_list["invite"] = new Invite(_serv);
 	_cmds_list["kick"] = new Kick(_serv);
@@ -33,11 +34,10 @@ Interpret::Interpret(server * serv): _serv(serv)
 	_cmds_list["whois"] = new Whois(_serv);
 	_cmds_list["ping"] = new Ping(_serv);
 	_cmds_list["pong"] = new Pong(_serv);
+	_cmds_list["kill"] = new Kill(_serv);
 	// _cmds_list["who"] = new Who(_serv);
-	//// _cmds_list["stats"] = Stat(_serv);
-	//// _cmds_list["admin"] = Admin(_serv); // maybe useless
+	//// _cmds_list["stats"] = Stat(_serv); // a voir mais relou
 	//// _cmds_list["whowas"] = Whowas(_serv); // a voir mais relou
-	//// _cmds_list["kill"] = Kill(_serv);
 }
 
 /*----------------------------------------------------------------------------*/

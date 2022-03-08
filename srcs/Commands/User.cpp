@@ -31,8 +31,8 @@ void User::execute()
 		_serv->send_replies(_expeditor, " :You may not reregister", ERR_ALREADYREGISTRED);
 	else if (_expeditor->getisLogged() != true && _expeditor->getLogLvl() == 2)
 	{
-		_expeditor->setUsername(*arg);
-		// _expeditor->setUsername(*arg + "@" + _expeditor->getIp);
+		// _expeditor->setUsername(*arg);
+		_expeditor->setUsername(*arg + "@" + _expeditor->getHostname());
 		_expeditor->setLogged(true);
 		_serv->welcomeNewUser(_expeditor);
 	}

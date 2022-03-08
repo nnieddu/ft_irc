@@ -130,6 +130,15 @@ class Kick : public Command
 		virtual void execute();
 };
 
+class Kill : public Command
+{
+	public:
+		virtual ~Kill();
+		Kill&	operator=(const Kill&);
+		Kill(server*);
+		virtual void execute();
+};
+
 class Privmsg : public Command
 {
 	public:
@@ -190,6 +199,15 @@ class Info : public Command
 		virtual ~Info();
 		Info&	operator=(const Info&);
 		Info(server*);
+		virtual void execute();
+};
+
+class Admin : public Command
+{
+	public:
+		virtual ~Admin();
+		Admin&	operator=(const Admin&);
+		Admin(server*);
 		virtual void execute();
 };
 

@@ -236,9 +236,9 @@ void	server::remove_user_from_channels(user * usr, const std::string & msg)
 void	server::send_replies(const user *usr, const std::string & msg, const char* code) const
 {
 	std::string replies;
-	std::string prefix = ":" + usr->getUsername();
 
-	replies += (prefix +  " " + code + " " + usr->getNickname() + " " + msg + "\r\n");
+	replies += (":" + usr->getUsername() +  " " + code + " " + usr->getNickname() + " " + msg + "\r\n");
+	
 	if (send(usr->getSock(), replies.c_str(), replies.length(), 0) == -1)
 		std::cerr << strerror(errno) << std::endl;
 }
@@ -355,7 +355,9 @@ int 				server::getSock() const { return _socket.fd; }
 std::string 		server::getName() const { return _name; }
 int			 		server::getPort() const { return _port; }
 std::string 		server::getPassword() const { return _password; }
+std::string 		server::getIRCOp() const { return _ircOperator; }
 std::vector<user*>	server::getUsers() const { return _users; }
+void		 		server::setIRCOp(const std::string& sop) { _ircOperator = sop; }
 
 user *				server::getUser(const std::string & nickname) const
 {
@@ -403,6 +405,7 @@ std::string ft_itoa(int nbr)
 	}
 	return (str);
 }
+
 /*----------------------------------------------------------------------------*/
 
 void	server::welcomeNewUser(user * usr) 
@@ -410,7 +413,7 @@ void	server::welcomeNewUser(user * usr)
 	if (usr->getisLogged() == true)
 	{
 		std::string str = ":" + usr->getUsername() +  " " + RPL_WELCOME + " " + usr->getNickname() + \
-			" Welcome to the Internet Relay Network " + usr->getUsername() + "\r\n";
+			" Welcome to the Internet Relay Network " + usr->getNickname() + "\r\n";
 		send(usr->getSock(), str.c_str(), str.length(), 0);
 		
 		str = ":" + usr->getUsername() +  " " + RPL_YOURHOST + " Your host is ircserv (" + this->getName() + \
@@ -422,5 +425,7 @@ void	server::welcomeNewUser(user * usr)
 
 		// str = ":" + usr->getUsername() +  " " + RPL_MYINFO + "ircserv has " "\r\n"; ////
 		// send(usr->getSock(), str.c_str(), str.length(), 0);
+
+		send_replies(usr, "defaut", RPL_UMODEIS); //// voir avec mroz
 	}
 }

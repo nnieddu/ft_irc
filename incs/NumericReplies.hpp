@@ -23,6 +23,10 @@
 #define RPL_MYINFO				"004"
 
 #define RPL_UMODEIS				"221"
+
+#define RPL_ADMINME				"256"
+#define RPL_ADMINLOC1			"257"
+
 #define RPL_AWAY				"301"
 #define RPL_LISTSTART			"321"
 #define RPL_LIST				"322"
@@ -55,6 +59,8 @@
 #define ERR_WILDTOPLEVEL		"414"
 
 #define ERR_INPUTTOOLONG		"417"
+
+#define ERR_NOADMININFO 		"423"
 
 #define ERR_ERRONEUSNICKNAME	"432"
 

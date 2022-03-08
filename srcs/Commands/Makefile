@@ -26,6 +26,8 @@ SRCS	=	Cap.cpp		\
 			Time.cpp	\
 			User.cpp	\
 			Version.cpp	\
+			Admin.cpp	\
+			Kill.cpp	\
 			Whois.cpp
 
 INCS	=	../../incs/Server.hpp	\

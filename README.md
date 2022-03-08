@@ -135,20 +135,3 @@ The various modes available for channels are as follows:
 	b - set a ban mask to keep users out;
 	v - give/take the ability to speak on a moderated channel;
 	k - set a channel key (password).
-
-
-   <MESSAGE>    = *<SPACE> *1(<':'> PREFIX <1*SPACE>) COMMAND *<SPACE> *1PARAMS
-    PREFIX      = NICKNAME
-    NICKNAME    = (LETTER / SPECIAL) *(LETTER / DIGIT / SPECIAL / '-')
-    COMMAND     = 1*LETTER / 3DIGIT
-    PARAMS      = *14(1*<SPACE> MIDDLE *<SPACE>) *1(1*<SPACE> <':'> TRAILING) 15(1*<SPACE> MIDDLE) *<SPACE>
-    MIDDLE      = NOSPCRLFCL *(':' / NOSPCRLFCL)
-    TRAILING    = *(':' / SPACE / NOSPCRLFCL)
-
-   <NOSPCRLFCL> = %x01-09 / %x0B-0C / %x0E-1F / %x21-39 / %x3B-FF
-                ; any octet except NUL, CR, LF, ' ' and ':'
-
-   <SPACE>      = %x20
-   <LETTER>     = %x41-5A / %x61-7A       ; A-Z / a-z
-   <DIGIT>      = %x30-39                 ; 0-9
-   <SPECIAL>    = %x5B-60 / %x7B-7E       ; [ ] \ ` _ ^ { | } ~
