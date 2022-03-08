@@ -46,11 +46,14 @@ void Nick::execute()
 			_expeditor->incLogLvl();
 		}
 
-		// for (std::map<std::string, unsigned int>::iterator it = _expeditor->getChannels().begin() ; it != _expeditor->getChannels().end(); ++it)
-		// {
-		// 	std::cout << "PK JE CRASH ?" << std::endl;
-		// 	//doit send a tous les users de tous les chan le changement de nickname
-		// }
+		if (!_expeditor->getChannels().empty())
+		{
+			for (std::map<std::string, unsigned int>::iterator it = _expeditor->getChannels().begin() ; it != _expeditor->getChannels().end(); ++it)
+			{
+				std::cout << "PK JE CRASH ?" << std::endl;
+			// 	//doit send a tous les users de tous les chan le changement de nickname
+			}
+		}
 	}
 	else
 		_serv->send_replies(_expeditor, *arg + " :Nickname is already in use", ERR_NICKNAMEINUSE);

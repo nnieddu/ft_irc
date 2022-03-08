@@ -19,7 +19,8 @@ user::user(const std::string & hostname, const std::string & nickname, const std
 	_wasLogged(false),
 	_last_event(time(NULL)),
 	_has_to_pong(false),
-	_logLvl(0)
+	_logLvl(0),
+	_channels(std::map<std::string, unsigned int>())
 {}
 
 user::~user() {}
