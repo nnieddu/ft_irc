@@ -140,8 +140,11 @@ void	Channel::send_names_replies(const user * receiver) const
 	std::set<user *>::iterator it;
 
 	for(it = this->getUsers().begin(); it != this->getUsers().end(); ++it)
+	{
+		if ((*it)->isOperator(name) == true)
+			usersInChan += "@";
 		usersInChan += (*it)->getNickname() + " ";
-
+	}
 	std::string replies = ":" + receiver->getUsername() +  " " + RPL_NAMREPLY + " " \
 		+ receiver->getNickname() + " " +  "= " + name + " :" + usersInChan + "\r\n";
 

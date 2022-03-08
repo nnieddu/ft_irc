@@ -88,7 +88,6 @@ class user
 		std::string							getNickname() const;
 		std::string							getUsername() const;
 		std::string							getHostname() const;
-		std::string							getPrefix() const;
 		Socket								getSocket() const;
 		int									getSock() const;
 		bool								getisLogged() const;

@@ -32,6 +32,7 @@ void User::execute()
 	else if (_expeditor->getisLogged() != true && _expeditor->getLogLvl() == 2)
 	{
 		_expeditor->setUsername(*arg);
+		// _expeditor->setUsername(*arg + "@" + _expeditor->getIp);
 		_expeditor->setLogged(true);
 		_serv->welcomeNewUser(_expeditor);
 	}
