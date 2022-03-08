@@ -14,6 +14,7 @@ SRCS	=	Cap.cpp		\
 			Mode.cpp	\
 			Names.cpp	\
 			Nick.cpp	\
+			Notice.cpp	\
 			Part.cpp	\
 			Pass.cpp	\
 			Ping.cpp	\
