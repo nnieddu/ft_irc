@@ -22,10 +22,13 @@
 #define RPL_CREATED				"003"
 #define RPL_MYINFO				"004"
 
+#define RPL_UMODEIS				"221"
 #define RPL_AWAY				"301"
 #define RPL_LISTSTART			"321"
 #define RPL_LIST				"322"
 #define RPL_LISTEND				"323"
+#define RPL_CHANNELMODEIS		"324"
+#define	RPL_UNIQOPIS			"325"
 #define	RPL_NOTOPIC				"331"
 #define RPL_TOPIC				"332"
 #define RPL_VERSION				"351"
@@ -61,6 +64,7 @@
 #define ERR_NEEDMOREPARAMS		"461"
 #define ERR_ALREADYREGISTRED	"462"
 #define ERR_PASSWDMISMATCH		"464"
+#define ERR_KEYSET				"467"
 
 #define ERR_CHANNELISFULL		"471"
 #define ERR_UNKNOWNMODE		    "472"
@@ -72,3 +76,4 @@
 #define	ERR_NOCHANMODES			"477"
 #define ERR_CHANOPRIVSNEEDED	"482"
 #define ERR_NOOPERHOST			"491"
+#define ERR_USERSDONTMATCH		"502"

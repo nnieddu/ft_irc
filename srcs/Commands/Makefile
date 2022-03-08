@@ -30,6 +30,7 @@ SRCS	=	Cap.cpp		\
 
 INCS	=	../../incs/Server.hpp	\
 			../../incs/Channel.hpp	\
+			../../incs/Mode.hpp		\
 			../../incs/Socket.hpp	\
 			../../incs/User.hpp		\
 			../../incs/Command.hpp	\

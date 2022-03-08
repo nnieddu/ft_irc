@@ -2,14 +2,14 @@
 // Created by fenrir on 02/03/2022.
 //
 
-#include "../../incs/Commands.hpp"
+#include "../../incs/Mode.hpp"
 
 /*----------------------------------------------------------------------------*/
 
 Mode::Mode(server *serv) : Command(serv){
 	_args[MESSAGE].isNeeded	= true;
 	_args[USER].isNeeded		= true;
-	_args[CHANNEL].isNeeded		= true;
+	_args[RECEIVER].isNeeded		= true;
 }
 
 Mode::~Mode() {}
@@ -27,21 +27,54 @@ void Mode::modeChan(Channel& chan, std::string &mod, std::string &arg) {
 	int			num_o_b = 0;
 	std::string	temp = arg;
 
-	if (mod[0] == '+')
-		addRule = true;
-	mod.erase(0,1);
-	if (_expeditor->isOperator(chan.getName()) && chan.getName()[0] != '+') {
+	if (mod[0] == O) {
+		if (chan.getName()[0] == '!') {
+			_serv->send_replies(_expeditor, chan.getName() + " " + \
+			chan.getChanCrea().getNickname(), RPL_UNIQOPIS);
+		}
+		else {
+			_serv->send_replies(_expeditor, std::string() + mod[0] + \
+			" :is unknown mode char to me for ", ERR_UNKNOWNMODE);
+			return;
+		}
+		mod.erase(0, 1);
+	}
+	if (_expeditor->isOperator(chan.getName())) {
 		while (!mod.empty()) {
-			if (mod[0] == 'l') {
+			if (mod[0] == '-')
+				addRule = false;
+			else if (mod[0] == '+')
+				addRule = true;
+			else if (mod[0] == 'l') {
 				if (!addRule)
 					chan.removeMod(l);
 				else {
+					if (temp.empty()) {
+						_serv->send_replies(_expeditor, chan.getName() + \
+						" +l :Not enough parameters", ERR_NEEDMOREPARAMS);
+						return;
+					}
 					chan.setMod(l);
 					chan.setLim(atoi(temp.substr(0, temp.find_first_of(" \n\r", 0)).c_str()));
 					temp.erase(0, temp.find_first_of(" \n\r", 0));
 				}
 			}
-			else if (mod[0] == 'o' && num_o_b < 3) {
+			else if (mod[0] == 'o') {
+				if (num_o_b > 3) {
+					_serv->send_replies(_expeditor, chan.getName() + \
+						" +o :Called more than 3 time in one MODE command", ERR_NEEDMOREPARAMS);
+					return;
+				}
+				if (temp.empty()) {
+					_serv->send_replies(_expeditor, chan.getName() + \
+						" +o :Not enough parameters", ERR_NEEDMOREPARAMS);
+					return;
+				}
+				if (_serv->getUser(std::string(temp.substr(0, temp.find_first_of(" \n\r", 0)))) == NULL) {
+					_serv->send_replies(_expeditor, (std::string(temp.substr(0, \
+					temp.find_first_of(" \n\r", 0)))) + " :No such nick", ERR_NOSUCHNICK);
+					return;
+				}
 				if (!addRule) {
 					_serv->getUser(std::string(temp.substr(0, \
 					temp.find_first_of(" \n\r", 0))))->demote(chan.getName());
@@ -53,27 +86,37 @@ void Mode::modeChan(Channel& chan, std::string &mod, std::string &arg) {
 					temp.erase(0, temp.find_first_of(" \n\r", 0));
 				}
 				num_o_b++;
-			}/*
-			else if (mod[0] == 'b' && num_o_b < 3) {
-				if (!addRule)
-					chan.removeMod(b);
-				else {
-					chan.setMod(b);
-					chan.setBanMask(temp.substr(0, temp.find_first_of(" \n\r", 0)));
-					temp.erase(0, temp.find_first_of(" \n\r", 0));
-				}
-				num_o_b++;
-			}*/
+			}
 			else if (mod[0] == 'k') {
 				if (!addRule)
 					chan.removeMod(k);
 				else {
+					if (chan.getk()) {
+						_serv->send_replies(_expeditor, chan.getName() + \
+						" :Channel key already set", ERR_KEYSET);
+						return;
+					}
+					if (temp.empty()) {
+						_serv->send_replies(_expeditor, chan.getName() + \
+						" +k :Not enough parameters", ERR_NEEDMOREPARAMS);
+						return;
+					}
 					chan.setMod(k);
 					chan.setPass(temp.substr(0, temp.find_first_of(" \n\r", 0)));
 					temp.erase(0, temp.find_first_of(" \n\r", 0));
 				}
 			}
 			else if (mod[0] == 'v') {
+				if (temp.empty()) {
+					_serv->send_replies(_expeditor, chan.getName() + \
+						" v :Not enough parameters", ERR_NEEDMOREPARAMS);
+					return;
+				}
+				if (_serv->getUser(std::string(temp.substr(0, temp.find_first_of(" \n\r", 0)))) == NULL) {
+					_serv->send_replies(_expeditor, (std::string(temp.substr(0, \
+					temp.find_first_of(" \n\r", 0)))) + " :No such nick", ERR_NOSUCHNICK);
+					return;
+				}
 				if (!addRule) {
 					_serv->getUser(std::string(temp.substr(0, \
 					temp.find_first_of(" \n\r", 0))))->delVoice(chan.getName());
@@ -92,8 +135,16 @@ void Mode::modeChan(Channel& chan, std::string &mod, std::string &arg) {
 					else
 						chan.setMod(a);
 				}
-				else
-					std::cerr << "TODO this case Mode.cpp";//TODO NOT ENOUGH PERMISSION OR NOT AVAILABLE FOR THIS CHANNEL
+				else if (chan.getName()[0] == '!' && _expeditor != &chan.getChanCrea()) {
+					_serv->send_replies(_expeditor, chan.getName() + " :You're not channel" + \
+					" creator", ERR_CHANOPRIVSNEEDED);
+					return;
+				}
+				else{
+					_serv->send_replies(_expeditor, std::string() + mod[0] + \
+					" :is unknown mode char to me for " + chan.getName(), ERR_UNKNOWNMODE);
+					return;
+				}
 			}
 			else if (mod[0] == 'i') {
 				if (!addRule)
@@ -138,70 +189,76 @@ void Mode::modeChan(Channel& chan, std::string &mod, std::string &arg) {
 					else
 						chan.setMod(r);
 				}
-				else
-					std::cerr << "TODO message d' error pour Mode r" << std::endl;
-			}/*
-			else if (mod[0] == 'e') {
-				//TODO
-				if (!addRule)
-					chan.removeMod(e);
-				else
-					chan.setMod(e);
+				else if (chan.getName()[0] == '!' && _expeditor != &chan.getChanCrea()) {
+					_serv->send_replies(_expeditor, chan.getName() + " :You're not channel" + \
+					" creator", ERR_CHANOPRIVSNEEDED);
+					return;
+				}
+				else{
+					_serv->send_replies(_expeditor, std::string() + mod[0] + \
+					" :is unknown mode char to me for " + chan.getName(), ERR_UNKNOWNMODE);
+					return;
+				}
 			}
-			else if (mod[0] == 'I') {
-				//TODO
-				if (!addRule)
-					chan.removeMod(I);
-				else
-					chan.setMod(I);
-			}*/
+			else {
+				_serv->send_replies(_expeditor, std::string() + mod[0] + \
+				" :is unknown mode char to me for " + chan.getName(), ERR_UNKNOWNMODE);
+				return;
+			}
 			mod.erase(0, 1);
 		}
 
 	}
-	return ;
+	else {
+		_serv->send_replies(_expeditor, chan.getName() + " :You're not channel" + \
+		" operator", ERR_CHANOPRIVSNEEDED);
+	}
 }
 
 /*----------------------------------------------------------------------------*/
 
 void Mode::modeUser(user& usr, std::string &mod, std::string &arg) {
-	bool		addRule = false;
-	std::string	temp = arg;
-	user*		target = _serv->getUser(temp.substr(0, temp.find_first_of(" \n\r", 0)));
+	int		addRule = true;
 
-	temp.erase(0, temp.find_first_of(" \n\r", 0));
-	if (mod[0] == '+')
-		addRule = true;
-	mod.erase(0,1);
-
-	if (_expeditor->isServOp() || _expeditor == target) {
-		if ((mod[0] == 'o' || mod[0] == 'O') && _expeditor->isServOp()) {
-			if (!addRule)
-				target->demoteServ();
-			else
-				target->promoteServ();
+	if (_expeditor->isServOp() || _expeditor == &usr) {
+		while (!mod.empty()) {
+			if (mod[0] == '+')
+				addRule = true;
+			else if (mod[0] == '-')
+				addRule = false;
+			else if ((mod[0] == 'o' || mod[0] == 'O') && _expeditor->isServOp()) {
+				if (!addRule)
+					usr.demoteServ();
+				else
+					usr.promoteServ();
+			}
+			else if (mod[0] == 'i') {
+				if (!addRule)
+					usr.delInvisible();
+				else
+					usr.setInvisible();
+			}
+			else if (mod[0] == 'w') {
+				if (!addRule)
+					usr.delWallOp();
+				else
+					usr.setWallOp();
+			}
+			else if (mod[0] == 'r') {
+				if (!addRule && &usr != _expeditor)
+					usr.delRestrict();
+				else
+					usr.setRestrict();
+			}
+			else {
+				_serv->send_replies(_expeditor, std::string() + mod[0] + \
+				" :is unknown mode char to me for ", ERR_UNKNOWNMODE);
+			}
+			mod.erase(0, 1);
 		}
-		else if (mod[0] == 'i') {
-			if (!addRule)
-				target->delInvisible();
-			else
-				target->setInvisible();
-		}
-		else if (mod[0] == 'w') {
-			if (!addRule)
-				target->delWallOp();
-			else
-				target->setWallOp();
-		}
-		else if (mod[0] == 'r') {
-			if (!addRule && target != _expeditor)
-				target->delRestrict();
-			else
-				target->setRestrict();
-		}
-		mod.erase(0, 1);
 	}
-	return ;
+	else
+		_serv->send_replies(_expeditor, " :Cannot change mode for other users", ERR_USERSDONTMATCH);
 }
 
 /*----------------------------------------------------------------------------*/
@@ -209,14 +266,84 @@ void Mode::modeUser(user& usr, std::string &mod, std::string &arg) {
 void Mode::execute() {
 	std::string	*arg = _args[MESSAGE].arg;
 	std::string	*mod = _args[USER].arg;
-	std::string	*channel = _args[CHANNEL].arg;
-	std::string *users = _args[CHANNEL].arg;
+	std::string	*receiver = _args[RECEIVER].arg;
 
-	if (channel) {
-		if (_serv->channels.find(nameCaseIns(*channel)) != _serv->channels.end())
-			return modeChan(*_serv->channels[nameCaseIns(*channel)], *mod, *arg);
-		else if (_serv->getUser(*users) != NULL)
-			return modeUser(*_serv->getUser(*users), *mod, *arg);
+	if (receiver) {
+		if (_serv->channels.find(nameCaseIns(*receiver)) != _serv->channels.end()) {
+			if ((*receiver)[0] == '+') {
+				_serv->send_replies(_expeditor, (*receiver) + \
+				" :Channel doesn't support modes", ERR_NOCHANMODES);
+			}
+			else if (!_expeditor->isMember(*receiver)) {
+				_serv->send_replies(_expeditor, (*receiver) + \
+				" :You're not on that channel", ERR_NOTONCHANNEL);
+			}
+			else if (mod == NULL) {
+				_serv->send_replies(_expeditor, \
+				receivModeIs(*_serv->channels[nameCaseIns(*receiver)]), RPL_CHANNELMODEIS);
+			}
+			else
+				modeChan(*_serv->channels[nameCaseIns(*receiver)], *mod, *arg);
+		}
+		else if (_serv->getUser(*receiver) != NULL) {
+			if (mod == NULL) {
+				_serv->send_replies(_expeditor, \
+				receivModeIs(*_serv->getUser(*receiver)), RPL_UMODEIS);
+			}
+			else
+				modeUser(*_serv->getUser(*receiver), *mod, *arg);
+		}
+		else {
+			_serv->send_replies(_expeditor, (*receiver) + \
+			" :No such nick/channel", ERR_NOSUCHNICK);
+		}
 	}
-	return ;
+	else
+		_serv->send_replies(_expeditor, "MODE :Not enough parameters", ERR_NEEDMOREPARAMS);
+}
+
+std::string Mode::receivModeIs(Channel& chan) {
+	std::string ret = chan.getName() + " +";
+	std::string arg;
+	arg.clear();
+	if (chan.getn())
+		ret += 'n';
+	if (chan.geta())
+		ret += 'a';
+	if (chan.geti())
+		ret += 'i';
+	if (chan.getk()) {
+		ret += 'k';
+		arg += chan.getPass();
+	}
+	if (chan.getl()) {
+		ret += 'l';
+		arg += std::to_string(chan.getLim());
+	}
+	if (chan.getm())
+		ret += 'm';
+	if (chan.getp())
+		ret += 'p';
+	if (chan.getq())
+		ret += 'q';
+	if (chan.getr())
+		ret += 'r';
+	if (chan.gett())
+		ret += 't';
+	return ret + arg;
+}
+
+std::string Mode::receivModeIs(user &usr) {
+	std::string ret = usr.getNickname() + " +";
+	if (usr.isAway())
+		ret += 'a';
+	if (usr.isRestrict())
+		ret += 'r';
+	if (usr.isInvisible())
+		ret += 'i';
+	if (usr.wallOp())
+		ret += 'w';
+	if (usr.isServOp())
+		ret += 'o';
+	return ret;
 }
