@@ -32,11 +32,11 @@ void Nick::execute()
 		_serv->send_replies(_expeditor, " :Erroneus nickname", ERR_ERRONEUSNICKNAME);
 		return ;
 	}
+	std::string str = ":" + _expeditor->getNickname() + " NICK " + ":" + *arg + "\r\n";
 	if (_serv->isUser(*arg) == false)
 	{
 		if (_expeditor->getisLogged() == true)
 		{
-			std::string str = ":" + _expeditor->getNickname() + " NICK " + ":" + *arg + "\r\n";
 			send(_expeditor->getSock(), str.c_str(), strlen(str.c_str()), 0);
 			_expeditor->setNickname(*arg);
 		}
@@ -49,7 +49,6 @@ void Nick::execute()
 		if (!_expeditor->getChannels().empty())
 		{
 			std::map<std::string, unsigned int> channels = _expeditor->getChannels();
-			std::string	str;
 
 			for (std::map<std::string, unsigned int>::iterator it = channels.begin() ; it != channels.end(); it++)
 			{
@@ -58,11 +57,7 @@ void Nick::execute()
 				for (std::set<user*>::iterator it2 = users.begin() ; it2 != users.end(); it2++)
 				{
 					if (_expeditor != *it2)
-					{
-						std::cout << it->first << " TEST " << (*it2)->getNickname() << std::endl;
-						str = ":" + _expeditor->getNickname() + " NICK " + ":" + *arg + "\r\n";
 						send((*it2)->getSock(), str.c_str(), strlen(str.c_str()), 0);
-					}
 				}
 			}
 		}
@@ -70,4 +65,3 @@ void Nick::execute()
 	else
 		_serv->send_replies(_expeditor, *arg + " :Nickname is already in use", ERR_NICKNAMEINUSE);
 }
-// ERR_NICKCOLLISION osef ?

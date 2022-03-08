@@ -89,17 +89,34 @@ void	server::run()
 void	server::first_auth(user * usr)
 {
 	if (usr->buf.find("PASS") <= 4 && usr->getLogLvl() == 0)
+	{
 		_interpret.treat_user_buffer(*usr);
+		return ;
+	}
 	if (usr->buf.find("CAP") <= 3 && usr->getLogLvl() == 1)
-		_interpret.treat_user_buffer(*usr);	
+	{
+		_interpret.treat_user_buffer(*usr);
+		return ;
+	}
 	if (usr->buf.find("NICK") <= 4 && usr->getLogLvl() == 1)
+	{
 		_interpret.treat_user_buffer(*usr);
+		return ;
+	}
 	if (usr->buf.find("USER") <= 4 && usr->getLogLvl() == 2)
+	{
 		_interpret.treat_user_buffer(*usr);
+		return ;
+	}
+	if (usr->buf.find("QUIT") <= 4)
+	{
+		_interpret.treat_user_buffer(*usr);
+		return ;
+	}
 	if (usr->buf.empty() == false)
 	{
 		std::string replies = usr->getNickname() + \
-			" :You need to be fully authentified before using other commands.\r\n";
+		" :You need to be fully authentified before using other commands.\r\n";
 		send(usr->getSock(), replies.c_str(), replies.length(), 0);
 		usr->buf.clear();
 	}
