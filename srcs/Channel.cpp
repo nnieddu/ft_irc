@@ -20,11 +20,11 @@ topic("No topic set for channel "), password("password"), limit_user(0), chanCre
 	this->users.insert(&users);
 	id.clear();
 	if (newName[0] == '&' || newName[0] == '#')
-		mod = o;
+		mod = n + t;
 	else if (newName[0] == '+')
-		mod = t;
+		mod = t + n;
 	else if (newName[0] == '!' && newName[1] == '!') {
-		mod = O + o;
+		mod = n + t;
 		chanCrea = &users;
 
 		srand(time(NULL));

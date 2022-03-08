@@ -26,6 +26,7 @@
 #define RPL_LISTSTART			"321"
 #define RPL_LIST				"322"
 #define RPL_LISTEND				"323"
+#define	RPL_NOTOPIC				"331"
 #define RPL_TOPIC				"332"
 #define RPL_VERSION				"351"
 #define RPL_NAMREPLY			"353"
@@ -68,5 +69,6 @@
 #define ERR_BADCHANNELKEY		"475"
 
 #define ERR_BADCHANMASK			"476"
+#define	ERR_NOCHANMODES			"477"
 #define ERR_CHANOPRIVSNEEDED	"482"
 #define ERR_NOOPERHOST			"491"

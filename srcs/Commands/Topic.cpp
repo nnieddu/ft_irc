@@ -4,9 +4,6 @@
 
 #include "../../incs/Commands.hpp"
 
-//demander comment sont gerer les deux points
-//exemple: TOPIC #test :
-
 /*----------------------------------------------------------------------------*/
 
 Topic::Topic(server *serv) : Command(serv) {
@@ -31,29 +28,28 @@ void Topic::execute() {
 
 	if (arg) {
 		*channel = nameCaseIns(*channel);
-		if (_serv->channels.find(*channel) == _serv->channels.end()) {
-			send(_expeditor->getSock(), "Error: Channel doesn't exist\r\n", 30, 0);
-			return ;
-		}
-		if (!(_serv->channels[*channel]->getMod() & t) || \
-		_expeditor->getChannels()[*channel]) {
-			if (*arg == ":")
-				_serv->channels[*channel]->setTopic(std::string("No topic set for channel ") + \
-				(*channel)[0] + _serv->channels[*channel]->getId() + channel->substr(1));
-			else
-				_serv->channels[*channel]->setTopic(*arg);
-		}
-		else {
-			send(_expeditor->getSock(), "Error: Need Op permission\r\n", 27, 0);
-			return ;
-		}
+		if (_serv->channels.find(*channel) == _serv->channels.end())
+			_serv->send_replies(_expeditor, (*channel) + " :No such channel", ERR_NOSUCHCHANNEL);
+		else if ((*channel)[0] == '+')
+			_serv->send_replies(_expeditor, (*channel) + " :Channel doesn't support modes", ERR_NOCHANMODES);
+		else if (!_expeditor->isMember(*channel))
+			_serv->send_replies(_expeditor, (*channel) + " :You're not on that channel", ERR_NOTONCHANNEL);
+		else if (!_expeditor->isOperator(*channel) && (_serv->channels[*channel]->getMod() & t))
+			_serv->send_replies(_expeditor, (*channel) + " :You do not have acces to change the topic on this channel", ERR_CHANOPRIVSNEEDED);
+		else
+			_serv->channels[*channel]->setTopic(*arg);
 	}
 	else if (channel) {
 		*channel = nameCaseIns(*channel);
 		if (_serv->channels.find(*channel) != _serv->channels.end()) {
-			send(_expeditor->getSock(), _serv->channels[*channel]->getTopic().c_str(), \
-			_serv->channels[*channel]->getTopic().length(), 0);
+			if (!_serv->channels[*channel]->getTopic().empty())
+				_serv->send_replies(_expeditor, (*channel) + " :" + _serv->channels[*channel]->getTopic(), RPL_TOPIC);
+			else
+				_serv->send_replies(_expeditor, (*channel) + " :No topic is set", RPL_NOTOPIC);
 		}
+		else
+			_serv->send_replies(_expeditor, (*channel) + " :No such channel", ERR_NOSUCHCHANNEL);
 	}
-	return ;
+	else
+		_serv->send_replies(_expeditor, "TOPIC :Not enough parameters", ERR_NEEDMOREPARAMS);
 }
