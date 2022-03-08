@@ -60,7 +60,7 @@ void	Join::execute()
 		{
 			// if (_serv->getChannel(name)->getk() == true && _serv->getChannel(name)->getPass() == arg)
 			// {	
-			// 	_serv->send_replies(_expeditor, name + " :Cannot join channel (+k)", ERR_INVITEONLYCHAN);
+			// 	_serv->send_replies(_expeditor, name + " :Cannot join channel (+k)", ERR_BADCHANNELKEY);
 			// 	continue ;
 			// }
 			if (_serv->getChannel(name)->getl() == true && _serv->getChannel(name)->getLim() >= _serv->getChannel(name)->getUsers().size())
@@ -68,7 +68,12 @@ void	Join::execute()
 				_serv->send_replies(_expeditor, name + " :Cannot join channel (+l)", ERR_CHANNELISFULL);
 				continue ;
 			}
-			_serv->send_replies(_expeditor, name + " :Cannot join channel (+k)", ERR_BADCHANNELKEY);
+			if (_serv->getChannel(name)->geti() == true)
+			{
+				_serv->send_replies(_expeditor, name + " :Cannot join channel (+i)", ERR_INVITEONLYCHAN);
+				continue ;
+			}
+			
 			std::string msg;
 			std::set<user *>::iterator it;
 			for(it = _serv->channels[name]->getUsers().begin(); it != _serv->channels[name]->getUsers().end(); ++it)
@@ -84,8 +89,6 @@ void	Join::execute()
 			_expeditor->join_channel(name, false);
 			_serv->channels[name]->addUser(*_expeditor);
 		}
-		if (_serv->getChannel(name)->geti() == true)
-			_serv->send_replies(_expeditor, name + " :Cannot join channel (+i)", ERR_INVITEONLYCHAN);
 
 		lst.erase(lst.begin());
 	}
