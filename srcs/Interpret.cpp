@@ -29,7 +29,7 @@ Interpret::Interpret(server * serv): _serv(serv)
 	_cmds_list["time"] = new Time(_serv);
 	_cmds_list["info"] = new Info(_serv);
 	_cmds_list["privmsg"] = new Privmsg(_serv);
-	// _cmds_list["notice"] = Notice(_serv);
+	_cmds_list["notice"] = new Notice(_serv);
 	_cmds_list["whois"] = new Whois(_serv);
 	_cmds_list["ping"] = new Ping(_serv);
 	_cmds_list["pong"] = new Pong(_serv);
