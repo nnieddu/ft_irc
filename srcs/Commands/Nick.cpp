@@ -50,8 +50,15 @@ void Nick::execute()
 		{
 			for (std::map<std::string, unsigned int>::iterator it = _expeditor->getChannels().begin() ; it != _expeditor->getChannels().end(); ++it)
 			{
-				std::cout << "PK JE CRASH ?" << std::endl;
-			// 	//doit send a tous les users de tous les chan le changement de nickname
+				if (!_serv->channels[it->first]->getUsers().empty())
+				{	
+					for (std::set<user*>::iterator it2 = _serv->channels[it->first]->getUsers().begin() ; it2 != _serv->channels[it->first]->getUsers().end(); ++it2)
+					{
+						std::cout << it->first << " TEST " << (*it2)->getNickname() << std::endl;
+						std::string str = ":" + _expeditor->getNickname() + " NICK " + ":" + *arg + "\r\n";
+						send((*it2)->getSock(), str.c_str(), strlen(str.c_str()), 0);
+					}
+				}
 			}
 		}
 	}
