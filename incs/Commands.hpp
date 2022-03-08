@@ -139,6 +139,15 @@ class Privmsg : public Command
 		virtual void execute();
 };
 
+class Notice : public Command
+{
+	public:
+		virtual ~Notice();
+		Notice&	operator=(const Notice&);
+		Notice(server*);
+		virtual void execute();
+};
+
 class Ping : public Command
 {
 	public:

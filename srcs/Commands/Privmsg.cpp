@@ -41,7 +41,7 @@ void Privmsg::execute()
 				if (_serv->send_msg_to_channel(_expeditor, _serv->getChannel(nameCaseIns(list[0])), *arg) == -1)
 					std::cerr << strerror(errno) << std::endl;
 			}
-			else if (_serv->send_msg_to_user(_expeditor, _serv->getUser(list[0]), *arg, "") == -1)
+			else if (_serv->send_msg_to_user(_expeditor, _serv->getUser(list[0]), *arg, "", true) == -1)
 				std::cerr << strerror(errno) << std::endl;
 			
 		}
@@ -49,7 +49,7 @@ void Privmsg::execute()
 		{
 			user * usr = _serv->getUser(list[0]);
 
-			if (_serv->send_msg_to_user(_expeditor, usr, *arg, "") == -1)
+			if (_serv->send_msg_to_user(_expeditor, usr, *arg, "", true) == -1)
 				std::cerr << strerror(errno) << std::endl;
 		}
 		list.pop_front();

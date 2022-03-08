@@ -245,17 +245,19 @@ void	server::send_replies(const user *usr, const std::string & msg, const char* 
 
 /*----------------------------------------------------------------------------*/
 
-int	server::send_msg_to_user(const user * expeditor, const user * dest, const std::string & msg, const std::string & chan_name) const
+int	server::send_msg_to_user(const user * expeditor, const user * dest, const std::string & msg, const std::string & chan_name, bool rpl) const
 {
 	if (!dest)
 	{
-		send_replies(expeditor, "PRIVMSG :No such nick", ERR_NOSUCHNICK);
+		if (rpl)
+			send_replies(expeditor, "PRIVMSG :No such nick", ERR_NOSUCHNICK);
 		return 0;
 	}
 
 	if (dest->isAway())
 	{
-		send_replies(expeditor, std::string( "PRIVMSG :" + dest->getAfkString()), RPL_AWAY);
+		if (rpl)
+			send_replies(expeditor, std::string( "PRIVMSG :" + dest->getAfkString()), RPL_AWAY);
 		return 0;
 	}
 
@@ -287,7 +289,7 @@ int	server::send_msg_to_channel(const user * expeditor, const Channel * dest, co
 
 	for	(std::set<user*>::iterator it = userlist.begin(); it != userlist.end(); it++)
 	{
-		if (send_msg_to_user(expeditor, *it, msg, dest->getName()) == -1)
+		if (send_msg_to_user(expeditor, *it, msg, dest->getName(), true) == -1)
 			return -1;
 	}
 	return 0;
