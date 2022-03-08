@@ -15,16 +15,13 @@
 
 /*----------------------------------------------------------------------------*/
 
-Channel::Channel(user &users, std::string &newName) : users(), name(nameCaseIns(newName)), id(),
-topic("No topic set for channel "), password("password"), limit_user(0), chanCrea(NULL), hasop(true), rtime(time(NULL)) {
+Channel::Channel(user &users, std::string &newName) : users(), hasop(true), id(),
+name(nameCaseIns(newName)), topic(), password("password"), limit_user(0),
+chanCrea(NULL), rtime(time(NULL)), mod(n  + t) {
 	this->users.insert(&users);
 	id.clear();
-	if (newName[0] == '&' || newName[0] == '#')
-		mod = n + t;
-	else if (newName[0] == '+')
-		mod = t + n;
-	else if (newName[0] == '!' && newName[1] == '!') {
-		mod = n + t;
+	topic.clear();
+	if (newName[0] == '!' && newName[1] == '!') {
 		chanCrea = &users;
 
 		srand(time(NULL));
@@ -37,7 +34,6 @@ topic("No topic set for channel "), password("password"), limit_user(0), chanCre
 		}
 		name.erase(0, 1);
 	}
-	topic = topic + name[0] + id + name.substr(1);
 }
 
 Channel &Channel::operator=(const Channel &old) {
