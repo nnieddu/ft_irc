@@ -42,11 +42,10 @@ void	Join::execute()
 	{
 		std::string	name(nameCaseIns(lst.front()));
 
-		if (name.find('#') && name.find('&') == std::string::npos && name.find('+') == std::string::npos
-		&& name.find('!') == std::string::npos)
+		if (name.find('#') != 0 && name.find('&') != 0 && name.find('+') != 0 && name.find('!') != 0)
 		{
 			_serv->send_replies(_expeditor, "No such channel (need a chan mask)", ERR_BADCHANMASK);
-			return ;
+			continue ;
 		}
 		if (_expeditor->getChannels().size() == 10)
 		{
@@ -65,8 +64,19 @@ void	Join::execute()
 			_serv->getChannel(name)->send_names_replies(_expeditor);
 			_serv->send_replies(_expeditor, name + " :End of names list", RPL_ENDOFNAMES);
 		}
-		else if (!_expeditor->isMember(name))
+		else if (!_expeditor->isMember(name) && _serv->getChannel(name)->geti() == false)
 		{
+			// if (_serv->getChannel(name)->getk() == true && _serv->getChannel(name)->getPass() == arg)
+			// {	
+			// 	_serv->send_replies(_expeditor, name + " :Cannot join channel (+k)", ERR_INVITEONLYCHAN);
+			// 	continue ;
+			// }
+			if (_serv->getChannel(name)->getl() == true && _serv->getChannel(name)->getLim() >= _serv->getChannel(name)->getUsers().size())
+			{	
+				_serv->send_replies(_expeditor, name + " :Cannot join channel (+l)", ERR_CHANNELISFULL);
+				continue ;
+			}
+			_serv->send_replies(_expeditor, name + " :Cannot join channel (+k)", ERR_BADCHANNELKEY);
 			std::string msg;
 			std::set<user *>::iterator it;
 			for(it = _serv->channels[name]->getUsers().begin(); it != _serv->channels[name]->getUsers().end(); ++it)
@@ -82,12 +92,10 @@ void	Join::execute()
 			_expeditor->join_channel(name, true);
 			_serv->channels[name]->addUser(*_expeditor);
 		}
+		if (_serv->getChannel(name)->geti() == true)
+			_serv->send_replies(_expeditor, name + " :Cannot join channel (+i)", ERR_INVITEONLYCHAN);
+
 		lst.erase(lst.begin());
 	}
-	return ;
 }
 //ERR_BANNEDFROMCHAN
-//ERR_INVITEONLYCHAN
-//ERR_CHANNELISFULL
-//ERR_NOSUCHCHANNEL
-//ERR_BADCHANNELKEY

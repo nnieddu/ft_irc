@@ -13,7 +13,7 @@ entre eux afin de créer des réseaux.
 [RFC 2811 Internet Relay Chat: Channel Management](https://www.rfcreader.com/#rfc2811)  
 [RFC 2812 Internet Relay Chat: Client Protocol](https://www.rfcreader.com/#rfc2812)  
 [RFC 2813 Internet Relay Chat: Server Protocol](https://www.rfcreader.com/#rfc2813)  
-    
+	
 https://www.tutorialspoint.com/websockets/index.htm  
 http://vidalc.chez.com/lf/socket.html  
 https://ncona.com/2019/04/building-a-simple-server-with-cpp/  
@@ -68,7 +68,7 @@ The commands which may only be used by channel operators are:
 - INVITE  - Invite a client to an invite-only channel (mode +i)
 - TOPIC   - Change the channel topic in a mode +t channel
    
-    
+	
 ### RFC needs commands : ( [4. Message details](https://www.rfcreader.com/#rfc1459_line568) )
 | command | params | description |
 |---|---|---|
@@ -103,50 +103,35 @@ The commands which may only be used by channel operators are:
 
 Check prefix etc : RFC 2.3 Messages
 
-Voir avc groupe :
-Interet du realname ?
-Process de connection, rpl welcome nc ?
-Pong marche pas ?
-
 #### Modes : 
 4.2.3.2 User modes
-   Parameters: <nickname> {[+|-]|i|w|s|o}
+Parameters: <nickname> {[+|-]|i|w|s|o}
 
-   The user MODEs are typically changes which affect either how the
-   client is seen by others or what 'extra' messages the client is sent.
-   A user MODE command may only be accepted if both the sender of the
-   message and the nickname given as a parameter are both the same.
+The user MODEs are typically changes which affect either how the
+client is seen by others or what 'extra' messages the client is sent.
+A user MODE command may only be accepted if both the sender of the
+message and the nickname given as a parameter are both the same.
 
-   The available modes are as follows:
+The available modes are as follows:
 
-           i - marks a users as invisible;
-           s - marks a user for receipt of server notices;
-           w - user receives wallops;
-           o - operator flag.
+	i - marks a users as invisible;
+	s - marks a user for receipt of server notices;
+	w - user receives wallops;
+	o - operator flag.
 
 4.2.3.1 Channel modes
-   Parameters: <channel> {[+|-]|o|p|s|i|t|n|b|v} [<limit>] [<user>]
-               [<ban mask>]
+Parameters: <channel> {[+|-]|o|p|s|i|t|n|b|v} [<limit>] [<user>] [<ban mask>]
 
-   The MODE command is provided so that channel operators may change the
-   characteristics of `their' channel.  It is also required that servers
-   be able to change channel modes so that channel operators may be
-   created.
+The various modes available for channels are as follows:
 
-   The various modes available for channels are as follows:
-
-           o - give/take channel operator privileges;
-           p - private channel flag;
-           s - secret channel flag;
-           i - invite-only channel flag;
-           t - topic settable by channel operator only flag;
-           n - no messages to channel from clients on the outside;
-           m - moderated channel;
-           l - set the user limit to channel;
-
-           b - set a ban mask to keep users out;
-           v - give/take the ability to speak on a moderated channel;
-           k - set a channel key (password).
-
-   When using the 'o' and 'b' options, a restriction on a total of three
-   per mode command has been imposed.  That is, any combination of 'o' and
+	o - give/take channel operator privileges;
+	p - private channel flag;
+	s - secret channel flag;
+	i - invite-only channel flag;
+	t - topic settable by channel operator only flag;
+	n - no messages to channel from clients on the outside;
+	m - moderated channel;
+	l - set the user limit to channel;
+	b - set a ban mask to keep users out;
+	v - give/take the ability to speak on a moderated channel;
+	k - set a channel key (password).
