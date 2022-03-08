@@ -48,14 +48,19 @@ void Nick::execute()
 
 		if (!_expeditor->getChannels().empty())
 		{
-			for (std::map<std::string, unsigned int>::iterator it = _expeditor->getChannels().begin() ; it != _expeditor->getChannels().end(); it++)
+			std::map<std::string, unsigned int> channels = _expeditor->getChannels();
+			std::string	str;
+
+			for (std::map<std::string, unsigned int>::iterator it = channels.begin() ; it != channels.end(); it++)
 			{
-				for (std::set<user*>::iterator it2 = _serv->channels[it->first]->getUsers().begin() ; it2 != _serv->channels[it->first]->getUsers().end(); it2++)
+				std::set<user*>	users = _serv->channels[it->first]->getUsers();
+	
+				for (std::set<user*>::iterator it2 = users.begin() ; it2 != users.end(); it2++)
 				{
 					if (_expeditor != *it2)
 					{
 						std::cout << it->first << " TEST " << (*it2)->getNickname() << std::endl;
-						std::string str = ":" + _expeditor->getNickname() + " NICK " + ":" + *arg + "\r\n";
+						str = ":" + _expeditor->getNickname() + " NICK " + ":" + *arg + "\r\n";
 						send((*it2)->getSock(), str.c_str(), strlen(str.c_str()), 0);
 					}
 				}
