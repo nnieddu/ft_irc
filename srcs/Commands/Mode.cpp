@@ -267,7 +267,9 @@ void Mode::execute() {
 	std::string	*arg = _args[MESSAGE].arg;
 	std::string	*mod = _args[USER].arg;
 	std::string	*receiver = _args[RECEIVER].arg;
+	std::string emptyArg;
 
+	emptyArg.clear();
 	if (receiver) {
 		if (_serv->channels.find(nameCaseIns(*receiver)) != _serv->channels.end()) {
 			if ((*receiver)[0] == '+') {
@@ -282,6 +284,8 @@ void Mode::execute() {
 				_serv->send_replies(_expeditor, \
 				receivModeIs(*_serv->channels[nameCaseIns(*receiver)]), RPL_CHANNELMODEIS);
 			}
+			else if (arg == NULL)
+				modeChan(*_serv->channels[nameCaseIns(*receiver)], *mod, emptyArg);
 			else
 				modeChan(*_serv->channels[nameCaseIns(*receiver)], *mod, *arg);
 		}
@@ -290,6 +294,8 @@ void Mode::execute() {
 				_serv->send_replies(_expeditor, \
 				receivModeIs(*_serv->getUser(*receiver)), RPL_UMODEIS);
 			}
+			else if (arg == NULL)
+				modeUser(*_serv->getUser(*receiver), *mod, emptyArg);
 			else
 				modeUser(*_serv->getUser(*receiver), *mod, *arg);
 		}

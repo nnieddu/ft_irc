@@ -19,7 +19,7 @@ Interpret::Interpret(server * serv): _serv(serv)
 	_cmds_list["quit"] = new Quit(_serv);
 	_cmds_list["join"] = new Join(_serv);
 	_cmds_list["part"] = new Part(_serv);
-	// _cmds_list["mode"] = new Mode(_serv);
+	_cmds_list["mode"] = new Mode(_serv);
 	_cmds_list["topic"] = new Topic(_serv);
 	_cmds_list["names"] = new Names(_serv); //
 	_cmds_list["list"] = new List(_serv);
