@@ -36,13 +36,18 @@ void	Join::execute()
 	while (!lst.empty())
 	{
 		std::string	name(nameCaseIns(lst.front()));
-	////POSSIBLE DE JOIN UN CHAN JUSTE AV UN MASK (sans nom)
 		if (name.find('#') != 0 && name.find('&') != 0 && name.find('+') != 0 && name.find('!') != 0)
 		{
 			_serv->send_replies(_expeditor, name + "::No such channel (need a chan mask)", ERR_BADCHANMASK);
 			lst.erase(lst.begin());
 			continue ;
 		}
+		if (name.size() == 1)
+		{
+			_serv->send_replies(_expeditor, name + "::Need a channel name (at least one character)", ERR_BADCHANMASK);
+			lst.erase(lst.begin());
+			continue ;
+		}		
 		if (_expeditor->getChannels().size() == 10)
 		{
 			_serv->send_replies(_expeditor, name + " :You have joined too many channels (10 max)", ERR_TOOMANYCHANNELS);
