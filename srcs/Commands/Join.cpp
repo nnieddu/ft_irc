@@ -90,13 +90,13 @@ void	Join::execute()
 					{
 						_serv->send_replies(_expeditor, name + " :Cannot join channel (+k) wrong key.", ERR_BADCHANNELKEY);
 						lst.erase(lst.begin());
-						lst_keys.erase(lst.begin());
+						lst_keys.erase(lst_keys.begin());
 						continue ;
 					}
-					lst_keys.erase(lst.begin());
+					lst_keys.erase(lst_keys.begin());
 				}
 			}
-			if (_serv->getChannel(name)->geti() == true)
+			if (_serv->getChannel(name)->geti() == true && _serv->getChannel(name)->isInvited(*_expeditor) == true)
 			{
 				_serv->send_replies(_expeditor, name + " :Cannot join channel (+i)", ERR_INVITEONLYCHAN);
 				lst.erase(lst.begin());
@@ -112,17 +112,20 @@ void	Join::execute()
 			}
 			msg = ":" + _expeditor->getNickname() + " JOIN :" + name + "\r\n";
 			send(_expeditor->getSock(), msg.c_str(), msg.length(), 0);
-			_serv->send_replies(_expeditor, + " " + name + " :" + _serv->channels[name]->getTopic(), RPL_TOPIC);
+			if (!_serv->channels[*channel]->getTopic().empty())
+				_serv->send_replies(_expeditor, (*channel) + " :" + _serv->channels[*channel]->getTopic(), RPL_TOPIC);
+			else
+				_serv->send_replies(_expeditor, (*channel) + " :No topic is set", RPL_NOTOPIC);
 			_serv->getChannel(name)->send_names_replies(_expeditor);
 			_serv->send_replies(_expeditor, name + " :End of names list", RPL_ENDOFNAMES);
 			_expeditor->join_channel(name, false);
 			_serv->channels[name]->addUser(*_expeditor);
+			if (_serv->getChannel(name)->isInvited(*_expeditor) == true)
+				_serv->getChannel(*channel)->remInvited(*_expeditor);
 		}
-
 		lst.erase(lst.begin());
 	}
 }
 // add operator replies when created/promote
-
 // 474     ERR_BANNEDFROMCHAN
 // "<channel> :Cannot join channel (+b)"

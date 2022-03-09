@@ -59,6 +59,7 @@ class Channel {
 		std::string			password;
 		user*				chanCrea;
 		std::set<user *>	users;
+		std::set<user *>	users_invited;
 		bool				hasop;
 		std::time_t			rtime;
 
@@ -86,7 +87,11 @@ class Channel {
 		const std::set<user*>&	getUsers() const;
 		const std::string&		getBanMask() const;
 
-		void send_names_replies(const user*) const;
+		bool					isInvited(user&) const;
+		void					addInvited(user&);
+		void					remInvited(user&);
+
+		void 	send_names_replies(const user*) const;
 
 		bool	mustAddOp(const std::time_t &) const;
 		void	rdmOp(const std::time_t &);

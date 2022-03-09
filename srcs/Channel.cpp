@@ -15,7 +15,7 @@
 
 /*----------------------------------------------------------------------------*/
 
-Channel::Channel(user &users, std::string &newName) : users(), hasop(true), id(),
+Channel::Channel(user &users, std::string &newName) : users(), users_invited(), hasop(true), id(),
 name(nameCaseIns(newName)), topic(), password("password"), limit_user(0),
 chanCrea(NULL), rtime(time(NULL)), mod(n  + t) {
 	this->users.insert(&users);
@@ -127,6 +127,22 @@ const user &Channel::getChanCrea() const {
 const std::set<user *> &Channel::getUsers() const {
 	return users;
 }
+
+/*----------------------------------------------------------------------------*/
+
+bool Channel::isInvited(user& usr) const
+{
+	if (users_invited.find(&usr) != users_invited.end() && users_invited.empty() == false)
+	{
+		std::cout << usr.getNickname();
+		return true;
+	}
+	return false ;
+}
+
+void Channel::addInvited(user &newUser) { users_invited.insert(&newUser); }
+
+void Channel::remInvited(user &remUser) { users_invited.erase(users_invited.find(&remUser)); }
 
 /*----------------------------------------------------------------------------*/
 

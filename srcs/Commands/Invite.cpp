@@ -46,5 +46,7 @@ void Invite::execute()
 		std::set<user*>	userlist(_serv->getChannel(*channel)->getUsers());
 		for	(std::set<user*>::iterator it = userlist.begin(); it != userlist.end(); it++)
 			_serv->send_replies((*it), *nick + " " + *channel, RPL_INVITING);
+
+		_serv->getChannel(*channel)->addInvited(*_serv->getUser(*nick));
 	}	
 }
