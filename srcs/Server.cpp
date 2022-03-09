@@ -140,12 +140,35 @@ void server::accept_user()
 
 /*----------------------------------------------------------------------------*/
 
-void	server::close_user(size_t index)
+void	server::close_user(size_t index, const std::string & msg)
 {
 	std::vector<user*>::iterator it = (_users.begin() + (index - 1));
-	remove_user_from_channels(*it, "QUIT");
+	remove_user_from_channels(*it, msg);
 	std::cout << (*it)->getNickname() << " deconnexion" << std::endl; 
 	delete *it;
+	close(_fds[index].fd);
+	_fds.erase(_fds.begin() + index);
+	_users.erase(_users.begin() + (index - 1));
+}
+
+void	server::kill(user * expeditor, user * target, const std::string & msg)
+{
+	std::string	kill;
+	size_t		index = 1;
+
+	while (index < _fds.size() && _fds[index].fd != target->getSock())
+		index++;
+
+	remove_user_from_channels(expeditor, target, msg);
+	std::cout << target->getNickname() << " killed" << std::endl;
+
+	if (expeditor)
+		kill = ":" + expeditor->getNickname() + " KILL " + target->getNickname() + " :" + msg.c_str() + "\r\n";
+	else
+		kill = ":" + _name + " KILL " + target->getNickname() + " :" + msg.c_str() + "\r\n";
+
+	send(target->getSock(), kill.c_str(), kill.length(), 0);
+	delete target;
 	close(_fds[index].fd);
 	_fds.erase(_fds.begin() + index);
 	_users.erase(_users.begin() + (index - 1));
@@ -165,7 +188,7 @@ void	server::receive_data(size_t index)
 	{
 		if (ret < 0)
 		std::cerr << "recv() failed" << std::endl; 
-		return close_user(index);
+		return kill(NULL, getUser(_users[index]->getNickname()), "Communication error");
 	}
 	if (ret >= 512) 
 	{
@@ -187,7 +210,7 @@ void	server::receive_data(size_t index)
 	}
 	_users[index - 1]->setLastEvent(time(NULL));
 	if (_users[index - 1]->getLogLvl() == -1)
-		close_user(index);
+		close_user(index, "QUIT");
 	return ;
 }
 
@@ -203,8 +226,6 @@ void	server::remove_user_from(user * usr, const std::string & name, const std::s
 			str = " QUIT :disconnected";
 		else if (msg == "PART" || msg == "KICK")
 			str = " " + msg + " " + name;
-		if (str.empty() == true)
-			str = msg;
 		std::string quit = ":" + usr->getNickname() + str + "\r\n";
 		for(std::set<user *>::iterator it = channels[name]->getUsers().begin(); it != channels[name]->getUsers().end(); ++it)
 		{
@@ -213,6 +234,31 @@ void	server::remove_user_from(user * usr, const std::string & name, const std::s
 		}
 		channels[name]->removeUser(*usr);
 		usr->leave_channel(name);
+		if (channels[name]->getUsers().empty())
+		{	
+			delete channels[name];
+			channels.erase(name);
+		}
+	}
+}
+
+void	server::remove_user_from(user * expeditor, user * target, const std::string & name, const std::string & msg)
+{
+	std::string kill;
+	if (target->isMember(name))
+	{
+		if (expeditor)
+			kill = ":" + expeditor->getNickname() + " KILL " + target->getNickname() + " " + name + " :" + msg.c_str() + "\r\n";
+		else
+			kill = ":" + _name + " KILL " + target->getNickname() + " :" + msg.c_str() + "\r\n";
+
+		for(std::set<user *>::iterator it = channels[name]->getUsers().begin(); it != channels[name]->getUsers().end(); ++it)
+		{
+			if (target != *it)
+				send((*it)->getSock(), msg.c_str(), msg.length(), 0);
+		}
+		channels[name]->removeUser(*target);
+		target->leave_channel(name);
 		if (channels[name]->getUsers().empty())
 		{	
 			delete channels[name];
@@ -231,6 +277,17 @@ void	server::remove_user_from_channels(user * usr, const std::string & msg)
 	{
 		name = usr->getChannels().begin()->first;
 		remove_user_from(usr, name, msg);
+	}
+}
+
+void	server::remove_user_from_channels(user * expeditor, user * target, const std::string & msg)
+{
+	std::string name;
+
+	while (!(target->getChannels().empty()))
+	{
+		name = target->getChannels().begin()->first;
+		remove_user_from(expeditor, target, name, msg);
 	}
 }
 
@@ -307,9 +364,7 @@ void	server::ping(user * usr, int index)
 	if (timediff  > static_cast<double>(INACTIVE_SEC))
 	{
 		if (usr->getHasToPong())
-		{
-			return close_user(index);
-		}
+			return kill(NULL, getUser(_users[index]->getNickname()), "Took too long to pong");
 		else
 		{
 			std::string reply = (":" + _name + " PING " + usr->getUsername() + " \r\n");

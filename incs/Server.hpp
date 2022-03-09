@@ -61,12 +61,15 @@ class server
 
 		void	accept_user();
 		void	first_auth(user *);
-		void	close_user(size_t);
+		void	close_user(size_t, const std::string&);
+		void	kill(user*, user*, const std::string&);
 
 		void	receive_data(size_t);
 
 		void	remove_user_from(user*, const std::string&, const std::string&);
+		void	remove_user_from(user*, user*, const std::string&, const std::string&);
 		void	remove_user_from_channels(user*, const std::string&);
+		void	remove_user_from_channels(user*, user*, const std::string&);
 
 		void	send_replies(const user*, const std::string&, const char*) const;
 		int		send_msg_to_user(const user*, const user*, const std::string&, const std::string&, bool, bool = false) const;
