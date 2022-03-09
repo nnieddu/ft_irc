@@ -206,7 +206,7 @@ void	server::remove_user_from(user * usr, const std::string & name, const std::s
 		std::string quit = ":" + usr->getNickname() + str + "\r\n";
 		for(std::set<user *>::iterator it = channels[name]->getUsers().begin(); it != channels[name]->getUsers().end(); ++it)
 		{
-			if (usr->getNickname() != (*it)->getNickname())
+			if (usr != *it)
 				send((*it)->getSock(), quit.c_str(), quit.length(), 0);
 		}
 		channels[name]->removeUser(*usr);
@@ -224,6 +224,7 @@ void	server::remove_user_from(user * usr, const std::string & name, const std::s
 void	server::remove_user_from_channels(user * usr, const std::string & msg)
 {
 	std::string name;
+
 	while (!(usr->getChannels().empty()))
 	{
 		name = usr->getChannels().begin()->first;
@@ -245,7 +246,7 @@ void	server::send_replies(const user *usr, const std::string & msg, const char* 
 
 /*----------------------------------------------------------------------------*/
 
-int	server::send_msg_to_user(const user * expeditor, const user * dest, const std::string & msg, const std::string & chan_name, bool rpl) const
+int	server::send_msg_to_user(const user * expeditor, const user * dest, const std::string & msg, const std::string & chan_name, bool rpl, bool isAnonymous) const
 {
 	if (!dest)
 	{
@@ -267,7 +268,7 @@ int	server::send_msg_to_user(const user * expeditor, const user * dest, const st
 		if (chan_name == "")
 			fmsg = ":" + expeditor->getNickname() + " PRIVMSG " + dest->getNickname() + " :" + msg + "\r\n";
 		else
-			fmsg = ":" + expeditor->getNickname() + " PRIVMSG " + chan_name + " :" + msg + "\r\n";
+			fmsg = ":" + expeditor->getNickname(isAnonymous) + " PRIVMSG " + chan_name + " :" + msg + "\r\n";
 	}
 
 	return send(dest->getSock(), fmsg.c_str(), fmsg.size(), 0);
@@ -289,7 +290,7 @@ int	server::send_msg_to_channel(const user * expeditor, const Channel * dest, co
 
 	for	(std::set<user*>::iterator it = userlist.begin(); it != userlist.end(); it++)
 	{
-		if (send_msg_to_user(expeditor, *it, msg, dest->getName(), true) == -1)
+		if (send_msg_to_user(expeditor, *it, msg, dest->getName(), true, dest->geta()) == -1)
 			return -1;
 	}
 	return 0;

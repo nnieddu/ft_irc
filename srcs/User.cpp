@@ -212,7 +212,12 @@ void	user::pong()
 
 /*----------------------------------------------------------------------------*/
 
-std::string							user::getNickname() const { return _nickname; }
+std::string							user::getNickname(bool isAnonymous) const
+{
+	if (isAnonymous)
+		return "anonymous";
+	return _nickname;
+}
 std::string							user::getUsername() const { return _username; }
 std::string							user::getHostname() const { return _hostname; }
 int									user::getLogLvl() const { return _logLvl; }

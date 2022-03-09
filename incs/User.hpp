@@ -85,7 +85,7 @@ class user
 		bool				getHasToPong() const;
 		void				pong();
 
-		std::string							getNickname() const;
+		std::string							getNickname(bool = false) const;
 		std::string							getUsername() const;
 		std::string							getHostname() const;
 		Socket								getSocket() const;
