@@ -327,15 +327,12 @@ int	server::send_msg_to_user(const user * expeditor, const user * dest, const st
 		return 0;
 	}
 
-	std::string fmsg; 
-	if (expeditor->getNickname() != dest->getNickname())
-	{
-		if (chan_name == "")
-			fmsg = ":" + expeditor->getNickname() + " PRIVMSG " + dest->getNickname() + " :" + msg + "\r\n";
-		else
-			fmsg = ":" + expeditor->getNickname(isAnonymous) + " PRIVMSG " + chan_name + " :" + msg + "\r\n";
-	}
-	//one ne peut pas s'envoyer un message a sois meme?
+	std::string fmsg;
+
+	if (chan_name == "")
+		fmsg = ":" + expeditor->getNickname() + " PRIVMSG " + dest->getNickname() + " :" + msg + "\r\n";
+	else
+		fmsg = ":" + expeditor->getNickname(isAnonymous) + " PRIVMSG " + chan_name + " :" + msg + "\r\n";
 	return send(dest->getSock(), fmsg.c_str(), fmsg.size(), 0);
 }
 
@@ -355,7 +352,9 @@ int	server::send_msg_to_channel(const user * expeditor, const Channel * dest, co
 
 	for	(std::set<user*>::iterator it = userlist.begin(); it != userlist.end(); it++)
 	{
-		if (send_msg_to_user(expeditor, *it, msg, dest->getName(), true, dest->geta()) == -1)
+		if (expeditor == *it)
+			continue;
+		else if (send_msg_to_user(expeditor, *it, msg, dest->getName(), true, dest->geta()) == -1)
 			return -1;
 	}
 	return 0;
