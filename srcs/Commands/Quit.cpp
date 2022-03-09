@@ -21,6 +21,7 @@ Quit::Quit(server * serv):Command(serv)
 void Quit::execute()
 {
 	std::string	*	arg = _args[MESSAGE].arg;
+
 	if (!arg)
 	{
 		_expeditor->setLogLvl(-1);
