@@ -237,8 +237,8 @@ void	server::send_replies(const user *usr, const std::string & msg, const char* 
 {
 	std::string replies;
 
-	replies += (":" + usr->getUsername() +  " " + code + " " + usr->getNickname() + " " + msg + "\r\n");
-	
+	replies = ":" + usr->getUsername() +  " " + code + " " + usr->getNickname() + " " + msg + "\r\n";
+
 	if (send(usr->getSock(), replies.c_str(), replies.length(), 0) == -1)
 		std::cerr << strerror(errno) << std::endl;
 }
