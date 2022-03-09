@@ -133,10 +133,7 @@ const std::set<user *> &Channel::getUsers() const {
 bool Channel::isInvited(user& usr) const
 {
 	if (users_invited.find(&usr) != users_invited.end() && users_invited.empty() == false)
-	{
-		std::cout << usr.getNickname();
 		return true;
-	}
 	return false ;
 }
 

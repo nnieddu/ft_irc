@@ -96,7 +96,7 @@ void	Join::execute()
 					lst_keys.erase(lst_keys.begin());
 				}
 			}
-			if (_serv->getChannel(name)->geti() == true && _serv->getChannel(name)->isInvited(*_expeditor) == true)
+			if (_serv->getChannel(name)->geti() == true && _serv->getChannel(name)->isInvited(*_expeditor) == false)
 			{
 				_serv->send_replies(_expeditor, name + " :Cannot join channel (+i)", ERR_INVITEONLYCHAN);
 				lst.erase(lst.begin());

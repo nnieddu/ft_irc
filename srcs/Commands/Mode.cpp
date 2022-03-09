@@ -274,7 +274,7 @@ void Mode::execute() {
 	std::string emptyArg;
 	std::string defReply;
 	if (receiver) {
-		defReply = std::string(":") + _expeditor->getUsername() + " MODE " + *receiver;
+		defReply = std::string(":") + _expeditor->getNickname() + " MODE " + *receiver;
 		emptyArg.clear();
 		if (_serv->getUser(*receiver) != NULL) {
 			if (mod == NULL) {

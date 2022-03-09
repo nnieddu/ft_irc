@@ -38,7 +38,7 @@ void Topic::execute() {
 			_serv->send_replies(_expeditor, (*channel) + " :You do not have acces to change the topic on this channel", ERR_CHANOPRIVSNEEDED);
 		else {
 			std::string rep = ":";
-			rep += _expeditor->getUsername() + " TOPIC " + *channel + " :" + *arg + "\r\n";
+			rep += _expeditor->getNickname() + " TOPIC " + *channel + " :" + *arg + "\r\n";
 			for (std::set<user*>::iterator it = _serv->channels[*channel]->getUsers().begin(); \
 			it != _serv->channels[*channel]->getUsers().end() ; it++) {
 				send((*it)->getSock(), rep.c_str(), rep.length(), 0);
