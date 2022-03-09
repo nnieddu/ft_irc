@@ -22,7 +22,7 @@ Mode &Mode::operator=(const Mode &old) {
 
 /*----------------------------------------------------------------------------*/
 
-void Mode::modeChan(Channel& chan, std::string &mod, std::string &arg) {
+void Mode::modeChan(Channel& chan, std::string &mod, std::string &arg, std::string &defRep) {
 	bool		addRule = false;
 	int			num_o_b = 0;
 	std::string	temp = arg;
@@ -207,7 +207,10 @@ void Mode::modeChan(Channel& chan, std::string &mod, std::string &arg) {
 			}
 			mod.erase(0, 1);
 		}
-
+		for (std::set<user*>::iterator it = chan.getUsers().begin(); \
+		it != chan.getUsers().end() ; it++) {
+			send((*it)->getSock(), defRep.c_str(), defRep.length(), 0);
+		}
 	}
 	else {
 		_serv->send_replies(_expeditor, chan.getName() + " :You're not channel" + \
@@ -217,7 +220,7 @@ void Mode::modeChan(Channel& chan, std::string &mod, std::string &arg) {
 
 /*----------------------------------------------------------------------------*/
 
-void Mode::modeUser(user& usr, std::string &mod, std::string &arg) {
+void Mode::modeUser(user& usr, std::string &mod, std::string &arg, std::string &defRep) {
 	int		addRule = true;
 
 	if (_expeditor->isServOp() || _expeditor == &usr) {
@@ -256,6 +259,7 @@ void Mode::modeUser(user& usr, std::string &mod, std::string &arg) {
 			}
 			mod.erase(0, 1);
 		}
+		send(_expeditor->getSock(), defRep.c_str(), defRep.length(), 0);
 	}
 	else
 		_serv->send_replies(_expeditor, " :Cannot change mode for other users", ERR_USERSDONTMATCH);
@@ -268,10 +272,25 @@ void Mode::execute() {
 	std::string	*mod = _args[USER].arg;
 	std::string	*receiver = _args[RECEIVER].arg;
 	std::string emptyArg;
-
-	emptyArg.clear();
+	std::string defReply;
 	if (receiver) {
-		if (_serv->channels.find(nameCaseIns(*receiver)) != _serv->channels.end()) {
+		defReply = std::string(":") + _expeditor->getUsername() + " MODE " + *receiver;
+		emptyArg.clear();
+		if (_serv->getUser(*receiver) != NULL) {
+			if (mod == NULL) {
+				_serv->send_replies(_expeditor, \
+				receivModeIs(*_serv->getUser(*receiver)), RPL_UMODEIS);
+			}
+			else if (arg == NULL) {
+				defReply += " :" + *mod + "\r\n";
+				modeUser(*_serv->getUser(*receiver), *mod, emptyArg, defReply);
+			}
+			else {
+				defReply += " " + *mod + " :" + *arg + "\r\n";
+				modeUser(*_serv->getUser(*receiver), *mod, *arg, defReply);
+			}
+		}
+		else if (_serv->channels.find(nameCaseIns(*receiver)) != _serv->channels.end()) {
 			if ((*receiver)[0] == '+') {
 				_serv->send_replies(_expeditor, (*receiver) + \
 				" :Channel doesn't support modes", ERR_NOCHANMODES);
@@ -284,20 +303,14 @@ void Mode::execute() {
 				_serv->send_replies(_expeditor, \
 				receivModeIs(*_serv->channels[nameCaseIns(*receiver)]), RPL_CHANNELMODEIS);
 			}
-			else if (arg == NULL)
-				modeChan(*_serv->channels[nameCaseIns(*receiver)], *mod, emptyArg);
-			else
-				modeChan(*_serv->channels[nameCaseIns(*receiver)], *mod, *arg);
-		}
-		else if (_serv->getUser(*receiver) != NULL) {
-			if (mod == NULL) {
-				_serv->send_replies(_expeditor, \
-				receivModeIs(*_serv->getUser(*receiver)), RPL_UMODEIS);
+			else if (arg == NULL) {
+				defReply += " :" + *mod + "\r\n";
+				modeChan(*_serv->channels[nameCaseIns(*receiver)], *mod, emptyArg, defReply);
 			}
-			else if (arg == NULL)
-				modeUser(*_serv->getUser(*receiver), *mod, emptyArg);
-			else
-				modeUser(*_serv->getUser(*receiver), *mod, *arg);
+			else {
+				defReply += " " + *mod + " :" + *arg + "\r\n";
+				modeChan(*_serv->channels[nameCaseIns(*receiver)], *mod, *arg, defReply);
+			}
 		}
 		else {
 			_serv->send_replies(_expeditor, (*receiver) + \

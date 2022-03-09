@@ -11,9 +11,9 @@
 class Mode : public Command {
 
 	private:
-		void	modeChan(Channel&, std::string&, std::string&);
+		void	modeChan(Channel&, std::string&, std::string&, std::string&);
 
-		void	modeUser(user&, std::string&, std::string&);
+		void	modeUser(user&, std::string&, std::string&, std::string&);
 		static std::string	receivModeIs(Channel&) ;
 		static std::string	receivModeIs(user&) ;
 

@@ -270,7 +270,7 @@ int	server::send_msg_to_user(const user * expeditor, const user * dest, const st
 		else
 			fmsg = ":" + expeditor->getNickname(isAnonymous) + " PRIVMSG " + chan_name + " :" + msg + "\r\n";
 	}
-
+	//one ne peut pas s'envoyer un message a sois meme?
 	return send(dest->getSock(), fmsg.c_str(), fmsg.size(), 0);
 }
 
