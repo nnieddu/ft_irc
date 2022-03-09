@@ -52,6 +52,8 @@ class server
 		std::vector<user*>							_users;
 
 	public:
+		size_t	 _index;
+
 		std::map<std::string, Channel* > channels;
 
 		server(const int & port, const std::string & password);

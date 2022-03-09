@@ -62,6 +62,7 @@ void	server::run()
 
 	std::vector<struct pollfd>::iterator	it;
 
+
 	for (;;)
 	{
 		if (!channels.empty())
@@ -70,17 +71,19 @@ void	server::run()
 		if (poll(&(*it), _fds.size(), 1) < 0)
 			ft_exit(0);
 		size_t nfd = _fds.size();
-		for (size_t index = 0; index < nfd; index++)
+		for (_index = 0; _index < nfd; _index++)
 		{
-			if((_fds[index].revents & POLLIN) == POLLIN)
+			if((_fds[_index].revents & POLLIN) == POLLIN)
 			{
-				if (index == 0)
+				if (_index == 0)
 					accept_user();
 				else
-					receive_data(index);
+					receive_data(_index);
+				if (_index == -1)
+					break ;
 			}
-			else if (index != 0)
-				ping(_users[index - 1], index);
+			else if (_index != 0)
+				ping(_users[_index - 1], _index);
 		}
 	}
 }
@@ -172,6 +175,7 @@ void	server::kill(user * expeditor, user * target, const std::string & msg)
 	close(_fds[index].fd);
 	_fds.erase(_fds.begin() + index);
 	_users.erase(_users.begin() + (index - 1));
+	_index = -1;
 }
 
 /*----------------------------------------------------------------------------*/
