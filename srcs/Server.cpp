@@ -430,4 +430,3 @@ void	server::welcomeNewUser(user * usr)
 		// send_replies(usr, "defaut", RPL_UMODEIS); //// voir avec mroz
 	}
 }
-	users_invited.
