@@ -427,6 +427,7 @@ void	server::welcomeNewUser(user * usr)
 		// str = ":" + usr->getUsername() +  " " + RPL_MYINFO + "ircserv has " "\r\n"; ////
 		// send(usr->getSock(), str.c_str(), str.length(), 0);
 
-		send_replies(usr, "defaut", RPL_UMODEIS); //// voir avec mroz
+		// send_replies(usr, "defaut", RPL_UMODEIS); //// voir avec mroz
 	}
 }
+	users_invited.
