@@ -28,6 +28,9 @@
 #define RPL_ADMINLOC1			"257"
 
 #define RPL_AWAY				"301"
+
+#define RPL_ENDOFWHO			"315"
+
 #define RPL_LISTSTART			"321"
 #define RPL_LIST				"322"
 #define RPL_LISTEND				"323"
@@ -37,6 +40,7 @@
 #define RPL_TOPIC				"332"
 #define RPL_INVITING			"341"
 #define RPL_VERSION				"351"
+#define RPL_WHOREPLY			"352"
 #define RPL_NAMREPLY			"353"
 #define RPL_ENDOFNAMES			"366"
 
