@@ -40,7 +40,7 @@ void Who::execute()
 					break;
 			}
 			if (chan_it == chanlist.end())
-				(*it)->send_who_reply(_expeditor, NULL);
+				(*it)->send_who_reply(_expeditor, NULL, _serv->getName());
 		}
 		if (!name)
 			return _serv->send_replies(_expeditor, " * :End of who list", RPL_ENDOFWHO);
@@ -59,11 +59,11 @@ void Who::execute()
 
 		if (chan_it != chanlist.end())
 		{
-			target->send_who_reply(_expeditor, _serv->getChannel(chan_it->first));
+			target->send_who_reply(_expeditor, _serv->getChannel(chan_it->first), _serv->getName());
 			return _serv->send_replies(_expeditor, " " + chan_it->first + " :End of who list", RPL_ENDOFWHO);
 		}
 
-		target->send_who_reply(_expeditor, NULL);
+		target->send_who_reply(_expeditor, NULL, _serv->getName());
 	}
 	return _serv->send_replies(_expeditor, " * :End of who list", RPL_ENDOFWHO);
 }

@@ -1,4 +1,5 @@
 #include "../incs/Socket.hpp"
+#include <arpa/inet.h>
 
 /*----------------------------------------------------------------------------*/
 
@@ -28,7 +29,7 @@ Socket::~Socket()
 
 /*----------------------------------------------------------------------------*/
 
-void	Socket::server_socket(int port)
+std::string	Socket::server_socket(int port)
 {
 	if ((fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
 		throw(std::runtime_error("socket"));
@@ -51,5 +52,5 @@ void	Socket::server_socket(int port)
 	if (listen(fd, 10) < 0)
 		throw(std::runtime_error("listen"));
 
-	return;
+	return (inet_ntoa(reinterpret_cast<sockaddr_in*>(&address)->sin_addr));
 }

@@ -24,5 +24,5 @@ class Socket
 		Socket(const int xfd, const struct sockaddr_in&, const socklen_t&);
 		virtual	~Socket();
 
-		void	server_socket(int);
+		std::string	server_socket(int);
 };
