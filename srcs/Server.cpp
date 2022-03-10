@@ -81,8 +81,8 @@ void	server::run()
 				if (_index == -1)
 					break ;
 			}
-			else if (_index != 0)
-				ping(_users[_index - 1], _index);
+			else if (_index != 0 && ping(_users[_index - 1], _index))
+				break;
 		}
 	}
 }
@@ -153,7 +153,7 @@ void	server::close_user(size_t index, const std::string & msg)
 	_users.erase(_users.begin() + (index - 1));
 }
 
-void	server::kill(user * expeditor, user * target, const std::string & msg)
+int	server::kill(user * expeditor, user * target, const std::string & msg)
 {
 	std::string	kill;
 	size_t		index = 1;
@@ -176,6 +176,7 @@ void	server::kill(user * expeditor, user * target, const std::string & msg)
 	_fds.erase(_fds.begin() + index);
 	_users.erase(_users.begin() + (index - 1));
 	_index = -1;
+	return 1;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -192,8 +193,9 @@ void	server::receive_data(size_t index)
 	{
 		if (ret < 0)
 			std::cerr << "recv() failed" << std::endl; 
-		return close_user(index, "QUIT");
-		// return kill(NULL, getUser(_users[index]->getNickname()), "Communication error"); // fais segfault si ctrl+c avc nc
+		kill(NULL, getUser(_users[index - 1]->getNickname()), "Communication error");
+		index = -1;
+		return ;
 	}
 	if (ret >= 512) 
 	{
@@ -366,14 +368,14 @@ int	server::send_msg_to_channel(const user * expeditor, const Channel * dest, co
 
 /*----------------------------------------------------------------------------*/
 
-void	server::ping(user * usr, int index)
+int	server::ping(user * usr, int index)
 {
 	double	timediff = difftime(time(NULL), usr->getLastEvent());
 
 	if (timediff  > static_cast<double>(INACTIVE_SEC))
 	{
 		if (usr->getHasToPong())
-			return kill(NULL, getUser(_users[index]->getNickname()), "Took too long to pong");
+			return kill(NULL, getUser(_users[index - 1]->getNickname()), "Took too long to pong");
 		else
 		{
 			std::string reply = (":" + _name + " PING " + usr->getUsername() + " \r\n");
@@ -381,7 +383,7 @@ void	server::ping(user * usr, int index)
 			usr->setHasToPong(time(NULL));
 		}
 	}
-	return ;
+	return 0;
 }
 
 void	server::pong(const std::string& username)

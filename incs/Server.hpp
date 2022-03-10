@@ -24,7 +24,7 @@
 #include "NumericReplies.hpp"
 #include "Channel.hpp"
 
-#define INACTIVE_SEC	150
+#define INACTIVE_SEC	10
 
 class server
 {
@@ -63,7 +63,7 @@ class server
 		void	accept_user();
 		void	first_auth(user *);
 		void	close_user(size_t, const std::string&);
-		void	kill(user*, user*, const std::string&);
+		int		kill(user*, user*, const std::string&);
 
 		void	receive_data(size_t);
 
@@ -76,7 +76,7 @@ class server
 		int		send_msg_to_user(const user*, const user*, const std::string&, const std::string&, bool, bool = false) const;
 		int		send_msg_to_channel(const user*, const Channel*, const std::string&) const;
 
-		void	ping(user *, int);
+		int		ping(user *, int);
 		void	pong(const std::string&);
 
 		void	check_channels(const std::time_t &);
