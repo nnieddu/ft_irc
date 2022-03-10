@@ -28,6 +28,8 @@
 #define RPL_ADMINLOC1			"257"
 
 #define RPL_AWAY				"301"
+#define RPL_UNAWAY				"305"
+#define RPL_NOWAWAY				"306"
 
 #define RPL_ENDOFWHO			"315"
 
