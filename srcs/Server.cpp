@@ -336,7 +336,7 @@ int	server::send_msg_to_user(const user * expeditor, const user * dest, const st
 	if (dest->isAway())
 	{
 		if (rpl)
-			send_replies(expeditor, std::string( "PRIVMSG :" + dest->getAfkString()), RPL_AWAY);
+			send_replies(expeditor, std::string( dest->getNickname() + " :" + dest->getAfkString()), RPL_AWAY);
 		return 0;
 	}
 

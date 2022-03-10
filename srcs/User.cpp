@@ -178,6 +178,7 @@ void user::setAfk(const std::string &afkStr) {
 }
 
 void user::delAfk() {
+	_afkMessage.clear();
 	_afk = false;
 }
 

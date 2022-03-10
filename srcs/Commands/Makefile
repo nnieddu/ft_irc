@@ -25,6 +25,7 @@ SRCS	=	Cap.cpp		\
 			Topic.cpp	\
 			Time.cpp	\
 			User.cpp	\
+			Away.cpp	\
 			Version.cpp	\
 			Admin.cpp	\
 			Kill.cpp	\
@@ -35,6 +36,7 @@ INCS	=	../../incs/Server.hpp	\
 			../../incs/Mode.hpp		\
 			../../incs/Socket.hpp	\
 			../../incs/User.hpp		\
+			../../incs/Away.hpp		\
 			../../incs/Command.hpp	\
 			../../incs/Commands.hpp
 

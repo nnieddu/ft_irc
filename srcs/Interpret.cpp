@@ -4,6 +4,7 @@
 #include "../incs/Server.hpp"
 #include "../incs/Command.hpp"
 #include "../incs/Commands.hpp"
+#include "../incs/Away.hpp"
 
 #include <stdlib.h>
 
@@ -35,6 +36,7 @@ Interpret::Interpret(server * serv): _serv(serv)
 	_cmds_list["ping"] = new Ping(_serv);
 	_cmds_list["pong"] = new Pong(_serv);
 	_cmds_list["kill"] = new Kill(_serv);
+	_cmds_list["away"] = new Away(_serv);
 }
 
 /*----------------------------------------------------------------------------*/
