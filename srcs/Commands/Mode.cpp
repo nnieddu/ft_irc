@@ -224,6 +224,7 @@ void Mode::modeUser(user& usr, std::string &mod, std::string &arg, std::string &
 	int		addRule = true;
 
 	if (_expeditor->isServOp() || _expeditor == &usr) {
+		std::cerr << "Hi" << std::endl;
 		while (!mod.empty()) {
 			if (mod[0] == '+')
 				addRule = true;
@@ -256,6 +257,7 @@ void Mode::modeUser(user& usr, std::string &mod, std::string &arg, std::string &
 			else {
 				_serv->send_replies(_expeditor, std::string() + mod[0] + \
 				" :is unknown mode char to me for ", ERR_UNKNOWNMODE);
+				return;
 			}
 			mod.erase(0, 1);
 		}
@@ -353,7 +355,7 @@ std::string Mode::receivModeIs(Channel& chan) {
 }
 
 std::string Mode::receivModeIs(user &usr) {
-	std::string ret = usr.getNickname() + " +";
+	std::string ret = "+";
 	if (usr.isAway())
 		ret += 'a';
 	if (usr.isRestrict())
