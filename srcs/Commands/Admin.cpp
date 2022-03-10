@@ -24,7 +24,9 @@ void Admin::execute()
 	if (!arg || arg->compare(_serv->getName()) == 0 || arg->compare("ircserv") == 0)
 	{
 		int x = 1;
-		for(std::vector<user *>::iterator it = _serv->getUsers().begin(); it != _serv->getUsers().end(); ++it) //// Wtf
+		std::vector<user *>	userlist(_serv->getUsers());
+
+		for(std::vector<user *>::iterator it = userlist.begin(); it != userlist.end(); ++it)
 		{
 			if ((*it)->isServOp() == true)
 			{
