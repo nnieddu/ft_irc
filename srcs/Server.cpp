@@ -442,6 +442,10 @@ Channel *	server::getChannel(const std::string & name) const
 
 /*----------------------------------------------------------------------------*/
 
+Interpret&	server::getInterpret() { return _interpret; }
+
+/*----------------------------------------------------------------------------*/
+
 std::string&	nameCaseIns(std::string& name) {
 	for (int index = 0; name[index] ; ++index)
 		name[index] = static_cast<char>(std::tolower(name[index]));

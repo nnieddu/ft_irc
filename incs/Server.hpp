@@ -91,6 +91,7 @@ class server
 		int					getSock() const;
 		user *				getUser(const std::string&) const;
 		Channel *			getChannel(const std::string&) const;
+		Interpret&			getInterpret();
 		void				welcomeNewUser(user * usr);
 
 };

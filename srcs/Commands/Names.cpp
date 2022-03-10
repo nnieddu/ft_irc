@@ -32,7 +32,10 @@ void Names::execute()
 			std::map<std::string, Channel*>::iterator	it(_serv->channels.find(list.front()));
 
 			if (it != _serv->channels.end())
+			{
 				it->second->send_names_replies(_expeditor);
+				_serv->send_replies(_expeditor, it->second->getName() + " :End of names list", RPL_ENDOFNAMES);
+			}
 			list.pop_front();
 		}
 	}
@@ -41,7 +44,10 @@ void Names::execute()
 		std::string	names;
 
 		for (std::map<std::string, Channel* >::iterator it(_serv->channels.begin()); it != _serv->channels.end(); it++)
+		{
 			it->second->send_names_replies(_expeditor);
+			_serv->send_replies(_expeditor, it->second->getName() + " :End of names list", RPL_ENDOFNAMES);
+		}
 		for (std::vector<user*>::iterator it(_serv->getUsers().begin()); it != _serv->getUsers().end(); it++)
 		{
 			if ((*it)->getChannels().empty())
@@ -49,10 +55,12 @@ void Names::execute()
 		}
 		if (!(names.empty()))
 		{
-			std::string replies = ":" + _expeditor->getUsername() +  " " + RPL_NAMREPLY + " " + _expeditor->getNickname() + " " +  "= * :" + names + "\r\n";
+			std::string replies = ":" + _expeditor->getUsername() +  " " + RPL_NAMREPLY + " " \
+				+ _expeditor->getNickname() + " " +  "= * :" + names + "\r\n";
+
 			send(_expeditor->getSock(), replies.c_str(), replies.length(), 0);
+			_serv->send_replies(_expeditor, "* :End of names list", RPL_ENDOFNAMES);
 		}
 	}
-	_serv->send_replies(_expeditor, "* :End of names list", RPL_ENDOFNAMES);
 	return ;
 }
