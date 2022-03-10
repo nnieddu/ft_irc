@@ -170,8 +170,6 @@ int	server::kill(user * expeditor, user * target, const std::string & msg)
 
 	send(target->getSock(), kill.c_str(), kill.length(), 0);
 
-	kill = "killed by " + expeditor->getNickname() + "(" + msg + ")";
-	
 	remove_user_from_channels(target, kill);
 	delete target;
 	close(_fds[index].fd);
@@ -472,7 +470,5 @@ void	server::welcomeNewUser(user * usr)
 
 		// str = ":" + usr->getUsername() +  " " + RPL_MYINFO + "ircserv has " "\r\n"; ////
 		// send(usr->getSock(), str.c_str(), str.length(), 0);
-
-		// send_replies(usr, "defaut", RPL_UMODEIS); //// voir avec mroz
 	}
 }
