@@ -90,9 +90,9 @@ class user
 		void				send_who_reply(const user * receiver) const;
 
 		std::string							getNickname(bool = false) const;
-		std::string							getUsername() const;
-		std::string							getHostname() const;
-		std::string							getRealname() const;
+		std::string							getUsername(bool = false) const;
+		std::string							getHostname(bool = false) const;
+		std::string							getRealname(bool = false) const;
 		Socket								getSocket() const;
 		int									getSock() const;
 		bool								getisLogged() const;

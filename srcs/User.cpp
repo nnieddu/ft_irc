@@ -239,9 +239,28 @@ std::string							user::getNickname(bool isAnonymous) const
 		return "anonymous";
 	return _nickname;
 }
-std::string							user::getUsername() const { return _username; }
-std::string							user::getHostname() const { return _hostname; }
-std::string							user::getRealname() const { return _realname; }
+
+std::string							user::getUsername(bool isAnonymous) const
+{
+	if (isAnonymous)
+		return "anonymous";
+	return _username;
+}
+
+std::string							user::getHostname(bool isAnonymous) const
+{
+	if (isAnonymous)
+		return "anonymous";
+	return _hostname;
+}
+
+std::string							user::getRealname(bool isAnonymous) const
+{
+	if (isAnonymous)
+		return "anonymous";
+	return _realname;
+}
+
 int									user::getLogLvl() const { return _logLvl; }
 bool								user::getisLogged() const { return _isLogged; }
 bool								user::getWasLogged() const { return _wasLogged; }
