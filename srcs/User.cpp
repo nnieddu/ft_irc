@@ -12,6 +12,7 @@ user::user(const std::string & hostname, const std::string & nickname, const std
 	_hostname(hostname),
 	_nickname(nickname),
 	_username(username),
+	_realname(username + "le reel"),
 	_socket(socket),
 	_server_operator(server_operator),
 	_afk(false),
@@ -226,10 +227,11 @@ void	user::send_who_reply(const user * receiver, const Channel * chan) const
 		name = chan->getName();
 	}
 
-	info = getNickname(anonymous) + " " + getUsername(anonymous) + "@" + getHostname(anonymous) + " " + getRealname(anonymous);
+	info = name + " " + getUsername(anonymous) + " " + getHostname(anonymous) + " 127.0.0.1 " + getNickname(anonymous) \
+		+ "H :0 " + getRealname(anonymous);
 
-	std::string replies = ":" + receiver->getUsername() + " " + RPL_WHOREPLY + " " \
-		+ receiver->getNickname() + " = " + getNickname(anonymous) + " :" + info + "\r\n";
+	std::string replies = ":" + receiver->getUsername() +  " " + RPL_WHOREPLY + " " \
+		+ receiver->getNickname() + " WHO :" + info + "\r\n";
 
 	send(receiver->getSock(), replies.c_str(), replies.length(), 0);
 }
