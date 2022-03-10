@@ -16,6 +16,7 @@ class user
 		std::string		_nickname;
 		std::string		_username;
 		std::string		_hostname;
+		std::string		_realname;
 		std::string		_afkMessage;
 
 		int				_logLvl;
@@ -40,8 +41,9 @@ class user
 		user(const std::string&, const std::string&, const std::string&, const Socket&, bool);
 		virtual ~user();
 
-		void				setNickname(std::string nick);
-		void				setUsername(std::string usrname);
+		void				setNickname(const std::string&);
+		void				setUsername(const std::string&);
+		void				setRealname(const std::string&);
 		void				setLogged(bool log);
 
 		void				setLogLvl(int loglvl);
@@ -51,7 +53,7 @@ class user
 		void				promoteServ();
 		void				demoteServ();
 
-		void				join_channel(std::string&, bool);
+		void				join_channel(const std::string&, bool);
 		void				leave_channel(const std::string&);
 		void				promote(const std::string&);
 		void				demote(const std::string&);
@@ -85,9 +87,12 @@ class user
 		bool				getHasToPong() const;
 		void				pong();
 
+		void				send_who_reply(const user * receiver) const;
+
 		std::string							getNickname(bool = false) const;
 		std::string							getUsername() const;
 		std::string							getHostname() const;
+		std::string							getRealname() const;
 		Socket								getSocket() const;
 		int									getSock() const;
 		bool								getisLogged() const;

@@ -27,9 +27,11 @@ user::~user() {}
 
 /*----------------------------------------------------------------------------*/
 
-void		user::setNickname(std::string nick) { _nickname = nick; }
+void		user::setNickname(const std::string & nick) { _nickname = nick; }
 
-void		user::setUsername(std::string usrname) { _username = usrname; }
+void		user::setUsername(const std::string & username) { _username = username; }
+
+void		user::setRealname(const std::string & realname) { _realname = realname; }
 
 void		user::setLogged(bool log) { _isLogged = log; _wasLogged = true; }
 
@@ -49,12 +51,14 @@ void user::demoteServ() {
 
 /*----------------------------------------------------------------------------*/
 
-void	user::join_channel(std::string & name, bool op)
+void	user::join_channel(const std::string & name, bool op)
 {
+	std::string	tmp(name);
+
 	if (op)
-		_channels.insert(std::make_pair(nameCaseIns(name), o));
+		_channels.insert(std::make_pair(nameCaseIns(tmp), o));
 	else
-		_channels.insert(std::make_pair(nameCaseIns(name), 0));
+		_channels.insert(std::make_pair(nameCaseIns(tmp), 0));
 }
 
 void	user::leave_channel(const std::string & name)
@@ -209,6 +213,25 @@ void	user::pong()
 }
 
 /*----------------------------------------------------------------------------*/
+/*
+void	user::send_who_reply(const user * receiver) const
+{
+	std::string usersInChan;
+	std::set<user *>::iterator it;
+
+	for(it = this->getUsers().begin(); it != this->getUsers().end(); ++it)
+	{
+		if ((*it)->isOperator(name) == true)
+			usersInChan += "@";
+		usersInChan += (*it)->getNickname() + " ";
+	}
+	std::string replies = ":" + receiver->getUsername() +  " " + RPL_NAMREPLY + " " \
+		+ receiver->getNickname() + " " +  "= " + name + " :" + usersInChan + "\r\n";
+
+	send(receiver->getSock(), replies.c_str(), replies.length(), 0);
+}*/
+
+/*----------------------------------------------------------------------------*/
 
 std::string							user::getNickname(bool isAnonymous) const
 {
@@ -218,6 +241,7 @@ std::string							user::getNickname(bool isAnonymous) const
 }
 std::string							user::getUsername() const { return _username; }
 std::string							user::getHostname() const { return _hostname; }
+std::string							user::getRealname() const { return _realname; }
 int									user::getLogLvl() const { return _logLvl; }
 bool								user::getisLogged() const { return _isLogged; }
 bool								user::getWasLogged() const { return _wasLogged; }
