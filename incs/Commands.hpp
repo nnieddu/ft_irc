@@ -80,11 +80,10 @@ class Quit : public Command
 		virtual void execute();
 };
 
-class Mode : public Command {
-
+class Mode : public Command 
+{
 	private:
 		void	modeChan(Channel&, std::string&, std::string&);
-
 		void	modeUser(user&, std::string&, std::string&);
 
 	public:
@@ -208,15 +207,6 @@ class Admin : public Command
 		virtual ~Admin();
 		Admin&	operator=(const Admin&);
 		Admin(server*);
-		virtual void execute();
-};
-
-class Whois : public Command
-{
-	public:
-		virtual ~Whois();
-		Whois&	operator=(const Whois&);
-		Whois(server*);
 		virtual void execute();
 };
 

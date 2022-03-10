@@ -45,13 +45,14 @@ class server
 		std::string									_name;
 		int											_port;
 		std::string									_password;
-		std::string									_ircOperator;
 		Socket										_socket;
 		Interpret									_interpret;
 		std::vector<struct pollfd> 					_fds;
 		std::vector<user*>							_users;
 
 	public:
+		size_t	 _index;
+
 		std::map<std::string, Channel* > channels;
 
 		server(const int & port, const std::string & password);
@@ -85,8 +86,6 @@ class server
 		std::string			getName() const;
 		int					getPort() const;
 		std::string			getPassword() const;
-		std::string			getIRCOp() const;
-		void				setIRCOp(const std::string&) ;
 		std::vector<user*>	getUsers() const;
 		int					getSock() const;
 		user *				getUser(const std::string&) const;

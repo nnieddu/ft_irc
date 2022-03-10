@@ -30,6 +30,7 @@ void Info::execute()
 		_serv->send_replies(_expeditor, " :Ludovic Fourage (lfourage)", RPL_INFO);
 		_serv->send_replies(_expeditor, " :Nicolas Nieddu (ninieddu) and ", RPL_INFO);
 		_serv->send_replies(_expeditor, " :Maximilien Rozniecki (mrozniec)", RPL_INFO);
+		_serv->send_replies(_expeditor, " :-----------------------------------", RPL_INFO);
 		_serv->send_replies(_expeditor, " :", RPL_INFO);
 		_serv->send_replies(_expeditor, " :Hope you enjoy it !", RPL_INFO);
 		_serv->send_replies(_expeditor, " :", RPL_ENDOFINFO);

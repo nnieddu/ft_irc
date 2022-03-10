@@ -26,9 +26,9 @@ void List::execute()
 	std::string topic;
 	std::map<std::string, Channel*>::iterator it;
 
-	_serv->send_replies(_expeditor, "Channel :Users  Name", RPL_LISTSTART);
 	if (!arg)
 	{
+		_serv->send_replies(_expeditor, "Channel :Users  Name", RPL_LISTSTART);
 		for (it = _serv->channels.begin(); it != _serv->channels.end(); ++it)
 		{
 			
@@ -45,7 +45,12 @@ void List::execute()
 				_serv->send_replies(_expeditor, it->first + " " + ft_itoa(it->second->getUsers().size()) + " " + topic, RPL_LIST);
 		}
 	}
-	else if (arg && (_serv->channels.find(*arg) != _serv->channels.end()))
+	if (arg && (_serv->channels.find(*arg) == _serv->channels.end()))
+	{
+		_serv->send_replies(_expeditor, *arg + " No such server", ERR_NOSUCHSERVER);
+		return ;
+	}
+	if (arg && (_serv->channels.find(*arg) != _serv->channels.end()))
 	{
 		it = _serv->channels.find(*arg);
 
@@ -54,6 +59,7 @@ void List::execute()
 		else
 			topic = "No topic is set";
 
+		_serv->send_replies(_expeditor, "Channel :Users  Name", RPL_LISTSTART);
 		if (it->second->getp() == false)
 			_serv->send_replies(_expeditor, it->first + " " + ft_itoa(it->second->getUsers().size()) + " " + topic, RPL_LIST);
 		if (it->second->getp() == true && _expeditor->isMember(it->first) == false)

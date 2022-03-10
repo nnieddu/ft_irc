@@ -70,17 +70,19 @@ void	server::run()
 		if (poll(&(*it), _fds.size(), 1) < 0)
 			ft_exit(0);
 		size_t nfd = _fds.size();
-		for (size_t index = 0; index < nfd; index++)
+		for (_index = 0; _index < nfd; _index++)
 		{
-			if((_fds[index].revents & POLLIN) == POLLIN)
+			if((_fds[_index].revents & POLLIN) == POLLIN)
 			{
-				if (index == 0)
+				if (_index == 0)
 					accept_user();
 				else
-					receive_data(index);
+					receive_data(_index);
+				if (_index == -1)
+					break ;
 			}
-			else if (index != 0)
-				ping(_users[index - 1], index);
+			else if (_index != 0)
+				ping(_users[_index - 1], _index);
 		}
 	}
 }
@@ -159,7 +161,6 @@ void	server::kill(user * expeditor, user * target, const std::string & msg)
 	while (index < _fds.size() && _fds[index].fd != target->getSock())
 		index++;
 
-	remove_user_from_channels(expeditor, target, msg);
 	std::cout << target->getNickname() << " killed" << std::endl;
 
 	if (expeditor)
@@ -168,10 +169,13 @@ void	server::kill(user * expeditor, user * target, const std::string & msg)
 		kill = ":" + _name + " KILL " + target->getNickname() + " :" + msg.c_str() + "\r\n";
 
 	send(target->getSock(), kill.c_str(), kill.length(), 0);
+	
+	remove_user_from_channels(expeditor, target, kill);
 	delete target;
 	close(_fds[index].fd);
 	_fds.erase(_fds.begin() + index);
 	_users.erase(_users.begin() + (index - 1));
+	_index = -1;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -187,8 +191,9 @@ void	server::receive_data(size_t index)
 	if((ret = recv(_fds[index].fd, buf, sizeof(buf), 0)) <= 0)
 	{
 		if (ret < 0)
-		std::cerr << "recv() failed" << std::endl; 
-		return kill(NULL, getUser(_users[index]->getNickname()), "Communication error");
+			std::cerr << "recv() failed" << std::endl; 
+		return close_user(index, "QUIT");
+		// return kill(NULL, getUser(_users[index]->getNickname()), "Communication error"); // fais segfault si ctrl+c avc nc
 	}
 	if (ret >= 512) 
 	{
@@ -208,9 +213,12 @@ void	server::receive_data(size_t index)
 		else
 			first_auth(_users[index - 1]);
 	}
-	_users[index - 1]->setLastEvent(time(NULL));
-	if (_users[index - 1]->getLogLvl() == -1)
-		close_user(index, "QUIT");
+	if (_index != -1)
+	{
+		_users[index - 1]->setLastEvent(time(NULL));
+		if (_users[index - 1]->getLogLvl() == -1)
+			close_user(index, "QUIT");
+	}
 	return ;
 }
 
@@ -323,15 +331,12 @@ int	server::send_msg_to_user(const user * expeditor, const user * dest, const st
 		return 0;
 	}
 
-	std::string fmsg; 
-	if (expeditor->getNickname() != dest->getNickname())
-	{
-		if (chan_name == "")
-			fmsg = ":" + expeditor->getNickname() + " PRIVMSG " + dest->getNickname() + " :" + msg + "\r\n";
-		else
-			fmsg = ":" + expeditor->getNickname(isAnonymous) + " PRIVMSG " + chan_name + " :" + msg + "\r\n";
-	}
-	//one ne peut pas s'envoyer un message a sois meme?
+	std::string fmsg;
+
+	if (chan_name == "")
+		fmsg = ":" + expeditor->getNickname() + " PRIVMSG " + dest->getNickname() + " :" + msg + "\r\n";
+	else
+		fmsg = ":" + expeditor->getNickname(isAnonymous) + " PRIVMSG " + chan_name + " :" + msg + "\r\n";
 	return send(dest->getSock(), fmsg.c_str(), fmsg.size(), 0);
 }
 
@@ -351,7 +356,9 @@ int	server::send_msg_to_channel(const user * expeditor, const Channel * dest, co
 
 	for	(std::set<user*>::iterator it = userlist.begin(); it != userlist.end(); it++)
 	{
-		if (send_msg_to_user(expeditor, *it, msg, dest->getName(), true, dest->geta()) == -1)
+		if (expeditor == *it)
+			continue;
+		else if (send_msg_to_user(expeditor, *it, msg, dest->getName(), true, dest->geta()) == -1)
 			return -1;
 	}
 	return 0;
@@ -415,9 +422,7 @@ int 				server::getSock() const { return _socket.fd; }
 std::string 		server::getName() const { return _name; }
 int			 		server::getPort() const { return _port; }
 std::string 		server::getPassword() const { return _password; }
-std::string 		server::getIRCOp() const { return _ircOperator; }
 std::vector<user*>	server::getUsers() const { return _users; }
-void		 		server::setIRCOp(const std::string& sop) { _ircOperator = sop; }
 
 user *				server::getUser(const std::string & nickname) const
 {

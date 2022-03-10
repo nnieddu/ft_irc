@@ -33,4 +33,3 @@ void	Kill::execute()
 
 	return _serv->kill(_expeditor, _serv->getUser(*nick), *msg);
 }
-

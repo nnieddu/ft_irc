@@ -31,13 +31,10 @@ Interpret::Interpret(server * serv): _serv(serv)
 	_cmds_list["info"] = new Info(_serv);
 	_cmds_list["privmsg"] = new Privmsg(_serv);
 	_cmds_list["notice"] = new Notice(_serv);
-	_cmds_list["whois"] = new Whois(_serv);
+	_cmds_list["who"] = new Who(_serv);
 	_cmds_list["ping"] = new Ping(_serv);
 	_cmds_list["pong"] = new Pong(_serv);
 	_cmds_list["kill"] = new Kill(_serv);
-	// _cmds_list["who"] = new Who(_serv);
-	//// _cmds_list["stats"] = Stat(_serv); // a voir mais relou
-	//// _cmds_list["whowas"] = Whowas(_serv); // a voir mais relou
 }
 
 /*----------------------------------------------------------------------------*/
