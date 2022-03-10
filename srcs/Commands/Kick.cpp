@@ -55,7 +55,11 @@ void	Kick::execute()
 
 				_serv->remove_user_from(target, chan_list.front(), "KICK");
 
-				std::string kick = ":" + _expeditor->getNickname() + " KICK " + chan_list.front() + " " + target->getNickname() + ":" + (msg != NULL ? *msg : "") + "\r\n";
+				std::string kick = ":" + _expeditor->getNickname() + " KICK " + chan_list.front() + " " + target->getNickname();
+				if (msg)
+					kick += " : " + *msg + "\r\n";
+				else
+					kick += "\r\n";
 				for (std::set<user *>::iterator it(chan_userlist.begin()); it != chan_userlist.end(); it++)
 				{
 					send((*it)->getSock(), kick.c_str(), kick.length(), 0);
