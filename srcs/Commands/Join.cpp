@@ -36,15 +36,18 @@ void	Join::execute()
 	while (!lst.empty())
 	{
 		std::string	name(nameCaseIns(lst.front()));
-		if (name.find('#') != 0 && name.find('&') != 0 && name.find('+') != 0 && name.find('!') != 0)
+		if (name.find('#') != 0 && name.find('&') != 0 && name.find('+') != 0 && name.find("!!") != 0)
 		{
-			_serv->send_replies(_expeditor, name + "::No such channel (need a chan mask)", ERR_BADCHANMASK);
-			lst.erase(lst.begin());
-			continue ;
+			if (_serv->channels.find(name) == _serv->channels.end())
+			{
+				_serv->send_replies(_expeditor, name + " :No such channel (need a chan mask)", ERR_BADCHANMASK);
+				lst.erase(lst.begin());
+				continue ;
+			}
 		}
 		if (name.size() == 1)
 		{
-			_serv->send_replies(_expeditor, name + "::Need a channel name (at least one character)", ERR_BADCHANMASK);
+			_serv->send_replies(_expeditor, name + " :Need a channel name (at least one character)", ERR_BADCHANMASK);
 			lst.erase(lst.begin());
 			continue ;
 		}		
@@ -53,6 +56,8 @@ void	Join::execute()
 			_serv->send_replies(_expeditor, name + " :You have joined too many channels (10 max)", ERR_TOOMANYCHANNELS);
 			return ;
 		}
+		if (name.find("!!") == 0)
+			name.erase(0,1);
 		if (!_expeditor->isMember(name) && _serv->channels.find(name) == _serv->channels.end())
 		{
 			std::cout << "Channel : " << name << " created" << std::endl;
@@ -112,20 +117,17 @@ void	Join::execute()
 			}
 			msg = ":" + _expeditor->getNickname() + " JOIN :" + name + "\r\n";
 			send(_expeditor->getSock(), msg.c_str(), msg.length(), 0);
-			if (!_serv->channels[*channel]->getTopic().empty())
-				_serv->send_replies(_expeditor, (*channel) + " :" + _serv->channels[*channel]->getTopic(), RPL_TOPIC);
+			if (!_serv->channels[name]->getTopic().empty())
+				_serv->send_replies(_expeditor, name + " :" + _serv->channels[name]->getTopic(), RPL_TOPIC);
 			else
-				_serv->send_replies(_expeditor, (*channel) + " :No topic is set", RPL_NOTOPIC);
+				_serv->send_replies(_expeditor, name + " :No topic is set", RPL_NOTOPIC);
 			_serv->getChannel(name)->send_names_replies(_expeditor);
 			_serv->send_replies(_expeditor, name + " :End of names list", RPL_ENDOFNAMES);
 			_expeditor->join_channel(name, false);
 			_serv->channels[name]->addUser(*_expeditor);
 			if (_serv->getChannel(name)->isInvited(*_expeditor) == true)
-				_serv->getChannel(*channel)->remInvited(*_expeditor);
+				_serv->getChannel(name)->remInvited(*_expeditor);
 		}
 		lst.erase(lst.begin());
 	}
 }
-// add operator replies when created/promote
-// 474     ERR_BANNEDFROMCHAN
-// "<channel> :Cannot join channel (+b)"

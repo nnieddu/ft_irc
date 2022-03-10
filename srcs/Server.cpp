@@ -229,16 +229,23 @@ void	server::receive_data(size_t index)
 void	server::remove_user_from(user * usr, const std::string & name, const std::string & msg)
 {
 	std::string	str;
-
+	std::string quit;
+	
 	if (channels[name]->getUsers().find(usr) != channels[name]->getUsers().end())
 	{
 		if (msg == "QUIT")
 			str = " QUIT :disconnected";
-		else if (msg == "PART" || msg == "KICK")
+		if (msg == "PART" || msg == "KICK")
 			str = " " + msg + " " + name;
 		if (str.empty() == true)
-			str = msg;	
-		std::string quit = ":" + usr->getNickname() + str + "\r\n";
+			str = msg;
+		if (channels[name]->geta() == true)
+		{
+			str = " PART " + name;
+			quit = ":" + usr->getNickname(true) + str + "\r\n";
+		}
+		else
+			quit = ":" + usr->getNickname() + str + "\r\n";
 		for(std::set<user *>::iterator it = channels[name]->getUsers().begin(); it != channels[name]->getUsers().end(); ++it)
 		{
 			if (usr != *it)

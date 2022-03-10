@@ -44,7 +44,7 @@ runl : all
 	leaks -atExit -- ./$(NAME) 7005 password 
 
 runv : all
-	valgrind --leak-check=full --show-leak-kinds=all -s ./$(NAME) 7005 password
+	valgrind ./$(NAME) 7005 password
 #| cat -e
 
 clean :

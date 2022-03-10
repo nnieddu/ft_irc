@@ -214,23 +214,26 @@ void	user::pong()
 }
 
 /*----------------------------------------------------------------------------*/
-/*
-void	user::send_who_reply(const user * receiver) const
-{
-	std::string usersInChan;
-	std::set<user *>::iterator it;
 
-	for(it = this->getUsers().begin(); it != this->getUsers().end(); ++it)
+void	user::send_who_reply(const user * receiver, const Channel * chan) const
+{
+	bool		anonymous = false;
+	std::string	name = "*";
+	std::string info;
+
+	if (chan)
 	{
-		if ((*it)->isOperator(name) == true)
-			usersInChan += "@";
-		usersInChan += (*it)->getNickname() + " ";
+		anonymous = chan->geta();
+		name = chan->getName();
 	}
-	std::string replies = ":" + receiver->getUsername() +  " " + RPL_NAMREPLY + " " \
-		+ receiver->getNickname() + " " +  "= " + name + " :" + usersInChan + "\r\n";
+
+	info = getNickname(anonymous) + " " + getUsername(anonymous) + "@" + getHostname(anonymous) + " " + getRealname(anonymous);
+
+	std::string replies = ":" + receiver->getUsername() + " " + RPL_WHOREPLY + " " \
+		+ receiver->getNickname() + " = " + getNickname(anonymous) + " :" + info + "\r\n";
 
 	send(receiver->getSock(), replies.c_str(), replies.length(), 0);
-}*/
+}
 
 /*----------------------------------------------------------------------------*/
 
