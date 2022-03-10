@@ -21,7 +21,7 @@ chanCrea(NULL), rtime(time(NULL)), mod(n  + t) {
 	this->users.insert(&users);
 	id.clear();
 	topic.clear();
-	if (newName[0] == '!' && newName[1] == '!') {
+	if (newName[0] == '!') {
 		chanCrea = &users;
 
 		srand(time(NULL));
@@ -32,7 +32,6 @@ chanCrea(NULL), rtime(time(NULL)), mod(n  + t) {
 			else
 				id.push_back(static_cast<char>(random + 87));
 		}
-		name.erase(0, 1);
 	}
 }
 
