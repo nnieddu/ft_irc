@@ -21,6 +21,4 @@ void	Die::execute()
 		return _serv->send_replies(_expeditor, "DIE :You don't haver server operator privileges", ERR_NOPRIVILEGES);
 
 	_serv->_index = -2;
-	return ;
 }
-
