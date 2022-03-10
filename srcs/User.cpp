@@ -232,7 +232,7 @@ void	user::send_who_reply(const user * receiver, const Channel * chan) const
 		+ "H :0 " + getRealname(anonymous);
 
 	std::string replies = ":" + receiver->getUsername() +  " " + RPL_WHOREPLY + " " \
-		+ receiver->getNickname() + " WHO :" + info + "\r\n";
+		+ receiver->getNickname() + " " + info + "\r\n";
 
 	send(receiver->getSock(), replies.c_str(), replies.length(), 0);
 }
