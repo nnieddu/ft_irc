@@ -27,8 +27,10 @@ void Notice::execute()
 	if (!nick || !arg)
 		return ;
 
-	if (_serv->send_msg_to_user(_expeditor, _serv->getUser(*nick), *arg, "", false) == -1)
-			std::cerr << strerror(errno) << std::endl;
+	std::string fmsg;
 
-	return ;
+	fmsg = ":" + _expeditor->getNickname() + "(" + _expeditor->getUsername() + ") NOTICE " + _serv->getUser(*nick)->getNickname() + " " + *arg + "\r\n";
+	send(_serv->getUser(*nick)->getSock(), fmsg.c_str(), fmsg.size(), 0);
+	
+	return;
 }
