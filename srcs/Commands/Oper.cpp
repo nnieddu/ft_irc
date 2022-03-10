@@ -36,6 +36,7 @@ void Oper::execute()
 
 	_serv->getUser(*usr)->promoteServ();
 	_serv->send_replies(_expeditor, "You are now an operator", RPL_YOUREOPER);
+	_serv->send_replies(_expeditor, "o", RPL_UMODEIS);
 }
 
 /*

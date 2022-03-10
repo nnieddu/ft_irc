@@ -32,11 +32,12 @@ void Admin::execute()
 			{
 				if (x == 1)
 					_serv->send_replies(_expeditor, _serv->getName() + " :Administrative info", RPL_ADMINME);
-				_serv->send_replies(_expeditor, ":The IRC Operator of this server are " + (*it)->getNickname(), RPL_ADMINLOC1);
+				_serv->send_replies(_expeditor, ":The IRC Operator of this server is / are : [" + (*it)->getNickname() + "]", RPL_ADMINLOC1);
 				x--;
 			}
 		}
-		_serv->send_replies(_expeditor, _serv->getName() + " :No administrative info available", ERR_NOADMININFO);
+		if (x == 1)
+			_serv->send_replies(_expeditor, _serv->getName() + "(ircserv) :No administrative info available", ERR_NOADMININFO);
 		return ;
 	}
 	_serv->send_replies(_expeditor, *arg + " No such server", ERR_NOSUCHSERVER);
