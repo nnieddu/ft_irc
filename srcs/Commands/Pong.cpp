@@ -24,7 +24,7 @@ void Pong::execute()
 
 	if (!usr)
 	{
-		_serv->send_replies(_expeditor, ":No origin specified", ERR_NOORIGIN);
+		_serv->send_replies(_expeditor, " :No origin specified", ERR_NOORIGIN);
 		return ;
 	}
 	usr->erase(usr->begin());

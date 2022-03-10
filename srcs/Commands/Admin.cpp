@@ -23,13 +23,18 @@ void Admin::execute()
 
 	if (!arg || arg->compare(_serv->getName()) == 0 || arg->compare("ircserv") == 0)
 	{
-		if (!_serv->getIRCOp().empty())
+		int x = 1;
+		for(std::vector<user *>::iterator it = _serv->getUsers().begin(); it != _serv->getUsers().end(); ++it) //// Wtf
 		{
-			_serv->send_replies(_expeditor, _serv->getName() + " :Administrative info", RPL_ADMINME);
-			_serv->send_replies(_expeditor, ":The IRC Operator of this server is " + _serv->getIRCOp(), RPL_ADMINLOC1);
-			return ;
+			if ((*it)->isServOp() == true)
+			{
+				if (x == 1)
+					_serv->send_replies(_expeditor, _serv->getName() + " :Administrative info", RPL_ADMINME);
+				_serv->send_replies(_expeditor, ":The IRC Operator of this server are " + (*it)->getNickname(), RPL_ADMINLOC1);
+				x--;
+			}
 		}
-		_serv->send_replies(_expeditor, _serv->getName() + ":No administrative info available", ERR_NOADMININFO);
+		_serv->send_replies(_expeditor, _serv->getName() + " :No administrative info available", ERR_NOADMININFO);
 		return ;
 	}
 	_serv->send_replies(_expeditor, *arg + " No such server", ERR_NOSUCHSERVER);

@@ -28,7 +28,7 @@ SRCS	=	Cap.cpp		\
 			Version.cpp	\
 			Admin.cpp	\
 			Kill.cpp	\
-			Whois.cpp
+			Who.cpp
 
 INCS	=	../../incs/Server.hpp	\
 			../../incs/Channel.hpp	\

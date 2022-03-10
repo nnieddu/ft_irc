@@ -62,7 +62,6 @@ void	server::run()
 
 	std::vector<struct pollfd>::iterator	it;
 
-
 	for (;;)
 	{
 		if (!channels.empty())
@@ -191,8 +190,9 @@ void	server::receive_data(size_t index)
 	if((ret = recv(_fds[index].fd, buf, sizeof(buf), 0)) <= 0)
 	{
 		if (ret < 0)
-		std::cerr << "recv() failed" << std::endl; 
-		return kill(NULL, getUser(_users[index]->getNickname()), "Communication error");
+			std::cerr << "recv() failed" << std::endl; 
+		return close_user(index, "QUIT");
+		// return kill(NULL, getUser(_users[index]->getNickname()), "Communication error"); // fais segfault si ctrl+c avc nc
 	}
 	if (ret >= 512) 
 	{
@@ -421,9 +421,7 @@ int 				server::getSock() const { return _socket.fd; }
 std::string 		server::getName() const { return _name; }
 int			 		server::getPort() const { return _port; }
 std::string 		server::getPassword() const { return _password; }
-std::string 		server::getIRCOp() const { return _ircOperator; }
 std::vector<user*>	server::getUsers() const { return _users; }
-void		 		server::setIRCOp(const std::string& sop) { _ircOperator = sop; }
 
 user *				server::getUser(const std::string & nickname) const
 {
