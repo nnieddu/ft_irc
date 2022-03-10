@@ -6,6 +6,8 @@
 
 #include "Socket.hpp"
 
+class Channel;
+
 class user
 {
 	private:
@@ -87,7 +89,7 @@ class user
 		bool				getHasToPong() const;
 		void				pong();
 
-		void				send_who_reply(const user * receiver) const;
+		void				send_who_reply(const user *, const Channel *) const;
 
 		std::string							getNickname(bool = false) const;
 		std::string							getUsername(bool = false) const;
