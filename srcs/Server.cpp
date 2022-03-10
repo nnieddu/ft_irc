@@ -3,14 +3,14 @@
 /*----------------------------------------------------------------------------*/
 
 server::server(const int & port, const std::string & password)
-: _name("127.0.0.1"), _port(port), _password(password), _interpret(this)
+: _name("ircserv"), _port(port), _password(password), _interpret(this)
 {
 	if (_port <= 1023 || _port > 65535)
 		throw(std::invalid_argument(std::string("port number")));
 	if (_password.size() < 5 || _password.size() > 16)
 		throw(std::invalid_argument(std::string("password")));
 
-	_socket.server_socket(_port);
+	_hostname = _socket.server_socket(_port);
 
 	struct pollfd	serv_fd;
 	memset(&serv_fd, 0, sizeof(serv_fd));
@@ -429,6 +429,7 @@ bool		server::isUser(const std::string & nickname) const
 
 int 				server::getSock() const { return _socket.fd; }
 std::string 		server::getName() const { return _name; }
+std::string 		server::getHostname() const { return _hostname; }
 int			 		server::getPort() const { return _port; }
 std::string 		server::getPassword() const { return _password; }
 std::vector<user*>	server::getUsers() const { return _users; }

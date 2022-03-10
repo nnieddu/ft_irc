@@ -43,6 +43,7 @@ class server
 		server& operator=(const server& x);
 
 		std::string									_name;
+		std::string									_hostname;
 		int											_port;
 		std::string									_password;
 		Socket										_socket;
@@ -84,6 +85,7 @@ class server
 		bool 	isUser(const std::string&) const;
 
 		std::string			getName() const;
+		std::string			getHostname() const;
 		int					getPort() const;
 		std::string			getPassword() const;
 		std::vector<user*>	getUsers() const;
