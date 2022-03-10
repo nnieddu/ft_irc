@@ -169,8 +169,10 @@ int	server::kill(user * expeditor, user * target, const std::string & msg)
 		kill = ":" + _name + " KILL " + target->getNickname() + " :" + msg.c_str() + "\r\n";
 
 	send(target->getSock(), kill.c_str(), kill.length(), 0);
+
+	kill = "killed by " + expeditor->getNickname() + "(" + msg + ")";
 	
-	remove_user_from_channels(expeditor, target, kill);
+	remove_user_from_channels(target, kill);
 	delete target;
 	close(_fds[index].fd);
 	_fds.erase(_fds.begin() + index);
@@ -233,11 +235,13 @@ void	server::remove_user_from(user * usr, const std::string & name, const std::s
 	
 	if (channels[name]->getUsers().find(usr) != channels[name]->getUsers().end())
 	{
-		if (msg == "QUIT")
-			str = " QUIT :disconnected";
 		if (msg == "PART" || msg == "KICK")
 			str = " " + msg + " " + name;
-		if (str.empty() == true)
+		else if (msg == "QUIT")
+			str = " QUIT :disconnected";
+		else
+			str = " QUIT :" + msg;
+		if (str.empty() == true)	// Ça arrive quand ?
 			str = msg;
 		if (channels[name]->geta() == true)
 		{
@@ -261,31 +265,6 @@ void	server::remove_user_from(user * usr, const std::string & name, const std::s
 	}
 }
 
-void	server::remove_user_from(user * expeditor, user * target, const std::string & name, const std::string & msg)
-{
-	std::string kill;
-	if (target->isMember(name))
-	{
-		if (expeditor)
-			kill = ":" + expeditor->getNickname() + " KILL " + target->getNickname() + " " + name + " :" + msg.c_str() + "\r\n";
-		else
-			kill = ":" + _name + " KILL " + target->getNickname() + " :" + msg.c_str() + "\r\n";
-
-		for(std::set<user *>::iterator it = channels[name]->getUsers().begin(); it != channels[name]->getUsers().end(); ++it)
-		{
-			if (target != *it)
-				send((*it)->getSock(), msg.c_str(), msg.length(), 0);
-		}
-		channels[name]->removeUser(*target);
-		target->leave_channel(name);
-		if (channels[name]->getUsers().empty())
-		{	
-			delete channels[name];
-			channels.erase(name);
-		}
-	}
-}
-
 /*----------------------------------------------------------------------------*/
 
 void	server::remove_user_from_channels(user * usr, const std::string & msg)
@@ -296,17 +275,6 @@ void	server::remove_user_from_channels(user * usr, const std::string & msg)
 	{
 		name = usr->getChannels().begin()->first;
 		remove_user_from(usr, name, msg);
-	}
-}
-
-void	server::remove_user_from_channels(user * expeditor, user * target, const std::string & msg)
-{
-	std::string name;
-
-	while (!(target->getChannels().empty()))
-	{
-		name = target->getChannels().begin()->first;
-		remove_user_from(expeditor, target, name, msg);
 	}
 }
 
