@@ -3,7 +3,7 @@
 /*----------------------------------------------------------------------------*/
 
 server::server(const int & port, const std::string & password)
-: _name("ircserv"), _port(port), _password(password), _interpret(this)
+: _name("ircserv"), _port(port), _password(password), _interpret(this), _index(0)
 {
 	if (_port <= 1023 || _port > 65535)
 		throw(std::invalid_argument(std::string("port number")));
@@ -62,7 +62,7 @@ void	server::run()
 
 	std::vector<struct pollfd>::iterator	it;
 
-	for (;;)
+	for(;;)
 	{
 		if (!channels.empty())
 			check_channels(time(NULL));
@@ -80,6 +80,8 @@ void	server::run()
 					receive_data(_index);
 				if (_index == -1)
 					break ;
+				if (_index == -2)
+					return ;
 			}
 			else if (_index != 0 && ping(_users[_index - 1], _index))
 				break;

@@ -227,3 +227,12 @@ class Time : public Command
 		Time(server*);
 		virtual void execute();
 };
+
+class Die : public Command
+{
+	public:
+		virtual ~Die();
+		Die&	operator=(const Die&);
+		Die(server*);
+		virtual void execute();
+};

@@ -37,6 +37,7 @@ Interpret::Interpret(server * serv): _serv(serv)
 	_cmds_list["pong"] = new Pong(_serv);
 	_cmds_list["kill"] = new Kill(_serv);
 	_cmds_list["away"] = new Away(_serv);
+	_cmds_list["die"] = new Die(_serv);
 }
 
 /*----------------------------------------------------------------------------*/
