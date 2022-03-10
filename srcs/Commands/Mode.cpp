@@ -224,7 +224,6 @@ void Mode::modeUser(user& usr, std::string &mod, std::string &arg, std::string &
 	int		addRule = true;
 
 	if (_expeditor->isServOp() || _expeditor == &usr) {
-		std::cerr << "Hi" << std::endl;
 		while (!mod.empty()) {
 			if (mod[0] == '+')
 				addRule = true;
