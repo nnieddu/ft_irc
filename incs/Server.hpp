@@ -24,7 +24,7 @@
 #include "NumericReplies.hpp"
 #include "Channel.hpp"
 
-#define INACTIVE_SEC	150
+#define INACTIVE_SEC	10
 
 class server
 {
