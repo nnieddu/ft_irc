@@ -216,7 +216,7 @@ void	user::pong()
 
 /*----------------------------------------------------------------------------*/
 
-void	user::send_who_reply(const user * receiver, const Channel * chan) const
+void	user::send_who_reply(const user * receiver, const Channel * chan, const std::string & servname) const
 {
 	bool		anonymous = false;
 	std::string	name = "*";
@@ -228,10 +228,10 @@ void	user::send_who_reply(const user * receiver, const Channel * chan) const
 		name = chan->getName();
 	}
 
-	info = name + " " + getUsername(anonymous) + " " + getHostname(anonymous) + " 127.0.0.1 " + getNickname(anonymous) \
+	info = name + " " + getUsername(anonymous) + " " + getHostname(anonymous) + " " + servname + " " + getNickname(anonymous) \
 		+ " H :0 " + getRealname(anonymous);
 
-	std::string replies = ":" + receiver->getUsername() +  " " + RPL_WHOREPLY + " " \
+	std::string replies = ":" + servname +  " " + RPL_WHOREPLY + " " \
 		+ receiver->getNickname() + " " + info + "\r\n";
 
 	send(receiver->getSock(), replies.c_str(), replies.length(), 0);
