@@ -161,7 +161,6 @@ void	server::kill(user * expeditor, user * target, const std::string & msg)
 	while (index < _fds.size() && _fds[index].fd != target->getSock())
 		index++;
 
-	remove_user_from_channels(expeditor, target, msg);
 	std::cout << target->getNickname() << " killed" << std::endl;
 
 	if (expeditor)
@@ -170,6 +169,8 @@ void	server::kill(user * expeditor, user * target, const std::string & msg)
 		kill = ":" + _name + " KILL " + target->getNickname() + " :" + msg.c_str() + "\r\n";
 
 	send(target->getSock(), kill.c_str(), kill.length(), 0);
+	
+	remove_user_from_channels(expeditor, target, kill);
 	delete target;
 	close(_fds[index].fd);
 	_fds.erase(_fds.begin() + index);
