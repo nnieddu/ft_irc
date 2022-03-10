@@ -229,7 +229,7 @@ void	user::send_who_reply(const user * receiver, const Channel * chan) const
 	}
 
 	info = name + " " + getUsername(anonymous) + " " + getHostname(anonymous) + " 127.0.0.1 " + getNickname(anonymous) \
-		+ "H :0 " + getRealname(anonymous);
+		+ " H :0 " + getRealname(anonymous);
 
 	std::string replies = ":" + receiver->getUsername() +  " " + RPL_WHOREPLY + " " \
 		+ receiver->getNickname() + " " + info + "\r\n";
