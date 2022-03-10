@@ -112,7 +112,10 @@ void	Join::execute()
 			std::set<user *>::iterator it;
 			for(it = _serv->channels[name]->getUsers().begin(); it != _serv->channels[name]->getUsers().end(); ++it)
 			{
-				msg = ":" + _expeditor->getNickname() + " JOIN :" + name + "\r\n";
+				if (_serv->channels[name]->geta() == true)
+					msg = ":" + _expeditor->getNickname(true) + " JOIN :" + name + "\r\n";
+				else
+					msg = ":" + _expeditor->getNickname() + " JOIN :" + name + "\r\n";
 				send((*it)->getSock(), msg.c_str(), msg.length(), 0);
 			}
 			msg = ":" + _expeditor->getNickname() + " JOIN :" + name + "\r\n";
