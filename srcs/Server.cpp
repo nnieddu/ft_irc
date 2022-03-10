@@ -491,11 +491,11 @@ void	server::welcomeNewUser(user * usr)
 {
 	if (usr->getisLogged() == true)
 	{
-		std::string str = ":" + usr->getUsername() +  " " + RPL_WELCOME + " " + usr->getNickname() + \
+		std::string str = ":" + usr->getUsername() + "@" + usr->getHostname() +  " " + RPL_WELCOME + " " + usr->getNickname() + \
 			" Welcome to the Internet Relay Network " + usr->getNickname() + "\r\n";
 		send(usr->getSock(), str.c_str(), str.length(), 0);
 		
-		str = ":" + usr->getUsername() +  " " + RPL_YOURHOST + " Your host is ircserv (" + this->getName() + \
+		str = ":" + usr->getUsername() + "@" + usr->getHostname() +  " " + RPL_YOURHOST + " Your host is ircserv (" + this->getName() + \
 			") running on port " + ft_itoa(getPort()) + "\r\n";
 		send(usr->getSock(), str.c_str(), str.length(), 0);
 

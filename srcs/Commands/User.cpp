@@ -37,7 +37,7 @@ void User::execute()
 	else if (_expeditor->getisLogged() != true && _expeditor->getLogLvl() == 2)
 	{
 		// _expeditor->setUsername(*userName);
-		_expeditor->setUsername(*userName + "@" + _expeditor->getHostname());
+		_expeditor->setUsername(*userName);
 		_expeditor->setRealname(*rlName);
 		if (*mode == "8")
 			_expeditor->setInvisible();
