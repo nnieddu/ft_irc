@@ -14,6 +14,7 @@ Part & Part::operator=(const Part & x)
 Part::Part(server * serv):Command(serv)
 {
 	_args[CHANNEL].isNeeded = true;
+	_args[MESSAGE].isNeeded = true;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -21,6 +22,8 @@ Part::Part(server * serv):Command(serv)
 void Part::execute()
 {
 	std::string	*		channel = _args[CHANNEL].arg;
+	std::string	*		arg = _args[MESSAGE].arg;
+
 
 	if (!channel)
 	{
@@ -29,6 +32,7 @@ void Part::execute()
 	}
 
 	std::deque<std::string> list = _args[CHANNEL].parseList();
+	std::string quit;
 
 	while (!list.empty())
 	{
@@ -47,9 +51,15 @@ void Part::execute()
 			list.pop_front();
 			continue ;
 		}
-		std::string quit = ":" + _expeditor->getNickname() + " PART " + *it + "\r\n";
+		if (arg)
+			quit = ":" + _expeditor->getNickname() + " PART " + *it + " " + *arg + "\r\n";
+		else
+			quit = ":" + _expeditor->getNickname() + " PART " + *it + "\r\n";
 		send(_expeditor->getSock(), quit.c_str(), quit.length(), 0);
-		_serv->remove_user_from(_expeditor, *it, "PART");
+		if (arg)
+			_serv->remove_user_from(_expeditor, *it, " PART " + *it + " " + *arg);
+		else
+			_serv->remove_user_from(_expeditor, *it, "PART");
 		list.pop_front();
 	}
 	return ;

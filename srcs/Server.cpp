@@ -246,6 +246,8 @@ void	server::remove_user_from(user * usr, const std::string & name, const std::s
 			str = " QUIT :" + msg;
 		if (str.empty() == true)	// Ça arrive quand ?
 			str = msg;
+		if (msg.find("PART") && msg.find(name))
+			str = msg;	
 		if (channels[name]->geta() == true)
 		{
 			str = " PART " + name;
