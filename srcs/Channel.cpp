@@ -139,7 +139,6 @@ void	Channel::send_names_replies(const user * receiver) const
 	{
 		if (!this->geta())
 		{
-			std::cout <<"SANED NAME REPLIES\n\n";
 			if ((*it)->isOperator(name))
 				usersInChan += "@";
 			usersInChan += (*it)->getNickname() + " ";
