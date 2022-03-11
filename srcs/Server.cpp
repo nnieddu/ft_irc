@@ -141,7 +141,6 @@ void server::accept_user()
 
 	nickname << "Guest" << new_pollfd.fd;
 	username << "Username" << new_pollfd.fd;
-	std::cout << "New incoming connection - " << nickname.str()<< std::endl;
 	std::string hostname = inet_ntoa(reinterpret_cast<sockaddr_in*>(&address)->sin_addr);
 	user *new_user = new user(hostname, nickname.str(), username.str(), Socket(new_pollfd.fd, address, len), false);
 	_users.push_back(new_user);
@@ -154,7 +153,6 @@ void	server::close_user(size_t index, const std::string & msg)
 {
 	std::vector<user*>::iterator it = (_users.begin() + (index - 1));
 	remove_user_from_channels(*it, msg);
-	std::cout << (*it)->getNickname() << " deconnexion" << std::endl; 
 	delete *it;
 	close(_fds[index].fd);
 	_fds.erase(_fds.begin() + index);
@@ -168,8 +166,6 @@ int	server::kill(user * expeditor, user * target, const std::string & msg)
 
 	while (index < _fds.size() && _fds[index].fd != target->getSock())
 		index++;
-
-	std::cout << target->getNickname() << " killed" << std::endl;
 
 	if (expeditor)
 		kill = ":" + expeditor->getNickname() + " KILL " + target->getNickname() + " :" + msg + "\r\n";
@@ -218,8 +214,6 @@ void	server::receive_data(size_t index)
 	_users[index - 1]->buf += tmp;
 	if (tmp.find('\n') != std::string::npos)
 	{
-		std::cout << _users[index - 1]->getNickname() << " send : [" <<  _users[index - 1]->buf << "]" << std::endl;
-
 		if (_users[index - 1]->getisLogged())
 			_interpret.treat_user_buffer(*_users[index - 1]);
 		else

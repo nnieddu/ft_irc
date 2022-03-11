@@ -63,7 +63,6 @@ void	Join::execute()
 			name.erase(0,1);
 		if (!_expeditor->isMember(name) && _serv->channels.find(name) == _serv->channels.end())
 		{
-			std::cout << "Channel : " << name << " created" << std::endl;
 			_serv->channels[name] = new Channel(*_expeditor, name);
 			_serv->channels[name]->addUser(*_expeditor);
 			if (name[0] != '+')
