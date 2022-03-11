@@ -54,7 +54,6 @@ class Channel {
 		user*				chanCrea;
 		std::set<user *>	users;
 		std::set<user *>	users_invited;
-		bool				hasop;
 		std::time_t			rtime;
 
 	public:
@@ -85,8 +84,9 @@ class Channel {
 
 		void 	send_names_replies(const user*) const;
 
-		bool	mustAddOp(const std::time_t &) const;
-		void	rdmOp(const std::time_t &);
+		bool	hasOp(const std::time_t &);
+		bool	mustAddOp(const std::time_t &);
+		void	selectRandomOp(const std::string &);
 
 		bool	geta() const;
 		bool	geti() const;

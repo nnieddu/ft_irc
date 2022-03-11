@@ -384,7 +384,7 @@ void	server::check_channels(const std::time_t & now)
 	for (std::map<std::string, Channel* >::iterator	it(channels.begin()); it != channels.end(); it++)
 	{
 		if (it->second->getr() && it->second->mustAddOp(now))
-			it->second->rdmOp(now);
+			it->second->selectRandomOp(_name);
 	}
 }
 

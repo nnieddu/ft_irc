@@ -15,9 +15,9 @@
 
 /*----------------------------------------------------------------------------*/
 
-Channel::Channel(user &users, std::string &newName) : users(), users_invited(), hasop(true), id(),
+Channel::Channel(user &users, std::string &newName) : users(), users_invited(), id(),
 name(nameCaseIns(newName)), topic(), password("password"), limit_user(0),
-chanCrea(NULL), rtime(time(NULL)), mod(n  + t) {
+chanCrea(NULL), rtime(0), mod(n  + t) {
 	this->users.insert(&users);
 	id.clear();
 	topic.clear();
@@ -77,15 +77,7 @@ void Channel::addUser(user &newUser) {
 	users.insert(&newUser);
 }
 
-void Channel::removeUser(user &remUser)
-{
-	if (remUser.isOperator(name))
-	{
-		hasop = false;
-		for (std::set<user*>::iterator it(users.begin()); !hasop && it != users.end(); it++)
-			hasop = (*it)->isOperator(name);
-		rtime = time(NULL);
-	}
+void Channel::removeUser(user &remUser){
 	users.erase(users.find(&remUser));
 }
 
@@ -160,19 +152,40 @@ void	Channel::send_names_replies(const user * receiver) const
 
 /*----------------------------------------------------------------------------*/
 
-
-bool	Channel::mustAddOp(const std::time_t & now) const
+bool	Channel::hasOp(const std::time_t & now)
 {
-	return !hasop && difftime(now, rtime) > RFLAG_TIME_SEC;
+	for (std::set<user*>::iterator it(users.begin()); it != users.end(); it++)
+	{
+		if ((*it)->isOperator(name))
+		{
+			rtime = 0;
+			return true;
+		}
+	}
+	if (rtime == 0)
+		rtime = now;
+	return false;
 }
 
-void	Channel::rdmOp(const std::time_t &)
+bool	Channel::mustAddOp(const std::time_t & now)
+{
+	return hasOp(now) == false && difftime(now, rtime) > RFLAG_TIME_SEC;
+}
+
+void	Channel::selectRandomOp(const std::string & servname)
 {
 	std::set<user*>::iterator	it(users.begin());
+	std::string					reply;
 
 	for (size_t	index(std::rand() % users.size()); index > 0; index--)
 		it++;
+
+	reply = ":" + servname + " MODE " + name + " +o :" + (*it)->getNickname() + "\n\r";
 	(*it)->promote(name);
+
+	for (it = users.begin(); it != users.end(); it++)
+		send((*it)->getSock(), reply.c_str(), reply.size(), 0);
+	return;
 }
 
 /*----------------------------------------------------------------------------*/
