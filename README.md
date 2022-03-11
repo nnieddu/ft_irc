@@ -30,28 +30,32 @@ https://fr.wikipedia.org/wiki/Aide:IRC/commandes
 apt-get install weechat-curses weechat-plugins 
 ```
 ```
-/server add <NAME> 127.0.01/<PORT>
+/server add <NAME> 127.0.0.1/<PORT>
+or
+/server add <NAME> 0.0.0.0/<PORT>
+and
 /connect <NAME> -password=<PASWORD>
 ```
 
-netcat testing :
+##### netcat testing :
 ```
 nc 127.0.01 <PORT>
 ```
-### Docs :
-#### RFC 1459 :
+
+```
+PASS password
+NICK test
+USER test 0 * :testing name
+```
+
+### Docs / Useful infos:
+
 ##### Clients
 A client is anything connecting to a server that is not another server.   
 Each client is distinguished from other clients by a unique nickname having a maximum length of nine (9) characters.  
 
 ##### Operators
 A special class of clients (operators) who's allowed to perform general maintenance functions on the network.  
-  
-##### Server
-all servers must have the following information about all clients: 
-- the real name of the host that the client is running on, 
-- the username of the client on that host, 
-- and the server to which the client is connected.
    
 ##### Channels 
 A channel is a named group of one or more clients which will all receive messages addressed to that channel.  
@@ -59,6 +63,7 @@ The channel is created implicitly when the first client joins it, and the channe
 While channel exists, any client can reference the channel using the name of the channel.  
   
 Channels names are strings (beginning with a '&' or '#' character) of length up to 200 characters. Apart from the the requirement that the first character being either '&' or '#'; the only restriction on a channel name is that it may not contain any spaces (' '), a control G (^G or ASCII 7), or a comma (',' which is used as a list item separator by the protocol).
+
 ###### Channel Operators
 The channel operator (also referred to as a "chop" or "chanop") on a given channel is considered to 'own' that channel.
 A channel operator is identified by the '@' symbol next to their nickname whenever it is associated with a channel (ie replies to the NAMES, WHO and WHOIS commands).
@@ -69,7 +74,7 @@ The commands which may only be used by channel operators are:
 - TOPIC   - Change the channel topic in a mode +t channel
    
 	
-### RFC needs commands : ( [4. Message details](https://www.rfcreader.com/#rfc1459_line568) )
+#### RFC commands :
 | command | params | description |
 |---|---|---|
 | PASS | `<password>` | used to set up a 'password connection'. a password must be set before any attempt. |
@@ -78,7 +83,7 @@ The commands which may only be used by channel operators are:
 | OPER | `<user>` `<password>` | used to take operator rights. parameters are used to identify the user. |
 | QUIT | `[<quit message>]` | used to terminate the connection to the server. the server should end the connection with the client when it sees the sent message. |
 | JOIN | `<channel>{,<channel>}` `[<key>{,<key>}]` | used by the client to enter the channel. if a password is set, it must be correct. when users enter a channel, they will receive a notification about all users on the channel. if there was no group before, then the group is created. |
-| PART | `<channel>{,<channel>}` | used by the user to leave the channels that he will specify in the parameters. |
+| PART | `<channel>{,<channel>}`, `<message>`]| used by the user to leave the channels that he will specify in the parameters. |
 | MODE | | . |
 | TOPIC | `<channel>` `[<topic>]` | used to edit or view a channel topic. the channel topic will remain the same unless a new topic is set. |
 | NAMES | `[<channel>{,<channel>}]` | used by a user can get a list of all users in the channel. |
@@ -91,21 +96,17 @@ The commands which may only be used by channel operators are:
 | PRIVMSG | `<receiver>{,<receiver>}` `<text to be sent>` | used for private correspondence between users. also exists the ability to send messages to channels. |
 | NOTICE | `<nickname>` `<text>` | works the same as PRIVMSG, except that no response is sent in response to a message. |
 | WHO | `<name> [<o>]`| . |
-| WHOIS | | . |
-| WHOWAS | | . |
 | KILL | `<user>` `<comment>` | disconnects the user from the server. |
+| DIE | | Shutdown the server. (need irc operator right) |
+| AWAY | | Set user mode 'away' with a message. |
 | PING / PONG | `<server1>` `[<server2>]` | used to check for client activity on the other end of the connection. this message is sent at regular intervals unless other activity is noticed from the connection. if the client does not send PONG in response to PING, the connection is closed. |
 
-
-### Useful infos :
 ##### Ports :
 1-65535 are available, and ports in range 1-1023 are the privileged ones: an application needs to be run as root in order to listen to these ports.
 
-Check prefix etc : RFC 2.3 Messages
-
 #### Modes : 
-4.2.3.2 User modes
-Parameters: <nickname> {[+|-]|i|w|s|o}
+###### User modes
+Parameters: <nickname> {[+|-]|[flag]}
 
 The user MODEs are typically changes which affect either how the
 client is seen by others or what 'extra' messages the client is sent.
@@ -113,25 +114,24 @@ A user MODE command may only be accepted if both the sender of the
 message and the nickname given as a parameter are both the same.
 
 The available modes are as follows:
-
+	a - marks a users as away;
 	i - marks a users as invisible;
-	s - marks a user for receipt of server notices;
-	w - user receives wallops;
 	o - operator flag.
+	w - user receives wallops;
+	r - restricted mode (can't change nickname and nor make use of the channel operator status)
 
-4.2.3.1 Channel modes
-Parameters: <channel> {[+|-]|o|p|s|i|t|n|b|v} [<limit>] [<user>] [<ban mask>]
-
+###### Channel modes
+Parameters: <channel> {[+|-]|[flag]} [<limit>] [<user>]
 The various modes available for channels are as follows:
 
+	a - made a channel and is users Anonymous;
+	i - invite-only channel flag;
+	k - set a channel key (password).
+	l - set the user limit to channel;
+	m - moderated channel;
+	n - no messages to channel from clients on the outside;
 	o - give/take channel operator privileges;
 	p - private channel flag;
-	s - secret channel flag;
-	i - invite-only channel flag;
 	t - topic settable by channel operator only flag;
-	n - no messages to channel from clients on the outside;
-	m - moderated channel;
-	l - set the user limit to channel;
-	b - set a ban mask to keep users out;
-	v - give/take the ability to speak on a moderated channel;
-	k - set a channel key (password).
+	r - choose random channel after a certain amount of time if the last one left.
+	v - give/take the ability to speak on a moderated ('m') channel;

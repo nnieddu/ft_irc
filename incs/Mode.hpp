@@ -16,6 +16,7 @@ class Mode : public Command {
 		void	modeUser(user&, std::string&, std::string&, std::string&);
 		static std::string	receivModeIs(Channel&) ;
 		static std::string	receivModeIs(user&) ;
+		void 	anonMode(bool onOff, Channel&) const;
 
 	public:
 

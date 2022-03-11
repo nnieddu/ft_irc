@@ -25,8 +25,6 @@
 `n`	mode channel, les personnes exterieur au channel ne peuvent pas envoyer de
 	messages sur le channel qui a ce flag de mis
 
-`q`	pas compris
-
 `p` mode channel, channel is ommited from command WHOIS
 
 `s` obsolete donc pas a faire
@@ -41,30 +39,3 @@
 
 `l`	mode channel, si set, limite le nombre d'utilisateurs sur un channel,
 	une fois la limite atteinte, JOIN ne peut plus permetre les utilisateur de JOIN
-
-`b`, `e`, `I` pas gerer pour cause d'usage de wildcard
-
-	for (;;)
-	{
-		if (!channels.empty())
-			check_channels(time(NULL));
-		it = _fds.begin();
-		if (poll(&(*it), _fds.size(), 1) < 0)
-			ft_exit(0);
-		size_t nfd = _fds.size();
-		for (size_t _index = 0; _index < nfd; _index++)
-		{
-			if((_fds[_index].revents & POLLIN) == POLLIN)
-			{
-				if (_index == 0)
-					accept_user();
-				else
-					receive_data(_index);
-				if (_index == -1)
-					break ;
-			}
-			else if (_index != 0)
-				ping(_users[_index - 1], _index);
-		}
-	}
-}

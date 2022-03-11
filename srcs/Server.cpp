@@ -484,8 +484,8 @@ void	server::welcomeNewUser(user * usr)
 			_creation_date.erase(_creation_date.size() - 1, _creation_date.size()) + "\r\n";
 		send(usr->getSock(), str.c_str(), str.length(), 0);
 
-		str = ":" + usr->getUsername() + "@" + usr->getHostname() + " " + RPL_MYINFO + " [iov] User MODE and [ailtrmnkpo] Channel MODE are available\r\n";
-		send(usr->getSock(), str.c_str(), str.length(), 0);	
+		str = ":" + usr->getUsername() + "@" + usr->getHostname() + " " + RPL_MYINFO + " [aiowr] User MODE and [aiklmnoprtv] Channel MODE are available\r\n";
+		send(usr->getSock(), str.c_str(), str.length(), 0);
 
 	}
 }
