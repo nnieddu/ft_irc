@@ -31,7 +31,7 @@ void Nick::execute()
 		|| !arg->find(')') || !arg->find('#') || !arg->find('~') || !arg->find('\'') || !arg->find(',') 
 			|| !arg->find('.') || !arg->find('$') || !arg->find('%') || !arg->find('*') || !arg->find('+')
 				|| !arg->find('=') || !arg->find(':') || !arg->find(';') || !arg->find('\"') || !arg->find('<') 
-					|| !arg->find('>') || !arg->find('/'))
+					|| !arg->find('>') || !arg->find('/') || !arg->find('&') )
 	{
 		_serv->send_replies(_expeditor, " :Erroneus nickname", ERR_ERRONEUSNICKNAME);
 		return ;
