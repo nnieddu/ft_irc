@@ -198,8 +198,6 @@ void	server::receive_data(size_t index)
 	memset(&buf, 0, sizeof(buf));
 	if((ret = recv(_fds[index].fd, buf, sizeof(buf), 0)) <= 0)
 	{
-		if (ret < 0)
-			std::cerr << "recv() failed" << std::endl; 
 		kill(NULL, getUser(_users[index - 1]->getNickname()), "Communication error");
 		return ;
 	}
