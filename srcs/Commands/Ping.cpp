@@ -27,7 +27,7 @@ void Ping::execute()
 		_serv->send_replies(_expeditor, " :No origin specified", ERR_NOORIGIN);
 		return ;
 	}
-	if (arg->compare(_serv->getName()) != 0)
+	if (arg->compare(_serv->getHostname()) != 0 && arg->compare(_expeditor->getHostname()) != 0)
 		_serv->send_replies(_expeditor, *arg + " :No such server", ERR_NOSUCHSERVER);
 	else
 	{

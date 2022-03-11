@@ -52,7 +52,8 @@ class server
 		std::vector<user*>							_users;
 
 	public:
-		size_t	 _index;
+		size_t		 _index;
+		std::string	_creation_date;
 
 		std::map<std::string, Channel* > channels;
 

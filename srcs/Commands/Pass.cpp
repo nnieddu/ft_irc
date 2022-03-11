@@ -21,8 +21,6 @@ Pass::Pass(server * serv):Command(serv)
 void Pass::execute()
 {
 	std::string	*	pass = _args[PASS].arg;
-	// if (usr->isRegister == true) // voir si on garde un historic pas sur de capter voir 4.1.1
-	// 	 _serv->send_replies(usr, NULL, ERR_ALREADYREGISTRED);
 	if (!pass)
 	{
 		_serv->send_replies(_expeditor, "PASS :Not enough parameters", ERR_NEEDMOREPARAMS);
@@ -30,7 +28,7 @@ void Pass::execute()
 	}
 	else if (pass->compare(_serv->getPassword()) != 0)
 	{
-		_serv->send_replies(_expeditor, ":Password incorrect", ERR_PASSWDMISMATCH); // pas dans la rfc au loggin maybe a remove
+		_serv->send_replies(_expeditor, ":Password incorrect", ERR_PASSWDMISMATCH);
 		return ;
 	}
 	if (_expeditor->getisLogged() == false && _expeditor->getLogLvl() == 0)

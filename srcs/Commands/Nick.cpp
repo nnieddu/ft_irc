@@ -27,7 +27,11 @@ void Nick::execute()
 		_serv->send_replies(_expeditor, " :No nickname given", ERR_NONICKNAMEGIVEN);
 		return ;
 	}
-	if (*arg == "anonymous" || arg->size() > 9) //// check char spe/grammar protocol rfc
+	if (*arg == "anonymous" || arg->size() > 9 || !arg->find('?') || !arg->find('!') || !arg->find('(') 
+		|| !arg->find(')') || !arg->find('#') || !arg->find('~') || !arg->find('\'') || !arg->find(',') 
+			|| !arg->find('.') || !arg->find('$') || !arg->find('%') || !arg->find('*') || !arg->find('+')
+				|| !arg->find('=') || !arg->find(':') || !arg->find(';') || !arg->find('\"') || !arg->find('<') 
+					|| !arg->find('>') || !arg->find('/'))
 	{
 		_serv->send_replies(_expeditor, " :Erroneus nickname", ERR_ERRONEUSNICKNAME);
 		return ;

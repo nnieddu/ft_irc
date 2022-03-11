@@ -19,6 +19,12 @@ server::server(const int & port, const std::string & password)
 
 	_fds.push_back(serv_fd);
 	srand(time(NULL));
+
+	time_t now = time(0);
+	std::string time = ctime(&now);
+	tm *gmtm = gmtime(&now);
+	gmtm->tm_hour++;
+	_creation_date = asctime(gmtm);	
 }
 
 /*----------------------------------------------------------------------------*/
@@ -240,14 +246,12 @@ void	server::remove_user_from(user * usr, const std::string & name, const std::s
 	{
 		if (msg == "PART" || msg == "KICK")
 			str = " " + msg + " " + name;
-		else if (msg == "QUIT")
+		if (msg.find("PART") && msg.find(name) || msg.find("killed"))
+			str = msg;
+		if (msg == "QUIT")
 			str = " QUIT :disconnected";
 		else
 			str = " QUIT :" + msg;
-		if (str.empty() == true)	// Ça arrive quand ?
-			str = msg;
-		if (msg.find("PART") && msg.find(name))
-			str = msg;	
 		if (channels[name]->geta() == true)
 		{
 			str = " PART " + name;
@@ -464,18 +468,26 @@ void	server::welcomeNewUser(user * usr)
 {
 	if (usr->getisLogged() == true)
 	{
+		time_t now = time(0);
+		std::string time = ctime(&now);
+		tm *gmtm = gmtime(&now);
+		gmtm->tm_hour++;
+		_creation_date = asctime(gmtm);	
+
 		std::string str = ":" + usr->getUsername() + "@" + usr->getHostname() +  " " + RPL_WELCOME + " " + usr->getNickname() + \
 			" Welcome to the Internet Relay Network " + usr->getNickname() + "\r\n";
 		send(usr->getSock(), str.c_str(), str.length(), 0);
 		
-		str = ":" + usr->getUsername() + "@" + usr->getHostname() +  " " + RPL_YOURHOST + " Your host is ircserv (" + this->getName() + \
-			") running on port " + ft_itoa(getPort()) + "\r\n";
+		str = ":" + usr->getUsername() + "@" + usr->getHostname() +  " " + RPL_YOURHOST + " Your host is " + this->getName() + \
+			" running on port " + ft_itoa(getPort()) + "\r\n";
 		send(usr->getSock(), str.c_str(), str.length(), 0);
 
-		// str = ":" + usr->getUsername() +  " " + RPL_CREATED + " This server was created " + "" + "\r\n"; ////
-		// send(usr->getSock(), str.c_str(), str.length(), 0);
+		str = ":" + usr->getUsername() + "@" + usr->getHostname() +  " " + RPL_CREATED + " This server was created " + \
+			_creation_date.erase(_creation_date.size() - 1, _creation_date.size()) + "\r\n";
+		send(usr->getSock(), str.c_str(), str.length(), 0);
 
-		// str = ":" + usr->getUsername() +  " " + RPL_MYINFO + "ircserv has " "\r\n"; ////
-		// send(usr->getSock(), str.c_str(), str.length(), 0);
+		str = ":" + usr->getUsername() + "@" + usr->getHostname() + " " + RPL_MYINFO + " [iov] User MODE and [ailtrmnkpo] Channel MODE are available\r\n";
+		send(usr->getSock(), str.c_str(), str.length(), 0);	
+
 	}
 }

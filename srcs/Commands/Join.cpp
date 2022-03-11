@@ -24,6 +24,7 @@ void	Join::execute()
 	std::string	*			channel = _args[CHANNEL].arg;
 	std::string	*			keys = _args[PASS].arg;
 	std::deque<std::string>	lst;
+	std::deque<std::string>	lst_keys;
 
 	if (!channel)
 	{
@@ -32,6 +33,8 @@ void	Join::execute()
 	}
 
 	lst = _args[CHANNEL].parseList();
+	if (keys)
+		lst_keys = _args[PASS].parseList();
 
 	while (!lst.empty())
 	{
@@ -88,8 +91,6 @@ void	Join::execute()
 				}					
 				else
 				{
-					std::deque<std::string>	lst_keys;
-					lst_keys = _args[PASS].parseList();
 					std::string	key(nameCaseIns(lst_keys.front()));
 					if (_serv->getChannel(name)->getPass() != key)
 					{
@@ -112,10 +113,10 @@ void	Join::execute()
 			std::set<user *>::iterator it;
 			for(it = _serv->channels[name]->getUsers().begin(); it != _serv->channels[name]->getUsers().end(); ++it)
 			{
-				if (_serv->channels[name]->geta() == true)
-					msg = ":" + _expeditor->getNickname(true) + " JOIN :" + name + "\r\n";
-				else
+				if (_serv->channels[name]->geta() != true)
 					msg = ":" + _expeditor->getNickname() + " JOIN :" + name + "\r\n";
+				else
+					msg = ":" + _expeditor->getNickname(true) + " JOIN :" + name + "\r\n";
 				send((*it)->getSock(), msg.c_str(), msg.length(), 0);
 			}
 			msg = ":" + _expeditor->getNickname() + " JOIN :" + name + "\r\n";
@@ -125,7 +126,8 @@ void	Join::execute()
 			else
 				_serv->send_replies(_expeditor, name + " :No topic is set", RPL_NOTOPIC);
 			_serv->getChannel(name)->send_names_replies(_expeditor);
-			_serv->send_replies(_expeditor, name + " :End of names list", RPL_ENDOFNAMES);
+			if (_serv->channels[name]->geta() != true)
+				_serv->send_replies(_expeditor, name + " :End of names list", RPL_ENDOFNAMES);
 			_expeditor->join_channel(name, false);
 			_serv->channels[name]->addUser(*_expeditor);
 			if (_serv->getChannel(name)->isInvited(*_expeditor) == true)

@@ -155,8 +155,6 @@ void	Channel::send_names_replies(const user * receiver) const
 				usersInChan += "@";
 			usersInChan += (*it)->getNickname() + " ";
 		}
-		else
-			usersInChan += (*it)->getNickname(true) + " ";
 	}
 	std::string replies = ":" + receiver->getUsername() +  " " + RPL_NAMREPLY + " " \
 		+ receiver->getNickname() + " " +  "= " + name + " :" + usersInChan + "\r\n";

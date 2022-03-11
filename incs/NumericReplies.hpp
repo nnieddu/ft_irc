@@ -10,11 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-// https://www.alien.net.au/irc/irc2numerics.html
-
-// PART 4 a Part 6
-// https://www.rfcreader.com/#rfc1459_line568 -> https://www.rfcreader.com/#rfc1459_line2633
-
 #pragma once
 
 #define RPL_WELCOME				"001"

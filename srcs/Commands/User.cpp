@@ -27,7 +27,7 @@ void User::execute()
 	std::string	*	mode = _args[CHANNEL].arg;
 	std::string	*	rlName = _args[MESSAGE].arg;
 
-	if (!userName || !mode || !rlName)
+	if (!userName || !mode || !rlName || userName->size() > 16 || mode->size() > 16 || rlName->size() > 16)
 	{
 		_serv->send_replies(_expeditor, "USER :Not enough parameters", ERR_NEEDMOREPARAMS);
 		return ;
@@ -36,7 +36,6 @@ void User::execute()
 		_serv->send_replies(_expeditor, " :You may not reregister", ERR_ALREADYREGISTRED);
 	else if (_expeditor->getisLogged() != true && _expeditor->getLogLvl() == 2)
 	{
-		// _expeditor->setUsername(*userName);
 		_expeditor->setUsername(*userName);
 		_expeditor->setRealname(*rlName);
 		if (*mode == "8")
