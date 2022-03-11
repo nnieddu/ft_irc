@@ -244,12 +244,12 @@ void	server::remove_user_from(user * usr, const std::string & name, const std::s
 	{
 		if (msg == "PART" || msg == "KICK")
 			str = " " + msg + " " + name;
-		else if ((msg.find("PART") && msg.find(name)) || msg.find("killed"))
-			str = msg;
-		else if (msg == "QUIT")
-			str = " QUIT :disconnected";
-		else
+		else if (msg.find("killed by") != std::string::npos)
 			str = " QUIT :" + msg;
+		else if (msg.find("PART") != std::string::npos && msg.find(name) != std::string::npos)
+			str = msg;
+		else
+			str = " QUIT :disconnected";
 		if (channels[name]->geta())
 		{
 			str = " PART " + name;

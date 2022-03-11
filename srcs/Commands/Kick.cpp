@@ -50,7 +50,7 @@ void	Kick::execute()
 			}
 			if (!out && !(_expeditor->isMember(chan_list.front())))
 			{
-				_serv->send_replies(_expeditor, "KICK :You are not on channel", ERR_NOTONCHANNEL);
+				_serv->send_replies(_expeditor, "KICK :You are not on that channel", ERR_NOTONCHANNEL);
 				out = true;
 			}
 			if (!out)
@@ -58,11 +58,14 @@ void	Kick::execute()
 				std::set<user *>	chan_userlist = _serv->channels.find(nameCaseIns(chan_list.front()))->second->getUsers();
 				user *				target = _serv->getUser(*it);
 
+				if (target == NULL)
+					return _serv->send_replies(_expeditor, *it + " " + nameCaseIns(chan_list.front()) + " :They aren't on that channel", ERR_USERNOTINCHANNEL);
+
 				_serv->remove_user_from(target, chan_list.front(), "KICK");
 
 				std::string kick = ":" + _expeditor->getNickname() + " KICK " + chan_list.front() + " " + target->getNickname();
 				if (msg)
-					kick += " : " + *msg + "\r\n";
+					kick += " :" + *msg + "\r\n";
 				else
 					kick += "\r\n";
 				for (std::set<user *>::iterator it2(chan_userlist.begin()); it2 != chan_userlist.end(); it2++)
