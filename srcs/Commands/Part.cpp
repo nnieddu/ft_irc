@@ -62,5 +62,4 @@ void Part::execute()
 			_serv->remove_user_from(_expeditor, *it, "PART");
 		list.pop_front();
 	}
-	return ;
 }

@@ -21,14 +21,14 @@ void Admin::execute()
 {
 	std::string	*	arg = _args[HOSTNAME].arg;
 
-	if (!arg || arg->compare(_serv->getName()) == 0 || arg->compare("ircserv") == 0)
+	if (!arg || *arg == _serv->getName() || *arg =="ircserv")
 	{
 		int x = 1;
 		std::vector<user *>	userlist(_serv->getUsers());
 
 		for(std::vector<user *>::iterator it = userlist.begin(); it != userlist.end(); ++it)
 		{
-			if ((*it)->isServOp() == true)
+			if ((*it)->isServOp())
 			{
 				if (x == 1)
 					_serv->send_replies(_expeditor, _serv->getName() + " :Administrative info", RPL_ADMINME);

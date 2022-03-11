@@ -16,7 +16,5 @@ Cap::Cap(server * serv):Command(serv)
 
 /*----------------------------------------------------------------------------*/
 
-void Cap::execute()
-{
-	return ;
+void Cap::execute(){
 }

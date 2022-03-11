@@ -75,13 +75,13 @@ void	Join::execute()
 		}
 		else if (!_expeditor->isMember(name))
 		{
-			if (_serv->getChannel(name)->getl() == true && _serv->getChannel(name)->getLim() >= _serv->getChannel(name)->getUsers().size())
+			if (_serv->getChannel(name)->getl() && _serv->getChannel(name)->getLim() >= _serv->getChannel(name)->getUsers().size())
 			{	
 				_serv->send_replies(_expeditor, name + " :Cannot join channel (+l)", ERR_CHANNELISFULL);
 				lst.erase(lst.begin());
 				continue ;
 			}
-			if (_serv->getChannel(name)->getk() == true)
+			if (_serv->getChannel(name)->getk())
 			{	
 				if (!keys)
 				{
@@ -102,7 +102,7 @@ void	Join::execute()
 					lst_keys.erase(lst_keys.begin());
 				}
 			}
-			if (_serv->getChannel(name)->geti() == true && _serv->getChannel(name)->isInvited(*_expeditor) == false)
+			if (_serv->getChannel(name)->geti() && !_serv->getChannel(name)->isInvited(*_expeditor))
 			{
 				_serv->send_replies(_expeditor, name + " :Cannot join channel (+i)", ERR_INVITEONLYCHAN);
 				lst.erase(lst.begin());
@@ -113,7 +113,7 @@ void	Join::execute()
 			std::set<user *>::iterator it;
 			for(it = _serv->channels[name]->getUsers().begin(); it != _serv->channels[name]->getUsers().end(); ++it)
 			{
-				if (_serv->channels[name]->geta() != true)
+				if (!_serv->channels[name]->geta())
 					msg = ":" + _expeditor->getNickname() + " JOIN :" + name + "\r\n";
 				else
 					msg = ":" + _expeditor->getNickname(true) + " JOIN :" + name + "\r\n";
@@ -126,11 +126,11 @@ void	Join::execute()
 			else
 				_serv->send_replies(_expeditor, name + " :No topic is set", RPL_NOTOPIC);
 			_serv->getChannel(name)->send_names_replies(_expeditor);
-			if (_serv->channels[name]->geta() != true)
+			if (!_serv->channels[name]->geta())
 				_serv->send_replies(_expeditor, name + " :End of names list", RPL_ENDOFNAMES);
 			_expeditor->join_channel(name, false);
 			_serv->channels[name]->addUser(*_expeditor);
-			if (_serv->getChannel(name)->isInvited(*_expeditor) == true)
+			if (_serv->getChannel(name)->isInvited(*_expeditor))
 				_serv->getChannel(name)->remInvited(*_expeditor);
 		}
 		lst.erase(lst.begin());

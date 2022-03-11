@@ -62,5 +62,4 @@ void Names::execute()
 			_serv->send_replies(_expeditor, "* :End of names list", RPL_ENDOFNAMES);
 		}
 	}
-	return ;
 }

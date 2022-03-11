@@ -34,7 +34,7 @@ void	Kick::execute()
 	{
 		bool	out = false;
 
-		for (std::deque<std::string>::iterator	it(user_list.begin()); out == false && it != user_list.end(); it++)
+		for (std::deque<std::string>::iterator	it(user_list.begin()); !out && it != user_list.end(); it++)
 		{
 			if (_serv->channels.find(nameCaseIns(chan_list.front())) == _serv->channels.end())
 				return _serv->send_replies(_expeditor, "KICK :No such channel", ERR_NOSUCHCHANNEL);

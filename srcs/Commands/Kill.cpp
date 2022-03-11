@@ -32,5 +32,4 @@ void	Kill::execute()
 		return _serv->send_replies(_expeditor, "KILL :No such nick", ERR_NOSUCHNICK);
 
 	_serv->kill(_expeditor, _serv->getUser(*nick), *msg);
-	return ;
 }

@@ -13,7 +13,7 @@ int main(int ac, char **av)
 		server	serv(atoi(av[1]), std::string(av[2]));
 		serv.run();
 	}
-	catch (server::quitexcept er)
+	catch (server::quitexcept &er)
 	{
 		std::cout << er.what() << std::endl;
 		return(0);

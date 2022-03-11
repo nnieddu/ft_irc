@@ -29,5 +29,4 @@ void Quit::execute()
 	}
 	_serv->remove_user_from_channels(_expeditor, " QUIT :" + *arg);
 	_expeditor->setLogLvl(-1);
-	return ;
 }

@@ -28,7 +28,7 @@ void Oper::execute()
 		return _serv->send_replies(_expeditor, "OPER :Not enough parameters", ERR_NEEDMOREPARAMS);
 	if (!(_serv->isUser(*usr)))
 		return _serv->send_replies(_expeditor, "OPER :No operator host", ERR_NOOPERHOST);
-	if (pass && _serv->getPassword().compare(*pass))
+	if (pass && _serv->getPassword() != *pass)
 		return _serv->send_replies(_expeditor, "OPER :Wrong password", ERR_PASSWDMISMATCH);
 
 	if (_serv->getUser(*usr)->isServOp())

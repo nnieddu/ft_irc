@@ -104,7 +104,7 @@ void	server::first_auth(user * usr)
 				(usr->buf.find("USER") <= 4 && usr->getLogLvl() == 2) || \
 					usr->buf.find("QUIT") <= 4)
 		_interpret.treat_user_buffer(*usr);
-	if (usr->buf.empty() == false)
+	if (!usr->buf.empty())
 	{
 		std::string replies = usr->getNickname() + \
 		" :You need to be fully authentified before using other commands.\r\n";
@@ -172,9 +172,9 @@ int	server::kill(user * expeditor, user * target, const std::string & msg)
 	std::cout << target->getNickname() << " killed" << std::endl;
 
 	if (expeditor)
-		kill = ":" + expeditor->getNickname() + " KILL " + target->getNickname() + " :" + msg.c_str() + "\r\n";
+		kill = ":" + expeditor->getNickname() + " KILL " + target->getNickname() + " :" + msg + "\r\n";
 	else
-		kill = ":" + _name + " KILL " + target->getNickname() + " :" + msg.c_str() + "\r\n";
+		kill = ":" + _name + " KILL " + target->getNickname() + " :" + msg + "\r\n";
 
 	send(target->getSock(), kill.c_str(), kill.length(), 0);
 	
@@ -216,11 +216,11 @@ void	server::receive_data(size_t index)
 
 	tmp = buf;
 	_users[index - 1]->buf += tmp;
-	if (tmp.find("\n") != std::string::npos)
+	if (tmp.find('\n') != std::string::npos)
 	{
 		std::cout << _users[index - 1]->getNickname() << " send : [" <<  _users[index - 1]->buf << "]" << std::endl;
 
-		if (_users[index - 1]->getisLogged() == true)
+		if (_users[index - 1]->getisLogged())
 			_interpret.treat_user_buffer(*_users[index - 1]);
 		else
 			first_auth(_users[index - 1]);
@@ -231,7 +231,6 @@ void	server::receive_data(size_t index)
 		if (_users[index - 1]->getLogLvl() == -1)
 			close_user(index, "QUIT");
 	}
-	return ;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -251,7 +250,7 @@ void	server::remove_user_from(user * usr, const std::string & name, const std::s
 			str = " QUIT :disconnected";
 		else
 			str = " QUIT :" + msg;
-		if (channels[name]->geta() == true)
+		if (channels[name]->geta())
 		{
 			str = " PART " + name;
 			quit = ":" + usr->getNickname(true) + str + "\r\n";
@@ -318,7 +317,7 @@ int	server::send_msg_to_user(const user * expeditor, const user * dest, const st
 
 	std::string fmsg;
 
-	if (chan_name == "")
+	if (chan_name.empty())
 		fmsg = ":" + expeditor->getNickname() + " PRIVMSG " + dest->getNickname() + " :" + msg + "\r\n";
 	else
 		fmsg = ":" + expeditor->getNickname(isAnonymous) + " PRIVMSG " + chan_name + " :" + msg + "\r\n";
@@ -373,7 +372,7 @@ void	server::pong(const std::string& username)
 {
 	for (std::vector<user*>::iterator it(_users.begin()); it != _users.end(); it++)
 	{
-		if (!(*it)->getUsername().compare(username))
+		if ((*it)->getUsername() == username)
 			return (*it)->pong();
 	}
 }
@@ -465,7 +464,7 @@ std::string ft_itoa(int nbr)
 
 void	server::welcomeNewUser(user * usr) 
 {
-	if (usr->getisLogged() == true)
+	if (usr->getisLogged())
 	{
 		time_t now = time(0);
 		std::string time = ctime(&now);

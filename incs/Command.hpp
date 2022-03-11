@@ -20,7 +20,7 @@ struct	Argument
 {
 	std::string *				arg;
 	bool						isNeeded;
-	std::deque<std::string>		parseList();
+	std::deque<std::string>		parseList() const;
 };
 
 class Command

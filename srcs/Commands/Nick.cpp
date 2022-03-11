@@ -37,14 +37,14 @@ void Nick::execute()
 		return ;
 	}
 	std::string str = ":" + _expeditor->getNickname() + " NICK " + ":" + *arg + "\r\n";
-	if (_serv->isUser(*arg) == false)
+	if (!_serv->isUser(*arg))
 	{
-		if (_expeditor->getisLogged() == true)
+		if (_expeditor->getisLogged())
 		{
 			send(_expeditor->getSock(), str.c_str(), strlen(str.c_str()), 0);
 			_expeditor->setNickname(*arg);
 		}
-		else if (_expeditor->getisLogged() == false && _expeditor->getLogLvl() == 1)
+		else if (!_expeditor->getisLogged() && _expeditor->getLogLvl() == 1)
 		{
 			_expeditor->setNickname(*arg);
 			_expeditor->setLogLvl(2);

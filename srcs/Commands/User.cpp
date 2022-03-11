@@ -32,9 +32,9 @@ void User::execute()
 		_serv->send_replies(_expeditor, "USER :Not enough parameters", ERR_NEEDMOREPARAMS);
 		return ;
 	}
-	if (_expeditor->getisLogged() == true)
+	if (_expeditor->getisLogged())
 		_serv->send_replies(_expeditor, " :You may not reregister", ERR_ALREADYREGISTRED);
-	else if (_expeditor->getisLogged() != true && _expeditor->getLogLvl() == 2)
+	else if (!_expeditor->getisLogged() && _expeditor->getLogLvl() == 2)
 	{
 		_expeditor->setUsername(*userName);
 		_expeditor->setRealname(*rlName);

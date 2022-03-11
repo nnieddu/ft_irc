@@ -27,12 +27,11 @@ void Ping::execute()
 		_serv->send_replies(_expeditor, " :No origin specified", ERR_NOORIGIN);
 		return ;
 	}
-	if (arg->compare(_serv->getHostname()) != 0 && arg->compare(_expeditor->getHostname()) != 0)
+	if (*arg != _serv->getHostname() && *arg != _expeditor->getHostname())
 		_serv->send_replies(_expeditor, *arg + " :No such server", ERR_NOSUCHSERVER);
 	else
 	{
 		std::string reply = (":" + _expeditor->getUsername() + " PONG " + _serv->getName() + " \r\n");
 		send(_expeditor->getSock(), reply.c_str(), reply.length(), 0);
 	}
-	return ;
 }

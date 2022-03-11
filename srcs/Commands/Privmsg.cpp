@@ -54,5 +54,4 @@ void Privmsg::execute()
 		}
 		list.pop_front();
 	}
-	return ;
 }

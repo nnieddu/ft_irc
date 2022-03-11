@@ -1,14 +1,13 @@
 #include "../incs/Command.hpp"
 #include "../incs/Server.hpp"
 
-#include <map>
 #include <deque>
 
 #include <cstdlib>
 
 /*----------------------------------------------------------------------------*/
 
-std::deque<std::string>		Argument::parseList()
+std::deque<std::string>		Argument::parseList() const
 {
 	std::deque<std::string>	lst;
 	size_t					index_bis = 0;
@@ -80,7 +79,7 @@ void	Command::setArgs(user * expeditor, std::vector<std::string *>* args)
 	}
 }
 
-void	Command::execute() { return ; }
+void	Command::execute() {}
 
 void	Command::reset()
 {

@@ -31,6 +31,4 @@ void Notice::execute()
 
 	fmsg = ":" + _expeditor->getNickname() + "(" + _expeditor->getUsername() + ") NOTICE " + _serv->getUser(*nick)->getNickname() + " " + *arg + "\r\n";
 	send(_serv->getUser(*nick)->getSock(), fmsg.c_str(), fmsg.size(), 0);
-	
-	return;
 }

@@ -1,9 +1,7 @@
 
 #include "../incs/User.hpp"
-#include "../incs/Socket.hpp"
 #include "../incs/Channel.hpp"
 #include "../incs/Server.hpp"
-#include "../incs/NumericReplies.hpp"
 
 /*----------------------------------------------------------------------------*/
 

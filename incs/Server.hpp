@@ -16,7 +16,7 @@
 #include <poll.h>
 #include <unistd.h>
 #include <arpa/inet.h>
-#include <signal.h>
+#include <csignal>
 
 #include "Socket.hpp"
 #include "User.hpp"

@@ -1,13 +1,8 @@
 #include "../incs/Interpret.hpp"
-#include "../incs/Socket.hpp"
-#include "../incs/NumericReplies.hpp"
 #include "../incs/Server.hpp"
-#include "../incs/Command.hpp"
 #include "../incs/Commands.hpp"
 #include "../incs/Mode.hpp"
 #include "../incs/Away.hpp"
-
-#include <stdlib.h>
 
 /*----------------------------------------------------------------------------*/
 
@@ -66,7 +61,6 @@ void Interpret::treat_user_buffer(user & usr)
 	}
 
 	delete args;
-	return;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -88,7 +82,7 @@ std::vector<std::string *>* Interpret::parseCmds(std::string * buf) const
 		{
 			std::string	tmp(nameCaseIns(*args->front()));
 
-			if (!tmp.compare("mode"))
+			if (tmp == "mode")
 				isMode = true;
 		}
 	}
@@ -151,7 +145,6 @@ void	Interpret::cmd_found(Command* cmd, user & usr, std::vector<std::string *>* 
 	cmd->execute();
 	cmd->reset();
 	clearLeftover(args);
-	return;
 }
 
 void	Interpret::cmd_not_found(user & usr, std::vector<std::string *>* args) const
@@ -159,7 +152,6 @@ void	Interpret::cmd_not_found(user & usr, std::vector<std::string *>* args) cons
 	std::cerr << *args->front() << ": Command not found" << std::endl;
 
 	clearLeftover(args);
-	return;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -196,5 +188,4 @@ void	Interpret::clearLeftover(std::vector<std::string *>* args) const
 	}
 	delete *it;
 	args->erase(it);
-	return ;
 }

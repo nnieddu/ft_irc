@@ -26,12 +26,11 @@ void Pass::execute()
 		_serv->send_replies(_expeditor, "PASS :Not enough parameters", ERR_NEEDMOREPARAMS);
 		return ;
 	}
-	else if (pass->compare(_serv->getPassword()) != 0)
+	else if (*pass != _serv->getPassword())
 	{
 		_serv->send_replies(_expeditor, ":Password incorrect", ERR_PASSWDMISMATCH);
 		return ;
 	}
-	if (_expeditor->getisLogged() == false && _expeditor->getLogLvl() == 0)
+	if (!_expeditor->getisLogged() && _expeditor->getLogLvl() == 0)
 		_expeditor->setLogLvl(1);
-	return ;
 }

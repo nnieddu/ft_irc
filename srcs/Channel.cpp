@@ -82,7 +82,7 @@ void Channel::removeUser(user &remUser)
 	if (remUser.isOperator(name))
 	{
 		hasop = false;
-		for (std::set<user*>::iterator it(users.begin()); hasop == false && it != users.end(); it++)
+		for (std::set<user*>::iterator it(users.begin()); !hasop && it != users.end(); it++)
 			hasop = (*it)->isOperator(name);
 		rtime = time(NULL);
 	}
@@ -127,7 +127,7 @@ const std::set<user *> &Channel::getUsers() const {
 
 bool Channel::isInvited(user& usr) const
 {
-	if (users_invited.find(&usr) != users_invited.end() && users_invited.empty() == false)
+	if (users_invited.find(&usr) != users_invited.end() && !users_invited.empty())
 		return true;
 	return false ;
 }
@@ -145,9 +145,9 @@ void	Channel::send_names_replies(const user * receiver) const
 
 	for(it = this->getUsers().begin(); it != this->getUsers().end(); ++it)
 	{
-		if (this->geta() == false)
+		if (!this->geta())
 		{
-			if ((*it)->isOperator(name) == true)
+			if ((*it)->isOperator(name))
 				usersInChan += "@";
 			usersInChan += (*it)->getNickname() + " ";
 		}
@@ -173,7 +173,6 @@ void	Channel::rdmOp(const std::time_t &)
 	for (size_t	index(std::rand() % users.size()); index > 0; index--)
 		it++;
 	(*it)->promote(name);
-	return;
 }
 
 /*----------------------------------------------------------------------------*/

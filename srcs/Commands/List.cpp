@@ -37,11 +37,11 @@ void List::execute()
 			else
 				topic = "No topic is set";
 
-			if (it->second->getp() == false)
+			if (!it->second->getp())
 				_serv->send_replies(_expeditor, it->first + " " + ft_itoa(it->second->getUsers().size()) + " " + topic, RPL_LIST);
-			if (it->second->getp() == true && _expeditor->isMember(it->first) == false)
+			if (it->second->getp() && !_expeditor->isMember(it->first))
 				_serv->send_replies(_expeditor, it->first + " " + ft_itoa(it->second->getUsers().size()) + " Prv" , RPL_LIST);
-			else if (it->second->getp() == true && _expeditor->isMember(it->first) == false)
+			else if (it->second->getp() && !_expeditor->isMember(it->first))
 				_serv->send_replies(_expeditor, it->first + " " + ft_itoa(it->second->getUsers().size()) + " " + topic, RPL_LIST);
 		}
 	}
@@ -60,11 +60,11 @@ void List::execute()
 			topic = "No topic is set";
 
 		_serv->send_replies(_expeditor, "Channel :Users  Name", RPL_LISTSTART);
-		if (it->second->getp() == false)
+		if (!it->second->getp())
 			_serv->send_replies(_expeditor, it->first + " " + ft_itoa(it->second->getUsers().size()) + " " + topic, RPL_LIST);
-		if (it->second->getp() == true && _expeditor->isMember(it->first) == false)
+		if (it->second->getp() && !_expeditor->isMember(it->first))
 			_serv->send_replies(_expeditor, it->first + " " + ft_itoa(it->second->getUsers().size()) + " Prv" , RPL_LIST);
-		else if (it->second->getp() == true && _expeditor->isMember(it->first) == false)
+		else if (it->second->getp() && !_expeditor->isMember(it->first))
 			_serv->send_replies(_expeditor, it->first + " " + ft_itoa(it->second->getUsers().size()) + " " + topic, RPL_LIST);
 	}
 	_serv->send_replies(_expeditor, ":End of /LIST", RPL_LISTEND);

@@ -30,16 +30,11 @@
 #define n 0x00040	// no messages to channel from clients on the outside
 #define q 0x00080	// quiet channel flag
 #define p 0x00100	// private channel flag
-#define s 0x00200	// secret channel flag || user flag obsolete by irc so not implemented for now
 #define r 0x00400	// server reop channel flag || restricted user connection user flag
 #define t 0x00800	// topic settable only by op
 
 #define k 0x01000	// set/remove channel key(password)
 #define l 0x02000	// *set/remove user limit to channel
-#define b 0x04000	// *set/remove ban mask to keep user out TODO?
-#define e 0x08000	// set/remove except mask to override ban mask TODO?
-#define I 0x10000	// set/remove an invit mask to automatically override TODO?
-					// the invite only flag
 
 #define RFLAG_TIME_SEC	5	// time in sec before a channel with -r flag will chose a random new operator amongst its users
 
