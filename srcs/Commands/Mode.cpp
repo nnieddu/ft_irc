@@ -27,7 +27,7 @@ void Mode::modeChan(Channel& chan, std::string &mod, std::string &arg, std::stri
 	int			num_o_b = 0;
 	std::string	temp = arg;
 
-	if (mod[0] == O) {
+	if (mod[0] == 'O') {
 		if (chan.getName()[0] == '!') {
 			_serv->send_replies(_expeditor, chan.getName() + " " + \
 			chan.getChanCrea().getNickname(), RPL_UNIQOPIS);
@@ -248,7 +248,7 @@ void Mode::modeUser(user& usr, std::string &mod, std::string &arg, std::string &
 					usr.setWallOp();
 			}
 			else if (mod[0] == 'r') {
-				if (!addRule && &usr != _expeditor)
+				if (!addRule && &usr != _expeditor && _expeditor->isServOp())
 					usr.delRestrict();
 				else
 					usr.setRestrict();
@@ -282,6 +282,8 @@ void Mode::execute() {
 				_serv->send_replies(_expeditor, \
 				receivModeIs(*_serv->getUser(*receiver)), RPL_UMODEIS);
 			}
+			else if (mod->find_first_not_of("+-") == std::string::npos)
+				_serv->send_replies(_expeditor, "MODE :Not enough parameters", ERR_NEEDMOREPARAMS);
 			else if (arg == NULL) {
 				defReply += " :" + *mod + "\r\n";
 				modeUser(*_serv->getUser(*receiver), *mod, emptyArg, defReply);
@@ -300,10 +302,15 @@ void Mode::execute() {
 				_serv->send_replies(_expeditor, (*receiver) + \
 				" :You're not on that channel", ERR_NOTONCHANNEL);
 			}
+			else if (_expeditor->isRestrict()) {
+				_serv->send_replies(_expeditor, " :You are a restricted user", ERR_RESTRICTED);
+			}
 			else if (mod == NULL) {
 				_serv->send_replies(_expeditor, \
 				receivModeIs(*_serv->channels[nameCaseIns(*receiver)]), RPL_CHANNELMODEIS);
 			}
+			else if (mod->find_first_not_of("+-") == std::string::npos)
+				_serv->send_replies(_expeditor, "MODE :Not enough parameters", ERR_NEEDMOREPARAMS);
 			else if (arg == NULL) {
 				defReply += " :" + *mod + "\r\n";
 				modeChan(*_serv->channels[nameCaseIns(*receiver)], *mod, emptyArg, defReply);
