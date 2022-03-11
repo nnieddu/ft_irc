@@ -61,10 +61,6 @@ void Channel::removeMod(unsigned int oldMod) {
 	mod = mod & ~oldMod;
 }
 
-void Channel::setBanMask(const std::string &newMask) {
-	banMask = newMask;
-}
-
 void Channel::setLim(unsigned int newLim) {
 	limit_user = newLim;
 }
@@ -173,7 +169,6 @@ bool	Channel::mustAddOp(const std::time_t & now) const
 void	Channel::rdmOp(const std::time_t &)
 {
 	std::set<user*>::iterator	it(users.begin());
-	size_t						index(std::rand() % users.size());
 
 	for (size_t	index(std::rand() % users.size()); index > 0; index--)
 		it++;

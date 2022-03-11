@@ -55,7 +55,6 @@ class Channel {
 		std::string			name;
 		std::string			id;
 		std::string			topic;
-		std::string			banMask;
 		std::string			password;
 		user*				chanCrea;
 		std::set<user *>	users;
@@ -70,7 +69,6 @@ class Channel {
 
 		void	setMod(unsigned int);
 		void	removeMod(unsigned int);
-		void	setBanMask(const std::string&);
 		void	setLim(unsigned int);
 		void	setTopic(const std::string&);
 		void	setPass(const std::string&);
@@ -85,7 +83,6 @@ class Channel {
 		const std::string&		getPass() const;
 		const user&				getChanCrea() const;
 		const std::set<user*>&	getUsers() const;
-		const std::string&		getBanMask() const;
 
 		bool					isInvited(user&) const;
 		void					addInvited(user&);

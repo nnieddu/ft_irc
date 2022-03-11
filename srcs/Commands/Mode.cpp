@@ -176,12 +176,6 @@ void Mode::modeChan(Channel& chan, std::string &mod, std::string &arg, std::stri
 				else
 					chan.setMod(p);
 			}
-			else if (mod[0] == 's') {
-				if (!addRule)
-					chan.removeMod(s);
-				else
-					chan.setMod(s);
-			}
 			else if (mod[0] == 'r') {
 				if (_expeditor == &chan.getChanCrea() && chan.getName()[0] == '!') {
 					if (!addRule)

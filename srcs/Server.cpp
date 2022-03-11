@@ -205,7 +205,6 @@ void	server::receive_data(size_t index)
 		if (ret < 0)
 			std::cerr << "recv() failed" << std::endl; 
 		kill(NULL, getUser(_users[index - 1]->getNickname()), "Communication error");
-		index = -1;
 		return ;
 	}
 	if (ret >= 512) 
@@ -246,9 +245,9 @@ void	server::remove_user_from(user * usr, const std::string & name, const std::s
 	{
 		if (msg == "PART" || msg == "KICK")
 			str = " " + msg + " " + name;
-		if ((msg.find("PART") && msg.find(name)) || msg.find("killed"))
+		else if ((msg.find("PART") && msg.find(name)) || msg.find("killed"))
 			str = msg;
-		if (msg == "QUIT")
+		else if (msg == "QUIT")
 			str = " QUIT :disconnected";
 		else
 			str = " QUIT :" + msg;

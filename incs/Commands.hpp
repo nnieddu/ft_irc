@@ -80,19 +80,6 @@ class Quit : public Command
 		virtual void execute();
 };
 
-class Mode : public Command 
-{
-	private:
-		void	modeChan(Channel&, std::string&, std::string&);
-		void	modeUser(user&, std::string&, std::string&);
-
-	public:
-		Mode(server*);
-		virtual ~Mode();
-		Mode&	operator=(const Mode&);
-		virtual void execute();
-};
-
 class Topic : public Command
 {
 	public:

@@ -4,6 +4,7 @@
 #include "../incs/Server.hpp"
 #include "../incs/Command.hpp"
 #include "../incs/Commands.hpp"
+#include "../incs/Mode.hpp"
 #include "../incs/Away.hpp"
 
 #include <stdlib.h>

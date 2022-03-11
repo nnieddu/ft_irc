@@ -60,9 +60,9 @@ void	Kick::execute()
 					kick += " : " + *msg + "\r\n";
 				else
 					kick += "\r\n";
-				for (std::set<user *>::iterator it(chan_userlist.begin()); it != chan_userlist.end(); it++)
+				for (std::set<user *>::iterator it2(chan_userlist.begin()); it2 != chan_userlist.end(); it2++)
 				{
-					send((*it)->getSock(), kick.c_str(), kick.length(), 0);
+					send((*it2)->getSock(), kick.c_str(), kick.length(), 0);
 				}
 			}
 		}
