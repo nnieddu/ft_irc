@@ -36,6 +36,11 @@ void Nick::execute()
 		_serv->send_replies(_expeditor, " :Erroneus nickname", ERR_ERRONEUSNICKNAME);
 		return ;
 	}
+	if (_expeditor->isRestrict())
+	{
+		_serv->send_replies(_expeditor, " :You are a restricted user", ERR_RESTRICTED);
+		return ;
+	}
 	std::string str = ":" + _expeditor->getNickname() + " NICK " + ":" + *arg + "\r\n";
 	if (!_serv->isUser(*arg))
 	{

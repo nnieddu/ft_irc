@@ -31,6 +31,9 @@ void Oper::execute()
 	if (pass && _serv->getPassword() != *pass)
 		return _serv->send_replies(_expeditor, "OPER :Wrong password", ERR_PASSWDMISMATCH);
 
+	if (_serv->getUser(*usr)->isRestrict())
+		return _serv->send_replies(_expeditor, "OPER :Forbiden command for restricted user", ERR_RESTRICTED);
+
 	if (_serv->getUser(*usr)->isServOp())
 		return _serv->send_replies(_expeditor, "", RPL_YOUREOPER);
 

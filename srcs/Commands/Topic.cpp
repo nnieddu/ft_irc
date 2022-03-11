@@ -35,7 +35,9 @@ void Topic::execute() {
 		else if (!_expeditor->isMember(*channel))
 			_serv->send_replies(_expeditor, (*channel) + " :You're not on that channel", ERR_NOTONCHANNEL);
 		else if (!_expeditor->isOperator(*channel) && (_serv->channels[*channel]->getMod() & t))
-			_serv->send_replies(_expeditor, (*channel) + " :You do not have acces to change the topic on this channel", ERR_CHANOPRIVSNEEDED);
+			_serv->send_replies(_expeditor, (*channel) + " :You do not have access to change the topic on this channel", ERR_CHANOPRIVSNEEDED);
+		else if (_expeditor->isRestrict())
+			return _serv->send_replies(_expeditor, *channel + " :Restricted users can't use channel operator privileges", ERR_CHANOPRIVSNEEDED);
 		else {
 			std::string rep = ":";
 			rep += _expeditor->getNickname() + " TOPIC " + *channel + " :" + *arg + "\r\n";

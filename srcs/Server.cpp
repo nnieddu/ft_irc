@@ -330,11 +330,24 @@ int	server::send_msg_to_channel(const user * expeditor, const Channel * dest, co
 {
 	std::set<user*>	userlist(dest->getUsers());
 
-	if (!dest ||
-	(dest->getn() && !(expeditor->isMember(dest->getName()))) ||
-	(dest->getm() && !expeditor->isOperator(dest->getName()) && !expeditor->isVoice(dest->getName())))
+	if (!dest)
 	{
-		send_replies(expeditor, "PRIVMSG :cannot send to channel", ERR_CANNOTSENDTOCHAN);
+		send_replies(expeditor, "PRIVMSG :cannot send to channel (channel not found)", ERR_CANNOTSENDTOCHAN);
+		return 1;
+	}
+	if (dest->getn() && !(expeditor->isMember(dest->getName())))
+	{
+		send_replies(expeditor, "PRIVMSG :cannot send to channel (mode:+n)", ERR_CANNOTSENDTOCHAN);
+		return 1;
+	}
+	if (dest->getm() && !expeditor->isOperator(dest->getName()) && !expeditor->isVoice(dest->getName()))
+	{
+		send_replies(expeditor, "PRIVMSG :cannot send to channel (mode:+m)", ERR_CANNOTSENDTOCHAN);
+		return 1;
+	}
+	if (dest->getm() && expeditor->isRestrict())
+	{
+		send_replies(expeditor, "PRIVMSG :cannot send to channel (mode:+m + restricted user)", ERR_CANNOTSENDTOCHAN);
 		return 1;
 	}
 

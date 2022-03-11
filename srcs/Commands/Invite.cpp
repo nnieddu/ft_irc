@@ -38,6 +38,8 @@ void Invite::execute()
 			return _serv->send_replies(_expeditor, *nick + " " + *channel + " :is already on channel", ERR_USERONCHANNEL);
 		if (_serv->getChannel(*channel)->geti() && !_expeditor->isOperator(*channel))
 			return _serv->send_replies(_expeditor, *channel + " :You're not channel operator", ERR_CHANOPRIVSNEEDED);
+		if (_expeditor->isRestrict())
+			return _serv->send_replies(_expeditor, *channel + " :Restricted users can't use channel operator privileges", ERR_CHANOPRIVSNEEDED);
 
 		std::string replies = ":" + _expeditor->getNickname() + " INVITE " + *nick + " " + *channel + "\r\n";
 		if (send(_serv->getUser(*nick)->getSock(), replies.c_str(), replies.length(), 0) == -1)

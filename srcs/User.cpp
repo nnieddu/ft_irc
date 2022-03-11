@@ -38,7 +38,12 @@ void		user::setLogLvl(int loglvl) { _logLvl = loglvl; }
 
 /*----------------------------------------------------------------------------*/
 
-bool user::isServOp() const { return _server_operator; }
+bool user::isServOp() const
+{ 
+	if (isRestrict())
+		return false;	
+	return _server_operator;
+}
 
 void user::promoteServ() {
 	_server_operator = true;

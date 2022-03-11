@@ -43,6 +43,11 @@ void	Kick::execute()
 				_serv->send_replies(_expeditor, "KICK :Channel operator privilege is needed", ERR_CHANOPRIVSNEEDED);
 				out = true;
 			}
+			else if (_expeditor->isRestrict())
+			{
+				return _serv->send_replies(_expeditor, "KICK :Restricted users can't use channel operator privileges", ERR_CHANOPRIVSNEEDED);
+				out = true;
+			}
 			if (!out && !(_expeditor->isMember(chan_list.front())))
 			{
 				_serv->send_replies(_expeditor, "KICK :You are not on channel", ERR_NOTONCHANNEL);
