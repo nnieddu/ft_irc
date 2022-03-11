@@ -246,7 +246,7 @@ void	server::remove_user_from(user * usr, const std::string & name, const std::s
 	{
 		if (msg == "PART" || msg == "KICK")
 			str = " " + msg + " " + name;
-		if (msg.find("PART") && msg.find(name) || msg.find("killed"))
+		if ((msg.find("PART") && msg.find(name)) || msg.find("killed"))
 			str = msg;
 		if (msg == "QUIT")
 			str = " QUIT :disconnected";
