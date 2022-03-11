@@ -149,7 +149,7 @@ void	Interpret::cmd_found(Command* cmd, user & usr, std::vector<std::string *>* 
 
 void	Interpret::cmd_not_found(user & usr, std::vector<std::string *>* args) const
 {
-	std::cerr << *args->front() << ": Command not found" << std::endl;
+	_serv->send_replies(&usr, *args->front() + " :Unknown Command", ERR_UNKNOWNCOMMAND);
 
 	clearLeftover(args);
 }
