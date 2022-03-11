@@ -57,6 +57,8 @@ void Mode::modeChan(Channel& chan, std::string &mod, std::string &arg, std::stri
 					chan.setMod(l);
 					chan.setLim(atoi(temp.substr(0, temp.find_first_of(" \n\r", 0)).c_str()));
 					temp.erase(0, temp.find_first_of(" \n\r", 0));
+					if (temp[0] == ' ')
+						temp.erase(0, 1);
 				}
 			}
 			else if (mod[0] == 'o') {
@@ -79,11 +81,15 @@ void Mode::modeChan(Channel& chan, std::string &mod, std::string &arg, std::stri
 					_serv->getUser(std::string(temp.substr(0, \
 					temp.find_first_of(" \n\r", 0))))->demote(chan.getName());
 					temp.erase(0, temp.find_first_of(" \n\r", 0));
+					if (temp[0] == ' ')
+						temp.erase(0, 1);
 				}
 				else {
 					_serv->getUser(std::string(temp.substr(0, \
 					temp.find_first_of(" \n\r", 0))))->promote(chan.getName());
 					temp.erase(0, temp.find_first_of(" \n\r", 0));
+					if (temp[0] == ' ')
+						temp.erase(0, 1);
 				}
 				num_o_b++;
 			}
@@ -104,6 +110,8 @@ void Mode::modeChan(Channel& chan, std::string &mod, std::string &arg, std::stri
 					chan.setMod(k);
 					chan.setPass(temp.substr(0, temp.find_first_of(" \n\r", 0)));
 					temp.erase(0, temp.find_first_of(" \n\r", 0));
+					if (temp[0] == ' ')
+						temp.erase(0, 1);
 				}
 			}
 			else if (mod[0] == 'v') {
@@ -121,11 +129,15 @@ void Mode::modeChan(Channel& chan, std::string &mod, std::string &arg, std::stri
 					_serv->getUser(std::string(temp.substr(0, \
 					temp.find_first_of(" \n\r", 0))))->delVoice(chan.getName());
 					temp.erase(0, temp.find_first_of(" \n\r", 0));
+					if (temp[0] == ' ')
+						temp.erase(0, 1);
 				}
 				else {
 					_serv->getUser(std::string(temp.substr(0, \
 					temp.find_first_of(" \n\r", 0))))->setVoice(chan.getName());
 					temp.erase(0, temp.find_first_of(" \n\r", 0));
+					if (temp[0] == ' ')
+						temp.erase(0, 1);
 				}
 			}
 			else if (mod[0] == 'a') {
