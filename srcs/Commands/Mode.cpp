@@ -132,13 +132,13 @@ void Mode::modeChan(Channel& chan, std::string &mod, std::string &arg, std::stri
 				if (chan.getName()[0] == '&' || (chan.getName()[0] == '!' && _expeditor == &chan.getChanCrea())) {
 					if (!addRule)
 					{
-						anonMode(false, chan);
 						chan.removeMod(a);
+						anonMode(false, chan);
 					}
 					else
 					{
-						anonMode(true, chan);
 						chan.setMod(a);
+						anonMode(true, chan);
 					}
 				}
 				else if (chan.getName()[0] == '!' && _expeditor != &chan.getChanCrea()) {
@@ -382,26 +382,27 @@ void	Mode::anonMode(bool onOff, Channel & chan) const
 	std::string replies;
 	std::string msg;
 	std::set<user *>::iterator it;
+	std::set<user *>::iterator it2;
 
 	for(it = chan.getUsers().begin(); it != chan.getUsers().end(); ++it)
 	{
-		if (onOff)
+		if (onOff == true)
 		{
-			replies = ":" + (*it)->getNickname() + " PART " + chan.getName() + " Anonymous_mode\r\n";
-			if (send((*it)->getSock(), replies.c_str(), replies.length(), 0) == -1)
-				std::cerr << strerror(errno) << std::endl;
-			return ;
+				replies = ":" + (*it)->getNickname() + " PART " + chan.getName() + " Anonymous_mode\r\n";
+				if (send((*it)->getSock(), replies.c_str(), replies.length(), 0) == -1)
+					std::cerr << strerror(errno) << std::endl;
 		}
-		else
+		if (onOff == false)
 		{
-			// msg = ":" + _expeditor->getNickname() + " JOIN :" + chan.getName() + "\r\n";
-			// send((*it)->getSock(), msg.c_str(), msg.length(), 0);
-			_serv->getChannel(chan.getName() )->send_names_replies((*it));
-			_serv->send_replies((*it), chan.getName()  + " :End of names list", RPL_ENDOFNAMES);
+			for(it2 = _serv->channels[chan.getName()]->getUsers().begin(); it2 != _serv->channels[chan.getName()]->getUsers().end(); ++it2)
+			{
+				msg = ":" + (*it)->getNickname() + " JOIN :" + chan.getName() + "\r\n";
+				send((*it2)->getSock(), msg.c_str(), msg.length(), 0);
+			}
+			msg = ":" + (*it)->getNickname() + " JOIN :" + chan.getName() + "\r\n";
+			send((*it)->getSock(), msg.c_str(), msg.length(), 0);
+			_serv->getChannel(chan.getName())->send_names_replies((*it));
+			_serv->send_replies((*it), chan.getName() + " :End of names list", RPL_ENDOFNAMES);
 		}
 	}
-	// msg = ":" + _expeditor->getNickname() + " JOIN :" + chan.getName() + "\r\n";
-	// send(_expeditor->getSock(), msg.c_str(), msg.length(), 0);
-	// _serv->getChannel(chan.getName())->send_names_replies(_expeditor);
-	// _serv->send_replies(_expeditor, chan.getName()  + " :End of names list", RPL_ENDOFNAMES);
 }
