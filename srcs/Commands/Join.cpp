@@ -66,7 +66,8 @@ void	Join::execute()
 			std::cout << "Channel : " << name << " created" << std::endl;
 			_serv->channels[name] = new Channel(*_expeditor, name);
 			_serv->channels[name]->addUser(*_expeditor);
-			_expeditor->promote(name);
+			if (name[0] != '+')
+				_expeditor->promote(name);
 			_expeditor->join_channel(name, true);
 			std::string replies = ":" + _expeditor->getNickname() + " JOIN :" + name + "\r\n";
 			send(_expeditor->getSock(), replies.c_str(), replies.length(), 0);
