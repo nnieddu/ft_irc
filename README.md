@@ -64,7 +64,7 @@ While channel exists, any client can reference the channel using the name of the
   
 Channels names are strings (beginning with a '&' or '#' character) of length up to 200 characters. Apart from the the requirement that the first character being either '&' or '#'; the only restriction on a channel name is that it may not contain any spaces (' '), a control G (^G or ASCII 7), or a comma (',' which is used as a list item separator by the protocol).
 
-###### Channel Operators
+##### Channel Operators
 The channel operator (also referred to as a "chop" or "chanop") on a given channel is considered to 'own' that channel.
 A channel operator is identified by the '@' symbol next to their nickname whenever it is associated with a channel (ie replies to the NAMES, WHO and WHOIS commands).
 The commands which may only be used by channel operators are:
@@ -84,7 +84,7 @@ The commands which may only be used by channel operators are:
 | QUIT | `[<quit message>]` | used to terminate the connection to the server. the server should end the connection with the client when it sees the sent message. |
 | JOIN | `<channel>{,<channel>}` `[<key>{,<key>}]` | used by the client to enter the channel. if a password is set, it must be correct. when users enter a channel, they will receive a notification about all users on the channel. if there was no group before, then the group is created. |
 | PART | `<channel>{,<channel>}`, `<message>`]| used by the user to leave the channels that he will specify in the parameters. |
-| MODE | | . |
+| MODE |`<channel>`  or `<user>` | Set the mode for the user or channel (see Mode below) |
 | TOPIC | `<channel>` `[<topic>]` | used to edit or view a channel topic. the channel topic will remain the same unless a new topic is set. |
 | NAMES | `[<channel>{,<channel>}]` | used by a user can get a list of all users in the channel. |
 | LIST | `[<channel>{,<channel>}` `[<server>]]` | used to display a list of channels and their topics. if the channel parameter is used, then only the status of this channel is displayed. |
@@ -95,9 +95,9 @@ The commands which may only be used by channel operators are:
 | INFO |  | Display informations of the server |
 | PRIVMSG | `<receiver>{,<receiver>}` `<text to be sent>` | used for private correspondence between users. also exists the ability to send messages to channels. |
 | NOTICE | `<nickname>` `<text>` | works the same as PRIVMSG, except that no response is sent in response to a message. |
-| WHO | `<name> [<o>]`| . |
+| WHO | `<name> [<o>]`| list users and her informations if no param is given |
 | KILL | `<user>` `<comment>` | disconnects the user from the server. |
-| DIE | | Shutdown the server. (need irc operator right) |
+| DIE | | Shutdown the server (need irc operator right) |
 | AWAY | | Set user mode 'away' with a message. |
 | PING / PONG | `<server1>` `[<server2>]` | used to check for client activity on the other end of the connection. this message is sent at regular intervals unless other activity is noticed from the connection. if the client does not send PONG in response to PING, the connection is closed. |
 
@@ -106,7 +106,7 @@ The commands which may only be used by channel operators are:
 
 #### Modes : 
 ###### User modes
-Parameters: <nickname> {[+|-]|[flag]}
+Parameters: <nickname> [+|-]|[flag]
 
 The user MODEs are typically changes which affect either how the
 client is seen by others or what 'extra' messages the client is sent.
@@ -121,7 +121,7 @@ The available modes are as follows:
 	r - restricted mode (can't change nickname and nor make use of the channel operator status)
 
 ###### Channel modes
-Parameters: <channel> {[+|-]|[flag]} [<limit>] [<user>]
+Parameters: <channel> [+|-]|[flag] [param]
 The various modes available for channels are as follows:
 
 	a - made a channel and is users Anonymous;

@@ -44,7 +44,7 @@ runl : all
 	leaks -atExit -- ./$(NAME) 7005 password 
 
 runv : all
-	valgrind ./$(NAME) 7005 password
+	valgrind --track-origins=yes -s ./$(NAME) 7005 password
 #| cat -e
 
 clean :

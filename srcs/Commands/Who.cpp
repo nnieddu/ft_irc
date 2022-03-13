@@ -23,7 +23,6 @@ void Who::execute()
 	std::map<std::string, unsigned int>	chanlist = _expeditor->getChannels();
 	std::vector<user*>					userlist = _serv->getUsers();
 	std::string	*						name = _args[NICK].arg;
-	user *								target = _serv->getUser(*name);
 
 	if (!name || !name->compare("0"))
 	{
@@ -47,23 +46,28 @@ void Who::execute()
 		return _serv->send_replies(_expeditor, " 0 :End of who list", RPL_ENDOFWHO);
 
 	}
-	else if (_serv->isUser(*name) && !target->isInvisible())
+	else if (name)
 	{
-		std::map<std::string, unsigned int>::iterator	chan_it(chanlist.begin());
+		user *	target = _serv->getUser(*name);
 
-		for (; chan_it != chanlist.end(); chan_it++)
+		if (_serv->isUser(*name) && !target->isInvisible())
 		{
-			if (target->isMember(chan_it->first))
-				break;
-		}
+			std::map<std::string, unsigned int>::iterator	chan_it(chanlist.begin());
 
-		if (chan_it != chanlist.end())
-		{
-			target->send_who_reply(_expeditor, _serv->getChannel(chan_it->first), _serv->getName());
-			return _serv->send_replies(_expeditor, " " + chan_it->first + " :End of who list", RPL_ENDOFWHO);
-		}
+			for (; chan_it != chanlist.end(); chan_it++)
+			{
+				if (target->isMember(chan_it->first))
+					break;
+			}
 
-		target->send_who_reply(_expeditor, NULL, _serv->getName());
+			if (chan_it != chanlist.end())
+			{
+				target->send_who_reply(_expeditor, _serv->getChannel(chan_it->first), _serv->getName());
+				return _serv->send_replies(_expeditor, " " + chan_it->first + " :End of who list", RPL_ENDOFWHO);
+			}
+
+			target->send_who_reply(_expeditor, NULL, _serv->getName());
+		}
+		return _serv->send_replies(_expeditor, " * :End of who list", RPL_ENDOFWHO);
 	}
-	return _serv->send_replies(_expeditor, " * :End of who list", RPL_ENDOFWHO);
 }
