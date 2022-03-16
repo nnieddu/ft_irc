@@ -114,6 +114,7 @@ A user MODE command may only be accepted if both the sender of the
 message and the nickname given as a parameter are both the same.
 
 The available modes are as follows:
+	
 	a - marks a users as away;
 	i - marks a users as invisible;
 	o - operator flag.
