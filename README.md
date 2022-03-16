@@ -118,7 +118,7 @@ The available modes are as follows:
 	r - restricted mode (can't change nickname and nor make use of the channel operator status)
 
 ###### Channel modes
-Parameters: <channel> [+|-]|[flag] [param]
+Parameters: <channel> [+|-]|[flag] [param]  
 The various modes available for channels are as follows:
 
 	a - made a channel and is users Anonymous;
