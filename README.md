@@ -102,7 +102,7 @@ The commands which may only be used by channel operators are:
 | PING / PONG | `<server1>` `[<server2>]` | used to check for client activity on the other end of the connection. this message is sent at regular intervals unless other activity is noticed from the connection. if the client does not send PONG in response to PING, the connection is closed. |
 
 ##### Ports :
-1-65535 are available, and ports in range 1-1023 are the privileged ones: an application needs to be run as root in order to listen to these ports.
+1-65535 are available, ports in range 1-1023 are the privileged ones: an application needs to be run as root in order to listen to these ports.
 
 #### Modes : 
 ###### User modes
