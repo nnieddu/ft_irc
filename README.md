@@ -15,9 +15,7 @@ entre eux afin de créer des réseaux.
 [RFC 2813 Internet Relay Chat: Server Protocol](https://www.rfcreader.com/#rfc2813)  
 	
 https://www.tutorialspoint.com/websockets/index.htm  
-http://vidalc.chez.com/lf/socket.html  
-https://ncona.com/2019/04/building-a-simple-server-with-cpp/  
-https://vichargrave.github.io/programming/tcp-ip-network-programming-design-patterns-in-cpp/   
+http://vidalc.chez.com/lf/socket.html   
 https://www.ibm.com/docs/en/i/7.2?topic=designs-using-poll-instead-select
 https://www.irchelp.org/protocol/rfc/
 
